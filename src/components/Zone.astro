@@ -5,7 +5,10 @@ const dir: Record<string, number> = { 'Верхняя Пышма': -95, 'Бер�
 const R = (km: number) => 30 + Math.min(km, 150) * 1.2;
 const pts = calc.towns.filter((t) => t.km > 0).map((t) => {
   const a = ((dir[t.name] ?? 0) * Math.PI) / 180, r = R(t.km);
-  return { ...t, x: 220 + Math.cos(a) * r, y: 220 + Math.sin(a) * r };
+  const x = 220 + Math.cos(a) * r, y = 220 + Math.sin(a) * r;
+  // подпись — в сторону от центра; у вертикали и у правого края — так, чтобы не наезжать на соседей и не вылезать за схему
+  const end = x > 300 ? true : Math.abs(x - 220) < 15 ? false : x < 220;
+  return { ...t, x, y, end };
 });
 ---
 <figure class="zone">
@@ -15,7 +18,7 @@ const pts = calc.towns.filter((t) => t.km > 0).map((t) => {
     <circle cx="220" cy="220" r="7" fill="var(--brass)" /><text x="232" y="236">Екатеринбург · 0 ₽</text>
     {pts.map((p) => (<>
       <circle class="town" cx={p.x} cy={p.y} r="3.5" />
-      <text x={p.x + (p.x < 220 ? -8 : 8)} y={p.y + 4} text-anchor={p.x < 220 ? 'end' : 'start'}>{p.name}</text>
+      <text x={p.x + (p.end ? -8 : 8)} y={p.y + 4} text-anchor={p.end ? 'end' : 'start'}>{p.name}</text>
     </>))}
   </svg>
 </figure>

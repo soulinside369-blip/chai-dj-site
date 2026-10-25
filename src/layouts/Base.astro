@@ -4,6 +4,7 @@ import { site, nav, url, links, formats, occasions, faq, isStub, isPreview } fro
 import Calculator from '../components/Calculator.astro';
 import Icon from '../components/Icon.astro';
 import { rub } from '../lib/price.js';
+import geoCyr from '@fontsource-variable/geologica/files/geologica-cyrillic-wght-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -74,6 +75,7 @@ const metrika = site.analytics.metrikaId;
   <meta property="og:image" content={og} />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+  <link rel="preload" href={geoCyr} as="font" type="font/woff2" crossorigin />
   <slot name="head" />
   <script type="speculationrules" is:inline set:html={JSON.stringify({ prerender: [{ where: { and: [{ href_matches: url('*') }, { not: { href_matches: [url('admin/*'), url('api/*'), url('docs/*')] } }] }, eagerness: 'moderate' }] })} />
   <script is:inline>document.documentElement.classList.add('js')</script>

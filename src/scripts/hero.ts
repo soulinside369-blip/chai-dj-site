@@ -202,5 +202,25 @@ if (root) {
     mood.value = String(st.at); update();
   }) as EventListener);
 
+  /* ---------- Ссылка на расчёт: ?p=0…100&g=гостей — открывается с тем же вечером ---------- */
+  {
+    const q = new URLSearchParams(location.search);
+    const qp = q.get('p'), qg = q.get('g');
+    if (qp !== null && !isNaN(+qp)) mood.value = String(Math.min(100, Math.max(0, +qp)));
+    if (qg !== null && !isNaN(+qg)) guests.value = String(Math.min(+guests.max, Math.max(+guests.min, +qg)));
+  }
+  const shareBtn = root.querySelector<HTMLButtonElement>('[data-share]');
+  shareBtn?.addEventListener('click', async () => {
+    const u = new URL(location.href); u.search = `?p=${mood.value}&g=${guests.value}`; u.hash = 'vecher';
+    const f = fmtBy(S.fmt);
+    const text = `${f.name}, ${guests.value} гостей — ${$('[data-price]').textContent}`;
+    const label = shareBtn.querySelector('[data-share-label]')!;
+    try {
+      if (navigator.share) await navigator.share({ title: 'Расчёт вечера — Чай + DJ', text, url: u.href });
+      else { await navigator.clipboard.writeText(`${text}\n${u.href}`); label.textContent = 'Ссылка скопирована'; setTimeout(() => (label.textContent = 'Поделиться'), 2200); }
+      feel('press'); goal('share_calc');
+    } catch {}
+  });
+
   update();
 }

@@ -118,7 +118,7 @@ document.querySelectorAll<HTMLElement>('[data-pillnav]').forEach((nav) => {
 
 /* ---- Появление по словам и блоками ---- */
 document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
-  const words = el.textContent!.trim().split(/\s+/);
+  const words = el.textContent!.trim().split(/[ \t\n]+/); // неразрывные пробелы типографа не рвём
   el.innerHTML = words.map((w, i) => `<span class="w" style="--i:${i}">${w}</span>`).join(' ');
   el.classList.add('split-words');
 });

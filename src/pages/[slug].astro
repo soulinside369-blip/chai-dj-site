@@ -37,17 +37,42 @@ const others = formats.filter((x) => x.key !== f.key);
   </PageHero>
 
   <section class="sec tone-coal" data-htone="coal">
-    <div class="wrap split">
-      <div>
-        <div class="head"><p class="eyebrow">Программа</p><h2>По времени</h2></div>
-        <ol class="tl">{f.program.map((p) => <li><time>{p.time}</time><span><b>{p.title}</b><span>{p.text}</span></span></li>)}</ol>
+    <div class="wrap">
+      <div class="head-row">
+        <div class="head"><p class="eyebrow">Программа</p><h2>Вечер по минутам</h2></div>
+        <p class="muted rail-hint" aria-hidden="true">листайте →</p>
       </div>
-      <div class="stack-24">
-        <div><div class="head"><p class="eyebrow">Что входит</p><h2>В базовом пакете</h2></div>
-          <ul class="ticks">{f.what.map((w) => <li>{w}</li>)}</ul></div>
-        <div class="tile"><Icon name={f.key} /><p class="k">От площадки</p><p>{f.venue}</p><a class="link" href={url('oborudovanie/')}>Все требования →</a></div>
-        <div class="tile"><p class="k">Сверх пакета</p><ul class="ticks">{growth.map((g) => <li>{g}</li>)}</ul>
-          <a class="btn brass sm" href={url('kontakty/')} data-calc-link data-fmt={f.key}>Посчитать свой вечер</a></div>
+    </div>
+    <ol class="pgm" aria-label="Программа по времени">
+      {f.program.map((p, i) => (
+        <li class="pgm-card" style={`--i:${i}`}>
+          <time class="tnum">{p.time}</time>
+          <b>{p.title}</b>
+          <span>{p.text}</span>
+        </li>
+      ))}
+    </ol>
+    <div class="wrap">
+      <div class="pgm-bar" aria-hidden="true"><span></span></div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">В пакете</p><h2>Что привозим</h2></div>
+      <ul class="incl">{f.what.map((w) => <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 10.5 3 3 7-7"/></svg>{w}</li>)}</ul>
+      <div class="spec2">
+        <div class="spec">
+          <Icon name={f.key} />
+          <p class="k">От площадки</p>
+          <p>{f.venue}</p>
+          <a class="link" href={url('oborudovanie/')}>Все требования →</a>
+        </div>
+        <div class="spec">
+          <p class="k">Сверх пакета</p>
+          <ul class="spec-list">{growth.map((g) => <li>{g}</li>)}</ul>
+          <a class="btn brass sm" href={url('kontakty/')} data-calc-link data-fmt={f.key}>Посчитать свой вечер</a>
+        </div>
       </div>
     </div>
   </section>

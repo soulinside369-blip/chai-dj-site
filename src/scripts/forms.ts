@@ -89,7 +89,7 @@ export async function send(payload: Record<string, unknown>, statusEl: HTMLEleme
     }
   }
   goal(payload.kind === 'calc' ? 'form_calc_submit' : 'form_quick_submit');
-  try { sessionStorage.setItem('cdj_lead', JSON.stringify(result)); } catch {}
+  try { sessionStorage.setItem('cdj_lead', JSON.stringify({ ...result, date: payload.date || '', fmt: payload.fmt || '', guests: payload.guests || '', town: payload.town || '' })); } catch {}
   location.href = BASE + 'spasibo/';
 }
 

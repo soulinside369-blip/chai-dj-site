@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, links, url } from '../lib/data';
+import { site, links, url, formats } from '../lib/data';
+const names = Object.fromEntries(formats.map((f) => [f.key, f.name]));
 ---
 <Base title="Заявка принята" tone="coal" noindex>
   <section class="page-hero tone-coal" data-htone="coal" style="min-height:100svh">
@@ -19,15 +20,35 @@ import { site, links, url } from '../lib/data';
         <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>
         <a class="btn ghost" href={url('keysy/')}>Посмотреть кейсы</a>
       </div>
+      <div class="thx-cal" data-thx-cal hidden>
+        <p class="muted"><b data-thx-cal-what></b> — дата пока не забронирована: её закрепляет предоплата. Поставьте предварительную метку в календарь, чтобы не занять вечер другим.</p>
+        <button class="btn sm" type="button" data-thx-ics>Добавить в календарь</button>
+      </div>
     </div>
   </section>
-  <script>
+  <script define:vars={{ names, brand: site.brand.name }}>
     try {
       const lead = JSON.parse(sessionStorage.getItem('cdj_lead') || 'null');
       if (lead) {
-        document.querySelector('[data-thx-id]')!.textContent = lead.id;
-        document.querySelector('[data-thx-when]')!.textContent = lead.replyBy;
-        (document.querySelector('[data-thx-demo]') as HTMLElement).hidden = !lead.demo;
+        document.querySelector('[data-thx-id]').textContent = lead.id;
+        document.querySelector('[data-thx-when]').textContent = lead.replyBy;
+        document.querySelector('[data-thx-demo]').hidden = !lead.demo;
+        if (lead.date) {
+          const fn = names[lead.fmt]; const what = `${fn && fn !== brand ? `${brand}: ${fn}` : brand}${lead.guests ? `, ${lead.guests} гостей` : ''}`;
+          document.querySelector('[data-thx-cal-what]').textContent = new Date(lead.date + 'T12:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) + ' · ' + what;
+          document.querySelector('[data-thx-cal]').hidden = false;
+          document.querySelector('[data-thx-ics]').addEventListener('click', () => {
+            const d = lead.date.replace(/-/g, ''), n = new Date(lead.date + 'T12:00'); n.setDate(n.getDate() + 1);
+            const d2 = n.toISOString().slice(0, 10).replace(/-/g, '');
+            const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+            const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//chai-dj//RU', 'BEGIN:VEVENT', `UID:${lead.id}@chai-dj`, `DTSTAMP:${stamp}`,
+              `DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${d2}`, `SUMMARY:${what} (предварительно)`,
+              `DESCRIPTION:Заявка ${lead.id}. Дата закрепляется после предоплаты.`, 'STATUS:TENTATIVE', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })); a.download = `chai-dj-${lead.date}.ics`; a.click();
+            window.__goal?.('add_calendar');
+          });
+        }
       }
     } catch {}
   </script>

@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import typograf from './integrations/typograf.mjs';
 
 // SITE_URL и BASE_PATH задаёт workflow: на GitHub Pages сайт живёт в /chai-dj-site/,
 // на боевом домене — в корне.
@@ -10,7 +11,7 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  integrations: [sitemap({ filter: (p) => !/\/(spasibo|admin|trebovaniya-ploshchadki)\//.test(p) })],
+  integrations: [typograf(), sitemap({ filter: (p) => !/\/(spasibo|admin|trebovaniya-ploshchadki)\//.test(p) })],
   build: { inlineStylesheets: 'always', format: 'directory' },
   compressHTML: true,
 });
