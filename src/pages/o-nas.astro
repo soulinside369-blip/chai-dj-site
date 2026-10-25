@@ -6,6 +6,8 @@ import Icon from '../components/Icon.astro';
 import { site, isStub } from '../lib/data';
 const a = site.about;
 const people = a.people.filter((p) => !isStub(p.name));
+const atm = site.atmosphere;
+const photos = atm.photos.filter((p) => p.photo);
 ---
 <Base title="О нас: чайный мастер и DJ" description={a.lead}>
   <PageHero title={a.title} eyebrow="О нас" lead={a.lead} crumbs={[{ label: 'О нас' }]} />
@@ -29,4 +31,12 @@ const people = a.people.filter((p) => !isStub(p.name));
       <div class="grid4">{a.principles.map((p) => <article class="tile"><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
     </div>
   </section>
+  {photos.length > 0 && (
+    <section class="sec tone-coal2" data-htone="coal">
+      <div class="wrap">
+        <div class="head"><p class="eyebrow">Атмосфера</p><h2>{atm.title}</h2></div>
+        <div class="gallery">{photos.map((ph) => <Photo src={ph.photo} alt={ph.alt} />)}</div>
+      </div>
+    </section>
+  )}
 </Base>

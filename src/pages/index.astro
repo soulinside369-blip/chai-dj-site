@@ -1,21 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
 import HeroConfigurator from '../components/HeroConfigurator.astro';
+import Trailer from '../components/Trailer.astro';
 import FormatCards from '../components/FormatCards.astro';
-import Photo from '../components/Photo.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
 import { site, url, cases, reviews } from '../lib/data';
 
-const a = site.atmosphere;
 // Показываем только реальные материалы: пустые рамки и заглушки посетителю не нужны
-const photos = a.photos.filter((p) => p.photo);
-const hasAtmosphere = photos.length > 0 || !!a.teaser;
 const realCases = cases.filter((c) => !c.draft).length > 0;
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
 ---
 <Base tone="rice" faqLd>
+  {(site.hero as any).scene?.quiet && /-1280\.webp$/.test((site.hero as any).scene.quiet) && <link slot="head" rel="preload" as="image" type="image/webp" imagesrcset={`${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-640.webp'))} 640w, ${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-900.webp'))} 900w, ${url((site.hero as any).scene.quiet)} 1280w`} imagesizes="(max-width: 600px) calc(100vw - 40px), 520px" fetchpriority="high" />}
+  <Trailer slot="top" />
   <HeroConfigurator />
 
   <section class="sec tone-rice2" data-htone="rice" id="formats">
@@ -28,30 +27,22 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
     </div>
   </section>
 
-  {hasAtmosphere && (
-    <section class="sec tone-coal" data-htone="coal">
-      <div class="wrap">
-        <div class="head"><p class="eyebrow">Атмосфера</p><h2>{a.title}</h2></div>
-        <div class="gallery">
-          {a.teaser && <video class="photo" controls preload="none" playsinline src={url(a.teaser)} aria-label="Тизер вечера"></video>}
-          {photos.map((ph) => <Photo src={ph.photo} alt={ph.alt} class="rv" />)}
-        </div>
-      </div>
-    </section>
-  )}
-
   <section class="sec tone-coal" data-htone="coal">
-    <div class="wrap">
-      <div class="head"><p class="eyebrow">Как это работает</p><h2>От заявки до последнего трека — четыре шага</h2></div>
-      <ol class="steps" data-progress>
-        {site.steps.map((s, i) => <li class="rv" style={`--d:${i * 0.08}s`}><b>{s.title}</b><span>{s.text}</span></li>)}
-      </ol>
-      {Object.entries(site.segmentNotes).map(([k, n]) => (
-        <aside class="seg-note" data-only={k}>
-          <p><b>{n.title}.</b> <span class="muted">{n.text}</span></p>
-          <a class="link" href={url(n.link)}>{n.linkLabel} →</a>
-        </aside>
-      ))}
+    <div class="wrap how">
+      <div>
+        <div class="head"><p class="eyebrow">Как это работает</p><h2>Четыре шага до вечера</h2></div>
+        <ol class="steps steps-compact" data-progress>
+          {site.steps.map((s) => <li><b>{s.title}</b><span>{s.text}</span></li>)}
+        </ol>
+        {Object.entries(site.segmentNotes).map(([k, n]) => (
+          <p class="seg-line" data-only={k}><b>{n.title}.</b> <span class="muted">{n.text}</span> <a class="link" href={url(n.link)}>{n.linkLabel} →</a></p>
+        ))}
+      </div>
+      <div>
+        <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2></div>
+        <FaqList top limit={3} />
+        <a class="link" style="display:inline-block;margin-top:16px" href={url('faq/')}>Все вопросы →</a>
+      </div>
     </div>
   </section>
 
@@ -76,10 +67,4 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
     </section>
   )}
 
-  <section class="sec tone-coal2" data-htone="coal">
-    <div class="wrap split">
-      <div class="head" style="align-content:start"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2><p class="muted">Не нашли ответ — напишите в Telegram, ответим за {site.work.replyMinutes} минут в рабочее время.</p><a class="link" href={url('faq/')}>Все вопросы →</a></div>
-      <FaqList top />
-    </div>
-  </section>
 </Base>

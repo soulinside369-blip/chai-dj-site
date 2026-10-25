@@ -1,0 +1,63 @@
+---
+// Мини-трейлер при входе (по образцу КЛЮЧа): ~3 с, раз в 7 дней, пропуск касанием/клавишей/колесом.
+// Не показывается при «уменьшить движение» и при заходе по #якорю. Без JS исчезает сам (CSS).
+import { site } from '../lib/data';
+---
+<div class="trailer" id="trailer" aria-hidden="true" hidden>
+  <svg class="tr-steam" viewBox="0 0 120 200" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+    <path d="M40 190 C30 150 60 140 46 104 C34 74 62 60 50 20" />
+    <path d="M62 190 C54 156 82 142 70 110 C60 82 84 66 76 30" />
+    <path d="M84 190 C78 160 102 146 92 118 C84 96 104 82 98 50" />
+  </svg>
+  <p class="tr-line l1">Сначала — чай.</p>
+  <p class="tr-line l2">Потом — танцпол.</p>
+  <p class="tr-logo">{site.brand.name}</p>
+  <i class="tr-eq">{Array.from({ length: 24 }, (_, i) => <b style={`--i:${i}`}></b>)}</i>
+  <button type="button" class="tr-skip" data-trailer-skip tabindex="-1">Пропустить</button>
+</div>
+<script is:inline>
+  (function () {
+    var t = document.getElementById('trailer');
+    if (!t) return;
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var seen = 0; try { seen = +localStorage.getItem('cdj_trailer_at') || 0; } catch (e) {}
+    var force = /[?&]intro\b/.test(location.search);
+    if (!force && (reduce || location.hash || Date.now() - seen < 7 * 864e5)) return;
+    t.hidden = false;
+    document.documentElement.classList.add('trailer-on');
+    try { localStorage.setItem('cdj_trailer_at', String(Date.now())); } catch (e) {}
+    var done = false;
+    function end() {
+      if (done) return; done = true;
+      t.classList.add('out');
+      document.documentElement.classList.remove('trailer-on');
+      setTimeout(function () { t.remove(); }, 700);
+      ['keydown', 'wheel', 'touchstart', 'pointerdown'].forEach(function (e) { removeEventListener(e, end, true); });
+    }
+    setTimeout(end, 3200);
+    ['keydown', 'wheel', 'touchstart', 'pointerdown'].forEach(function (e) { addEventListener(e, end, { capture: true, passive: true }); });
+  })();
+</script>
+<style>
+  .trailer { position: fixed; inset: 0; z-index: 200; background: var(--coal); color: var(--rice); display: grid; place-items: center; overflow: hidden; animation: tr-auto 0s 6s forwards; }
+  .trailer.out { opacity: 0; transform: scale(1.04); transition: opacity .6s var(--ease), transform .7s var(--ease); pointer-events: none; }
+  @keyframes tr-auto { to { visibility: hidden; } }
+  :global(html.trailer-on) { overflow: hidden; }
+  .tr-steam { position: absolute; width: 90px; top: 50%; left: 50%; transform: translate(-50%, -70%); color: var(--brass); opacity: .7; }
+  .tr-steam path { stroke-dasharray: 260; stroke-dashoffset: 260; animation: tr-draw 1.4s var(--ease) forwards; }
+  .tr-steam path:nth-child(2) { animation-delay: .12s; }
+  .tr-steam path:nth-child(3) { animation-delay: .24s; }
+  @keyframes tr-draw { to { stroke-dashoffset: 0; } }
+  .tr-line, .tr-logo { position: absolute; margin: 0; font-family: var(--display); text-align: center; opacity: 0; }
+  .tr-line { font-size: clamp(34px, 6vw, 72px); font-style: italic; font-weight: 500; }
+  .l1 { animation: tr-in .9s .35s var(--ease) forwards, tr-out .4s 1.25s forwards; }
+  .l2 { animation: tr-in .9s 1.45s var(--ease) forwards, tr-out .4s 2.3s forwards; color: var(--ember); }
+  .tr-logo { font-size: clamp(48px, 9vw, 120px); font-weight: 600; letter-spacing: -.02em; animation: tr-in .8s 2.45s var(--ease) forwards; }
+  @keyframes tr-in { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes tr-out { to { opacity: 0; transform: translateY(-14px); filter: blur(4px); } }
+  .tr-eq { position: absolute; left: 0; right: 0; bottom: 0; height: 32vh; display: flex; gap: 4px; align-items: flex-end; padding-inline: 8px; opacity: 0; animation: tr-fade .6s 1.5s forwards; }
+  .tr-eq b { flex: 1; height: 20%; background: linear-gradient(var(--ember), transparent); opacity: .5; animation: tr-eq .5s calc(var(--i) * -37ms) ease-in-out infinite alternate; }
+  @keyframes tr-eq { to { height: 90%; } }
+  @keyframes tr-fade { to { opacity: 1; } }
+  .tr-skip { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgb(237 230 218 / .35); background: transparent; color: var(--rice); font: 600 13px var(--body); cursor: pointer; z-index: 1; }
+</style>

@@ -3,6 +3,7 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
 import { formats, calc, url } from '../lib/data';
 import { rub, num } from '../lib/price.js';
 
@@ -17,6 +18,7 @@ const others = formats.filter((x) => x.key !== f.key);
 ---
 <Base title={f.seoTitle} description={f.seoDescription} service={{ name: f.name, description: f.seoDescription, price: f.base }}>
   <PageHero title={f.h1} eyebrow={`${f.duration} · ${f.guestsLabel}`} lead={f.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: f.name }]}>
+    {f.image && <Photo src={f.image} alt={f.imageAlt} class="hero-media" eager sizes="(max-width: 860px) 100vw, 45vw" />}
     <div class="price-bar">
       <p class="price"><span class="muted">базовый пакет</span><b>от {rub(f.base)}</b></p>
       <a class="btn brass" href={url('kontakty/')} data-calc-link data-fmt={f.key} data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>

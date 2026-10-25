@@ -1,17 +1,19 @@
 ---
 // Компактные карточки форматов: на телефоне листаются вбок, «Посчитать» перестраивает конструктор или открывает расчёт
 import Icon from './Icon.astro';
+import Photo from './Photo.astro';
 import { formats, site, url } from '../lib/data';
 import { rub } from '../lib/price.js';
 const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
 const items = [
-  ...formats.map((f) => ({ key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj' })),
-  { key: 'cert', href: 'sertifikaty/', name: 'Сертификат', line: `Подарок на сумму или формат, ${site.certificates.validity}`, meta: 'PDF или печатный', price: certFrom, per: 0, main: false },
+  ...formats.map((f) => ({ image: f.image, imageAlt: f.imageAlt, key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj' })),
+  { image: (site.certificates as any).image, imageAlt: 'Иллюстрация: конверт с сургучной печатью и чай', key: 'cert', href: 'sertifikaty/', name: 'Сертификат', line: `Подарок на сумму или формат, ${site.certificates.validity}`, meta: 'PDF или печатный', price: certFrom, per: 0, main: false },
 ];
 ---
 <ul class="fmt-rail">
   {items.map((f) => (
-    <li class={`fcard${f.main ? ' main' : ''}`}>
+    <li class={`fcard${f.main ? ' main' : ''}${f.image ? ' has-img' : ''}`}>
+      {f.image && <Photo src={f.image} alt={f.imageAlt} class="fcard-img" sizes="(max-width: 760px) 76vw, 240px" />}
       <div class="fcard-top">
         <Icon name={f.key} class="ico" />
         {f.main && <span class="badge">Главный</span>}

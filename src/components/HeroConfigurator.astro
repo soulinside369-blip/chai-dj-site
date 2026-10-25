@@ -5,6 +5,8 @@ import { rub } from '../lib/price.js';
 const h = site.hero;
 const seg = h.segments[h.defaultSegment as 'corp' | 'private'];
 const stop0 = h.stops[1];
+const sc = (h as any).scene || {};
+const small = (s: string) => /-1280\.webp$/.test(s) ? `${url(s.replace(/-1280\.webp$/, '-640.webp'))} 640w, ${url(s.replace(/-1280\.webp$/, '-900.webp'))} 900w, ${url(s)} 1280w` : undefined;
 const data = {
   formats: formats.map(({ key, name, base, G, a, H, b, maxH, maxGuests, what, duration }) => ({ key, name, base, G, a, H, b, maxH, maxGuests, what, duration })),
   calc, stops: h.stops, segments: h.segments, defaultSegment: h.defaultSegment, work: site.work,
@@ -29,7 +31,9 @@ const data = {
     </div>
 
     <div class="cfg-panel tone-coal2" aria-labelledby="cfg-title">
-      <div class="stage" data-stage style="--p:.5">
+      <div class={`stage${sc.quiet ? ' has-photo' : ''}`} data-stage style="--p:.5">
+        {sc.quiet && <img class="stage-img quiet" src={url(sc.quiet)} srcset={small(sc.quiet)} sizes="(max-width: 600px) calc(100vw - 40px), 520px" alt="" fetchpriority="high" decoding="async" />}
+        {sc.party && <img class="stage-img party" data-src={url(sc.party)} data-srcset={small(sc.party)} sizes="(max-width: 600px) calc(100vw - 40px), 520px" alt="" loading="lazy" decoding="async" />}
         <canvas aria-hidden="true"></canvas>
         <div class="beams" aria-hidden="true"><i class="beam"></i><i class="beam"></i><i class="beam"></i></div>
         <svg class="stage-gaiwan" viewBox="0 0 400 300" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">

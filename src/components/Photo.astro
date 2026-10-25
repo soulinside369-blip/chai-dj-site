@@ -1,12 +1,16 @@
 ---
-// Фото из админки; пока его нет — тёплая заглушка с подписью, что за кадр нужен (раздел 9 ТЗ)
+// Изображение из админки. Для файлов вида *-1280.webp подставляется *-640.webp на узких экранах.
+// Пустое src — тёплая заглушка с подписью, какой кадр нужен.
 import { url } from '../lib/data';
-interface Props { src?: string; alt: string; need?: string; class?: string; style?: string; eager?: boolean }
-const { src, alt, need, class: cls = '', style, eager = false } = Astro.props;
+interface Props { src?: string; alt: string; need?: string; class?: string; style?: string; eager?: boolean; sizes?: string }
+const { src, alt, need, class: cls = '', style, eager = false, sizes = '(max-width: 760px) 100vw, 50vw' } = Astro.props;
 const href = src ? (src.startsWith('http') ? src : url(src)) : '';
+const small = href && /-1280\.webp$/.test(href) ? href.replace(/-1280\.webp$/, '-640.webp') : '';
 ---
 {href ? (
-  <figure class={`photo ${cls}`} style={style}><img src={href} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" /></figure>
+  <figure class={`photo ${cls}`} style={style}>
+    <img src={href} srcset={small ? `${small} 640w, ${href} 1280w` : undefined} sizes={small ? sizes : undefined} alt={alt} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} decoding="async" />
+  </figure>
 ) : (
   <figure class={`photo empty ${cls}`} style={style} role="img" aria-label={alt}><span><b>{alt}</b>{need}</span></figure>
 )}

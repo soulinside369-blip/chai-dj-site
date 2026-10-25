@@ -3,6 +3,7 @@ import { price, rub } from '../lib/price.js';
 import { goal } from './fx';
 import { maskPhone, validateContact, contactData, send } from './forms';
 import { EveningSound } from './sound';
+import { feel } from './feel';
 
 const root = document.querySelector<HTMLElement>('[data-cfg]');
 if (root) {
@@ -17,7 +18,7 @@ if (root) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtBy = (k: string) => D.formats.find((f: any) => f.key === k);
   const smooth = (a: number, b: number, x: number) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
-  const S = { p: 0.5, shown: 0.5, fmt: 'teadj', seg: D.defaultSegment as string, last: null as any, touched: false };
+  const S = { p: 0.5, shown: 0.5, fmt: 'teadj', seg: D.defaultSegment as string, last: null as any, touched: false, pStr: '', lastStop: '' as string, lastG: undefined as number | undefined };
   const sound = new EveningSound();
 
   /* ---------- Сегмент: компании / для себя ---------- */
@@ -52,6 +53,11 @@ if (root) {
     mood.style.setProperty('--fill', `${v}%`);
     guests.style.setProperty('--fill', `${((+guests.value - +guests.min) / (+guests.max - +guests.min)) * 100}%`);
     const st = nearest(v);
+    if (S.lastStop && S.lastStop !== st.label) feel('step');
+    S.lastStop = st.label;
+    const g10 = Math.floor(+guests.value / 10);
+    if (S.lastG !== undefined && S.lastG !== g10) feel('tick');
+    S.lastG = g10;
     $('[data-time]').textContent = timeAt(v);
     $('[data-stop-label]').textContent = st.label;
     $('[data-stop-text]').textContent = st.text;
@@ -86,21 +92,24 @@ if (root) {
   { const s = sprite.getContext('2d')!; const g = s.createRadialGradient(32, 32, 0, 32, 32, 32);
     g.addColorStop(0, 'rgba(237,230,218,0.5)'); g.addColorStop(0.5, 'rgba(237,230,218,0.14)'); g.addColorStop(1, 'rgba(237,230,218,0)');
     s.fillStyle = g; s.fillRect(0, 0, 64, 64); }
+  const hasPhoto = stage.classList.contains('has-photo');
+  const geo = { ox: 0, oy: 0, sc: 1 };
   function size() {
     const r = canvas.getBoundingClientRect(); W = r.width; H = r.height;
+    if (!hasPhoto) { const gr = gaiwan.getBoundingClientRect(); geo.ox = gr.left - r.left + gr.width * 0.5; geo.oy = gr.top - r.top + gr.height * 0.3; geo.sc = gr.width / 400; }
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   function draw(_ts: number) {
     t++;
     S.shown += (S.p - S.shown) * (reduce ? 1 : 0.08);
     const p = S.shown;
-    stage.style.setProperty('--p', p.toFixed(3));
-    gaiwan.style.opacity = String(1 - smooth(0.35, 0.7, p));
+    // Стили трогаем, только когда значение заметно изменилось (иначе браузер пересчитывает раскладку каждый кадр)
+    const pStr = p.toFixed(3);
+    if (pStr !== S.pStr) { S.pStr = pStr; stage.style.setProperty('--p', pStr); if (!hasPhoto) gaiwan.style.opacity = String(1 - smooth(0.35, 0.7, p)); }
     ctx.clearRect(0, 0, W, H);
-    // пар над гайванью
-    const gr = gaiwan.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
-    const ox = gr.left - cr.left + gr.width * 0.5, oy = gr.top - cr.top + gr.height * 0.3, sc = gr.width / 400;
-    const steam = 1 - smooth(0.3, 0.7, p);
+    // пар над гайванью — только в варианте без фото; геометрия кешируется в size()
+    const steam = hasPhoto ? 0 : 1 - smooth(0.3, 0.7, p);
+    const { ox, oy, sc } = geo;
     if (steam > 0.02 && ps.length < 90 && t % 2) ps.push({ x: ox + (Math.random() - 0.5) * 60 * sc, y: oy, vx: (Math.random() - 0.5) * 0.2, vy: -(0.5 + Math.random() * 0.6), r: (4 + Math.random() * 6) * sc + 2, life: 0, max: 160 + Math.random() * 120, seed: Math.random() * 999 });
     for (let i = ps.length - 1; i >= 0; i--) {
       const q = ps[i]; q.life++; const k = q.life / q.max;
@@ -135,7 +144,15 @@ if (root) {
   }
   size(); addEventListener('resize', size);
   if (reduce) { update(); draw(0); }
-  else new IntersectionObserver(([en]) => { cancelAnimationFrame(raf); if (en.isIntersecting) raf = requestAnimationFrame(draw); }).observe(stage);
+  else {
+    const startLoop = () => new IntersectionObserver(([en]) => { cancelAnimationFrame(raf); if (en.isIntersecting) raf = requestAnimationFrame(draw); }).observe(stage);
+    if (document.readyState === 'complete') setTimeout(startLoop, 300); else addEventListener('load', () => setTimeout(startLoop, 300), { once: true });
+  }
+  // Кадр «танцпол» грузим лениво: после загрузки страницы или при первом движении ползунка
+  const party = stage.querySelector<HTMLImageElement>('img.party[data-src]');
+  const loadParty = () => { if (party && !party.src) { if (party.dataset.srcset) party.srcset = party.dataset.srcset; party.src = party.dataset.src!; } };
+  mood.addEventListener('input', loadParty, { once: true });
+  addEventListener('load', () => setTimeout(loadParty, 1200), { once: true });
   document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); });
 
   /* ---------- Звук ---------- */

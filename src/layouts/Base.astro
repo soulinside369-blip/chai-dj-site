@@ -70,6 +70,7 @@ const metrika = site.analytics.metrikaId;
   <meta property="og:image" content={og} />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+  <slot name="head" />
   <script is:inline>document.documentElement.classList.add('js')</script>
   <script type="application/ld+json" set:html={JSON.stringify(business)} />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
@@ -84,6 +85,7 @@ const metrika = site.analytics.metrikaId;
 </head>
 <body data-seg={site.hero.defaultSegment}>
   <script is:inline>try{var s=localStorage.getItem('cdj_seg');if(s)document.body.dataset.seg=s}catch(e){}</script>
+  <slot name="top" />
   <a class="skip" href="#main">К содержанию</a>
 
   <header class="site-h" data-tone={tone} id="siteHeader">

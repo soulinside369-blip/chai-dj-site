@@ -81,6 +81,12 @@ collections:
                       - { label: Текст главной кнопки, name: cta }
                       - { label: 'Преимущества («Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
               - { label: Аудитория по умолчанию, name: defaultSegment, widget: select, options: [{ label: Для компании, value: corp }, { label: Для себя, value: private }] }
+              - label: Кадры сцены (временные иллюстрации — замените реальными фото)
+                name: scene
+                widget: object
+                fields:
+                  - { label: 'Тишина (слева на ползунке)', name: quiet, widget: image, required: false }
+                  - { label: 'Танцпол (справа на ползунке)', name: party, widget: image, required: false }
               - { label: Заголовок над ползунком, name: sliderTitle }
               - label: Точки ползунка (3 шт.)
                 name: stops
@@ -151,6 +157,7 @@ collections:
               - { label: Заголовок, name: title }
               - { label: Подзаголовок, name: lead, widget: text }
               - { label: Срок действия, name: validity }
+              - { label: 'Кадр сертификата (временная иллюстрация)', name: image, widget: image, required: false }
               - label: Номиналы
                 name: nominals
                 widget: list
@@ -211,6 +218,8 @@ collections:
               - { label: 'b — ₽ за час сверх (0 — длительность фиксированная)', name: b, widget: number, value_type: int }
               - { label: Максимум часов в калькуляторе, name: maxH, widget: number, value_type: float, step: 0.5 }
               - { label: 'Максимум гостей (0 — без ограничения)', name: maxGuests, widget: number, value_type: int }
+              - { label: 'Кадр формата (временная иллюстрация — замените реальным фото)', name: image, widget: image, required: false }
+              - { label: Подпись к кадру (alt), name: imageAlt, required: false }
               - { label: Что нужно от площадки, name: venue, widget: text }
               - { label: Что входит, name: what, widget: list, field: { label: Пункт, name: item } }
               - label: Программа по времени
