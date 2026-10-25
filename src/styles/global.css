@@ -11,6 +11,7 @@
 @import '@fontsource/manrope/latin-600.css';
 @import '@fontsource/manrope/cyrillic-700.css';
 @import '@fontsource/manrope/latin-700.css';
+@import '@fontsource-variable/geologica/index.css';
 
 /* ===== Токены =====
    Сюжет страницы: рисовая бумага и пар (тихо, воздушно) → уголь, латунь и тёплый свет танцпола.
@@ -123,8 +124,8 @@ em, .it { font-style: italic; font-weight: 500; }
   position: fixed; top: 0; left: 0; right: 0; z-index: 60; padding-top: env(safe-area-inset-top, 0px);
   color: var(--h-fg, var(--coal)); transition: color .35s, background .35s, transform .4s var(--ease), box-shadow .35s;
 }
-.site-h[data-tone='coal'] { --h-fg: var(--rice); --h-bg: rgb(28 27 24 / .78); --h-line: var(--line-coal); }
-.site-h[data-tone='rice'] { --h-fg: var(--coal); --h-bg: rgb(237 230 218 / .82); --h-line: var(--line-rice); }
+.site-h[data-tone='coal'] { --h-bg-solid: rgb(28 27 24 / .95); --h-fg: var(--rice); --h-bg: rgb(28 27 24 / .78); --h-line: var(--line-coal); }
+.site-h[data-tone='rice'] { --h-bg-solid: rgb(237 230 218 / .96); --h-fg: var(--coal); --h-bg: rgb(237 230 218 / .82); --h-line: var(--line-rice); }
 .site-h.scrolled { background: var(--h-bg); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3); box-shadow: 0 1px 0 var(--h-line); }
 .site-h.hide { transform: translateY(-100%); }
 .site-h .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: var(--head-h); }
@@ -790,3 +791,128 @@ html.drawer-open { overflow: hidden; }
   .site-f { padding-top: 32px; }
 }
 @media (min-width: 761px) { .fcard:not(.main) .fcard-img { aspect-ratio: 2 / 1; } }
+
+
+/* ===================================================================
+   v0.7 — технологичный слой: шрифт-гротеск, шапка-капсула, панель под большой палец, шторка-меню,
+   переходы между страницами (View Transitions), полоса прогресса на CSS scroll-timeline.
+   =================================================================== */
+:root { --display: 'Geologica Variable', 'Manrope', system-ui, sans-serif; --serif: 'Cormorant Garamond', Georgia, serif; }
+.display, h1, h2, h3 { font-weight: 560; letter-spacing: -.035em; line-height: 1.04; }
+h1, .h1 { font-weight: 620; letter-spacing: -.045em; }
+.cfg-copy h1 { font-size: clamp(32px, 4.6vw, 68px); }
+.page-hero h1 { font-size: clamp(32px, 4.4vw, 64px); }
+h2, .h2 { font-size: clamp(28px, 3.2vw, 46px); }
+.fcard.main h3, .fmt.main h3 { letter-spacing: -.04em; }
+.stage-label b, .marquee-track, .act h3 { font-family: var(--serif); letter-spacing: 0; }
+.faq summary, .how .faq summary { font-weight: 520; letter-spacing: -.02em; }
+.lead { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.55; max-width: 48ch; }
+.logo { font: 650 21px/1 var(--display); letter-spacing: -.04em; }
+.eyebrow { font-weight: 650; }
+.clock, .stage-time, .total, .cfg-price, .thx-num, .price b { letter-spacing: -.05em; font-weight: 600; }
+
+/* Шапка: на компьютере — плавающая капсула со «стеклом», подсветка пункта едет за курсором */
+.h-progress { display: none; }
+@media (min-width: 981px) {
+  .site-h { padding-top: 12px; }
+  .site-h .wrap { min-height: 60px; padding-left: 22px; padding-right: 8px; border-radius: 999px; transition: background .35s, box-shadow .35s; }
+  .site-h.scrolled { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; }
+  .site-h.scrolled .wrap { background: color-mix(in srgb, var(--h-bg) 70%, var(--h-bg-solid, transparent)); backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); box-shadow: 0 0 0 1px var(--h-line), 0 14px 40px rgb(0 0 0 / .16); }
+  .nav { position: relative; gap: 2px; }
+  .nav a { padding: 9px 14px; border-radius: 999px; opacity: .78; position: relative; z-index: 1; }
+  .nav a::after { display: none; }
+  .nav-pill { position: absolute; top: 0; bottom: 0; left: 0; width: var(--w, 0); transform: translateX(var(--x, 0)); border-radius: 999px; background: color-mix(in srgb, currentColor 11%, transparent); opacity: 0; transition: transform .38s var(--ease), width .38s var(--ease), opacity .25s; pointer-events: none; }
+  .site-h .h-cta { border-radius: 999px; }
+}
+
+/* Телефон и планшет: тонкая шапка с логотипом и полосой прогресса; управление — внизу, под пальцем */
+.tbar, .sheet, .sheet-scrim { display: none; }
+@media (max-width: 980px) {
+  :root { --head-h: 56px; }
+  body { font-size: 16px; }
+  .site-h .wrap { min-height: 56px; }
+  .h-progress { display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--brass); transform-origin: 0 50%; transform: scaleX(0); opacity: 0; }
+  @supports (animation-timeline: scroll()) {
+    .site-h.scrolled .h-progress { opacity: .9; }
+    .h-progress { animation: h-prog linear both; animation-timeline: scroll(root); }
+  }
+
+  .tbar {
+    position: fixed; z-index: 58; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1.55fr; align-items: center; gap: 2px; padding: 6px;
+    border-radius: 26px; color: var(--rice);
+    background: rgb(24 23 20 / .8); backdrop-filter: blur(20px) saturate(1.6); -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 18px 44px rgb(0 0 0 / .38);
+    transition: transform .4s var(--ease); view-transition-name: tbar;
+  }
+  .tb {
+    display: grid; justify-items: center; align-content: center; gap: 4px; min-height: 54px; padding: 0; border: 0; border-radius: 20px;
+    background: none; color: inherit; font: 600 11px/1 var(--body); letter-spacing: .01em; text-decoration: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; transition: background .25s, color .25s, transform .15s;
+  }
+  .tb svg, .tb-main svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tb[aria-current='page'], .tb[aria-expanded='true'] { background: rgb(255 255 255 / .09); color: var(--brass); }
+  .tb-main {
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border-radius: 20px;
+    background: var(--brass); color: var(--coal); font: 700 15px/1 var(--body); text-decoration: none; -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 8px 26px rgb(200 161 101 / .38), inset 0 1px 0 rgb(255 255 255 / .4); transition: transform .15s;
+  }
+  .tb-main::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / .45) 50%, transparent 65%); transform: translateX(-130%); animation: tb-shine 6s 2.5s infinite; }
+  .tb:active, .tb-main:active { transform: scale(.94); }
+  .tbar.low { transform: translateY(4px); }
+  .tbar.low .tb { min-height: 44px; }
+  .tbar.low .tb span { font-size: 0; }
+  .tbar.low .tb-main { min-height: 44px; }
+  .site-f { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+  html.drawer-open .tbar { transform: translateY(140%); }
+
+  .sheet-scrim { display: block; position: fixed; inset: 0; z-index: 70; background: rgb(8 8 7 / .55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; transition: opacity .3s; }
+  .sheet-scrim.on { opacity: 1; }
+  .sheet {
+    display: grid; grid-template-rows: auto minmax(0, 1fr); position: fixed; z-index: 71; left: 0; right: 0; bottom: 0; max-height: 88svh;
+    border-radius: 28px 28px 0 0; box-shadow: 0 -24px 60px rgb(0 0 0 / .45), 0 0 0 1px rgb(255 255 255 / .06);
+    padding-bottom: env(safe-area-inset-bottom, 0px); transform: translateY(105%); visibility: hidden;
+    transition: transform .5s cubic-bezier(.2, .9, .2, 1), visibility 0s .5s;
+  }
+  .sheet.open { transform: none; visibility: visible; transition: transform .5s cubic-bezier(.2, .9, .2, 1); }
+  .sheet-grip { display: grid; place-items: center; width: 100%; height: 30px; border: 0; background: none; cursor: pointer; }
+  .sheet-grip span { width: 44px; height: 5px; border-radius: 99px; background: rgb(255 255 255 / .22); }
+  .sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 2px var(--gut-r) 20px var(--gut); display: grid; gap: 14px; align-content: start; }
+  .sheet-k { margin: 4px 0 -4px; font: 650 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .sheet-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .s-tile {
+    position: relative; display: grid; align-content: end; gap: 4px; min-height: 124px; padding: 54px 14px 14px; border-radius: 20px;
+    background: linear-gradient(160deg, var(--coal-3), var(--coal-2)); border: 1px solid var(--line-coal); text-decoration: none; color: var(--rice);
+    transition: transform .15s, border-color .25s;
+  }
+  .s-tile:active { transform: scale(.97); }
+  .s-tile .ico { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; color: var(--brass); }
+  .s-tile b { font: 600 16px/1.15 var(--display); letter-spacing: -.02em; }
+  .s-tile span { font-size: 13px; color: var(--muted); }
+  .s-tile[aria-current='page'] { border-color: var(--brass); }
+  .sheet-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sheet-chips .chip { display: inline-flex; align-items: center; text-decoration: none; color: var(--rice); }
+  .sheet-links { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; }
+  .sheet-links a { display: flex; justify-content: space-between; align-items: center; min-height: 48px; border-bottom: 1px solid var(--line-coal); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .sheet-links a span { color: var(--muted); }
+  .sheet-links a[aria-current='page'] { color: var(--brass); }
+  .sheet-contacts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sheet-note { color: var(--muted); font-size: 13px; }
+  html.sheet-open { overflow: hidden; }
+}
+@keyframes h-prog { to { transform: scaleX(1); } }
+@keyframes tb-shine { 0%, 82% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+
+/* Переходы между страницами: шапка и панель остаются на месте, содержимое мягко сменяется */
+@view-transition { navigation: auto; }
+.site-h { view-transition-name: site-h; }
+::view-transition-old(root) { animation: vt-out .22s ease both; }
+::view-transition-new(root) { animation: vt-in .42s var(--ease) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .tb-main::after, .h-progress { animation: none; }
+  .sheet, .sheet-scrim, .tbar { transition: none; }
+}

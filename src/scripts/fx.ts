@@ -3,7 +3,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer: fine)').matches;
 const header = document.getElementById('siteHeader')!;
 const menu = document.getElementById('menu')!;
-const burger = document.querySelector<HTMLButtonElement>('.burger')!;
+const scrim = document.querySelector<HTMLElement>('.sheet-scrim')!;
+const toggles = document.querySelectorAll<HTMLButtonElement>('[data-menu-toggle]');
+import { feel } from './feel';
 
 /* ---- Цели Метрики ---- */
 export function goal(name: string) {
@@ -54,7 +56,7 @@ let lastY = scrollY;
 function headerTick() {
   const y = scrollY;
   header.classList.toggle('scrolled', y > 8);
-  header.classList.toggle('hide', y > 400 && y > lastY + 4 && !menu.classList.contains('open'));
+  header.classList.toggle('hide', y > 400 && y > lastY + 4);
   if (y < lastY - 4) header.classList.remove('hide');
   lastY = y;
   const probe = header.offsetHeight / 2;
@@ -67,21 +69,52 @@ let ticking = false;
 addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { headerTick(); ticking = false; }); } }, { passive: true });
 headerTick();
 
-/* ---- Меню на телефоне ---- */
+/* ---- Меню: шторка снизу, под большой палец ---- */
+let menuReturn: HTMLElement | null = null;
 function closeMenu() {
-  menu.classList.remove('open'); menu.setAttribute('aria-hidden', 'true');
-  burger.setAttribute('aria-expanded', 'false'); burger.setAttribute('aria-label', 'Открыть меню');
-  header.dataset.tone = header.dataset.prevTone || header.dataset.tone; document.body.style.overflow = '';
+  if (!menu.classList.contains('open')) return;
+  menu.classList.remove('open'); menu.setAttribute('aria-hidden', 'true'); menu.setAttribute('inert', '');
+  menu.style.transform = '';
+  scrim.classList.remove('on'); setTimeout(() => { if (!menu.classList.contains('open')) scrim.hidden = true; }, 350);
+  toggles.forEach((t) => t.setAttribute('aria-expanded', 'false'));
+  document.documentElement.classList.remove('sheet-open');
+  menuReturn?.focus?.();
 }
-burger.addEventListener('click', () => {
-  const open = !menu.classList.contains('open');
-  if (!open) return closeMenu();
-  menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false');
-  burger.setAttribute('aria-expanded', 'true'); burger.setAttribute('aria-label', 'Закрыть меню');
-  header.dataset.prevTone = header.dataset.tone; header.dataset.tone = 'coal'; document.body.style.overflow = 'hidden';
-});
+function openMenu() {
+  menuReturn = document.activeElement as HTMLElement;
+  scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add('on'));
+  menu.removeAttribute('inert'); menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false');
+  toggles.forEach((t) => t.setAttribute('aria-expanded', 'true'));
+  document.documentElement.classList.add('sheet-open');
+  feel('step');
+  menu.querySelector<HTMLElement>('.sheet-tiles a')?.focus({ preventScroll: true });
+}
+toggles.forEach((t) => t.addEventListener('click', () => (menu.classList.contains('open') ? closeMenu() : openMenu())));
+document.querySelectorAll('[data-menu-close]').forEach((el) => el.addEventListener('click', closeMenu));
 menu.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) closeMenu(); });
-addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('open')) { closeMenu(); burger.focus(); } });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu(); });
+// свайп вниз закрывает шторку
+{
+  let y0 = 0, dy = 0, drag = false;
+  menu.addEventListener('touchstart', (e) => { const body = menu.querySelector('.sheet-body')!; if (body.scrollTop > 0) return; y0 = e.touches[0].clientY; dy = 0; drag = true; menu.style.transition = 'none'; }, { passive: true });
+  menu.addEventListener('touchmove', (e) => { if (!drag) return; dy = Math.max(0, e.touches[0].clientY - y0); menu.style.transform = `translateY(${dy}px)`; }, { passive: true });
+  menu.addEventListener('touchend', () => { if (!drag) return; drag = false; menu.style.transition = ''; if (dy > 90) { feel('tick'); closeMenu(); } else menu.style.transform = ''; });
+}
+
+/* ---- Навигация на компьютере: подсветка-капсула едет за курсором ---- */
+document.querySelectorAll<HTMLElement>('[data-pillnav]').forEach((nav) => {
+  const pill = nav.querySelector<HTMLElement>('.nav-pill')!;
+  const place = (a: HTMLElement | null) => {
+    if (!a) { pill.style.opacity = '0'; return; }
+    pill.style.opacity = '1';
+    pill.style.setProperty('--x', `${a.offsetLeft}px`); pill.style.setProperty('--w', `${a.offsetWidth}px`);
+  };
+  const cur = () => nav.querySelector<HTMLElement>('a[aria-current="page"]');
+  nav.addEventListener('pointerover', (e) => { const a = (e.target as HTMLElement).closest<HTMLElement>('a'); if (a) place(a); });
+  nav.addEventListener('pointerleave', () => place(cur()));
+  nav.addEventListener('focusin', (e) => place(e.target as HTMLElement));
+  requestAnimationFrame(() => place(cur()));
+});
 
 /* ---- Появление по словам и блоками ---- */
 document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
@@ -127,11 +160,16 @@ document.querySelectorAll<HTMLElement>('.steps[data-progress]').forEach((ol) => 
   addEventListener('scroll', upd, { passive: true }); upd();
 });
 
-/* ---- Панель «Рассчитать · Telegram» — после первого экрана ---- */
+/* ---- Нижняя панель: прячется при прокрутке вниз по тексту, возвращается при движении вверх ---- */
 const dock = document.getElementById('dock');
-const first = document.querySelector('.cfg-panel, .hero, .page-hero');
-if (dock && first) {
-  new IntersectionObserver(([en]) => dock.classList.toggle('up', !en.isIntersecting), { rootMargin: '-100px 0px 0px 0px' }).observe(first);
+if (dock) {
+  let ly = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    if (Math.abs(y - ly) < 6) return;
+    dock.classList.toggle('low', y > ly && y > 300 && !menu.classList.contains('open'));
+    ly = y;
+  }, { passive: true });
 }
 
 /* ---- Фильтр кейсов ---- */
