@@ -1,8 +1,10 @@
 ---
 import { reviews, logos, url } from '../lib/data';
+interface Props { onlyReal?: boolean }
+const list = Astro.props.onlyReal ? reviews.filter((r) => !r.draft) : reviews;
 ---
 <div class="cards3">
-  {reviews.map((r, i) => (
+  {list.map((r, i) => (
     <figure class="review rv" style={`--d:${i * 0.08}s`}>
       <blockquote>{r.text}</blockquote>
       <figcaption class="who">

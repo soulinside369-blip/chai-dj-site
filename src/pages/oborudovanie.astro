@@ -14,9 +14,9 @@ import { equipment, url } from '../lib/data';
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
       <div class="head"><p class="eyebrow">Комплектация</p><h2 data-split>Что привозим</h2></div>
-      <div class="tw rv"><table>
+      <div class="tw rv stack-table"><table>
         <thead><tr><th>Что</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
-        <tbody>{equipment.kit.map((r) => <tr><td>{r.what}</td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
+        <tbody>{equipment.kit.map((r) => <tr><td>{r.what}</td><td data-l="До 50 гостей">{r.small}</td><td data-l="50–150 гостей">{r.large}</td></tr>)}</tbody>
       </table></div>
     </div>
   </section>
@@ -34,9 +34,9 @@ import { equipment, url } from '../lib/data';
   <section class="sec tone-coal2" data-htone="coal" id="venue">
     <div class="wrap">
       <div class="head"><p class="eyebrow">Техтребования</p><h2 data-split>Что нужно от площадки</h2><p class="lead">Эту таблицу мы сами отправляем администратору площадки после брони.</p></div>
-      <div class="tw rv"><table>
+      <div class="tw rv stack-table"><table>
         <thead><tr><th>Требование</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
-        <tbody>{equipment.venue.map((r) => <tr><td>{r.what}</td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
+        <tbody>{equipment.venue.map((r) => <tr><td>{r.what}</td><td data-l="До 50 гостей">{r.small}</td><td data-l="50–150 гостей">{r.large}</td></tr>)}</tbody>
       </table></div>
       <figure class="rv" style="margin-top:40px">
         <svg viewBox="0 0 900 260" role="img" aria-label="Схема расстановки: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">

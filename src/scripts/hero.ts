@@ -176,11 +176,14 @@ if (root) {
 
   /* ---------- Подробный расчёт — передаём выбор в большой калькулятор ---------- */
   $('[data-cfg-more]').addEventListener('click', (e) => {
-    const calc = document.getElementById('calc'); if (!calc) return;
     e.preventDefault();
-    calc.dispatchEvent(new CustomEvent('calc:prefill', { detail: { fmt: S.fmt, guests: +guests.value } }));
-    calc.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    (window as any).__openCalc?.({ fmt: S.fmt, guests: +guests.value });
   });
+  // Карточка формата ниже перестраивает конструктор
+  root.addEventListener('cfg:set', ((e: CustomEvent) => {
+    const st = stops.find((x) => x.fmt === e.detail); if (!st) return;
+    mood.value = String(st.at); update();
+  }) as EventListener);
 
   update();
 }

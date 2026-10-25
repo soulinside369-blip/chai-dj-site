@@ -1,30 +1,28 @@
 ---
+// Компактные карточки форматов: на телефоне листаются вбок, «Посчитать» перестраивает конструктор или открывает расчёт
 import Icon from './Icon.astro';
 import { formats, site, url } from '../lib/data';
 import { rub } from '../lib/price.js';
 const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
+const items = [
+  ...formats.map((f) => ({ key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj' })),
+  { key: 'cert', href: 'sertifikaty/', name: 'Сертификат', line: `Подарок на сумму или формат, ${site.certificates.validity}`, meta: 'PDF или печатный', price: certFrom, per: 0, main: false },
+];
 ---
-<div class="fmt-grid">
-  {formats.map((f, i) => (
-    <article class={`fmt rv${f.key === 'teadj' ? ' main' : ''}`} data-tilt style={`--d:${i * 0.07}s`}>
-      {f.key === 'teadj' && <><i class="glow" aria-hidden="true"></i><span class="eq" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <i style={`--i:${i}`}></i>)}</span></>}
-      <Icon name={f.key} />
-      <span class="badge">{f.badge}</span>
-      <h3>{f.name}</h3>
-      <p class="muted">{f.line}</p>
-      <div class="meta"><span>{f.duration} · {f.guestsLabel}</span><b class="tnum">от {rub(f.base)}</b><span class="per">≈ {rub(Math.round(f.base / f.G / 50) * 50)} на гостя в базовом пакете</span></div>
-      <div class="row">
-        <a class={`btn sm${f.key === 'teadj' ? ' brass' : ''}`} href={url(f.slug + '/#calc')} data-calc-link data-fmt={f.key} data-goal="click_calc">Рассчитать</a>
-        <a class="btn sm ghost" href={url(f.slug + '/')}>Подробнее</a>
+<ul class="fmt-rail">
+  {items.map((f) => (
+    <li class={`fcard${f.main ? ' main' : ''}`}>
+      <div class="fcard-top">
+        <Icon name={f.key} class="ico" />
+        {f.main && <span class="badge">Главный</span>}
       </div>
-    </article>
+      <h3><a href={url(f.href)} class="fcard-link">{f.name}</a></h3>
+      <p class="fcard-line">{f.line}</p>
+      <p class="fcard-meta">{f.meta}</p>
+      <div class="fcard-foot">
+        <p class="fcard-price tnum">от {rub(f.price)}{f.per > 0 && <small>≈ {rub(f.per)} / гость</small>}</p>
+        <a class="btn sm fcard-btn" href={url(f.href)} data-calc-link data-fmt={f.key} data-goal="click_calc" aria-label={`Посчитать: ${f.name}`}>Посчитать</a>
+      </div>
+    </li>
   ))}
-  <article class="fmt rv" data-tilt style="--d:.3s">
-    <Icon name="cert" />
-    <span class="badge">Подарок</span>
-    <h3>Сертификат</h3>
-    <p class="muted">На сумму или формат. Действует {site.certificates.validity}.</p>
-    <div class="meta"><span>PDF или печатный</span><b class="tnum">от {rub(certFrom)}</b></div>
-    <div class="row"><a class="btn sm" href={url('sertifikaty/#calc')} data-calc-link data-fmt="cert">Заказать</a><a class="btn sm ghost" href={url('sertifikaty/')}>Подробнее</a></div>
-  </article>
-</div>
+</ul>

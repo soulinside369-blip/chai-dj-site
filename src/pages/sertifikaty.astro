@@ -1,45 +1,36 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import Calculator from '../components/Calculator.astro';
-import Icon from '../components/Icon.astro';
-import { site, isStub } from '../lib/data';
+import { site, isStub, url } from '../lib/data';
 import { rub } from '../lib/price.js';
 const c = site.certificates;
 ---
 <Base title="Подарочный сертификат на чайную церемонию и DJ" description={`Сертификат на сумму или формат: чайная церемония, Чай + DJ. Действует ${c.validity}. Екатеринбург.`}>
   <PageHero title={c.title} eyebrow="Сертификаты" lead={c.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: 'Сертификаты' }]}>
-    <div class="row rv" style="--d:.5s"><a class="btn" href="#calc" data-calc-link data-fmt="cert" data-goal="click_cert">Заказать сертификат <span class="arr">→</span></a></div>
-  </PageHero>
-
-  <section class="sec tone-rice" data-htone="rice" style="padding-top:0">
-    <div class="wrap grid4">
-      {c.nominals.map((n, i) => (
-        <article class="tile rv" data-tilt style={`--d:${i * .07}s`}>
-          <Icon name="cert" />
-          <p class="k">{/₽/.test(n.label) ? 'На сумму' : 'Формат'}</p>
-          <h3>{n.label}</h3>
-          <p class="muted">{/₽/.test(n.label) ? n.note : `${rub(n.value)} · ${n.note}`}</p>
-        </article>
+    <ul class="nominals">
+      {c.nominals.map((n) => (
+        <li><a class="nominal" href={url('kontakty/')} data-calc-link data-fmt="cert" data-cert={n.value} data-goal="click_cert">
+          <span class="k">{/₽/.test(n.label) ? 'На сумму' : 'Формат'}</span>
+          <b>{n.label}</b>
+          <span class="muted">{/₽/.test(n.label) ? n.note : `${rub(n.value)} · ${n.note}`}</span>
+        </a></li>
       ))}
-    </div>
-  </section>
+    </ul>
+  </PageHero>
 
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap split">
-      <div><div class="head"><p class="eyebrow">Как вручить</p><h2 data-split>Три шага до подарка</h2></div>
-        <ol class="steps" style="grid-template-columns:1fr" data-progress>{c.steps.map((s) => <li class="rv"><b>{s.title}</b><span>{s.text}</span></li>)}</ol></div>
-      <div><div class="head"><p class="eyebrow">Срок и условия</p><h2 data-split>Без мелкого шрифта</h2></div>
+      <div><div class="head"><p class="eyebrow">Как вручить</p><h2>Три шага до подарка</h2></div>
+        <ol class="steps steps-col" data-progress>{c.steps.map((s) => <li><b>{s.title}</b><span>{s.text}</span></li>)}</ol></div>
+      <div><div class="head"><p class="eyebrow">Срок и условия</p><h2>Без мелкого шрифта</h2></div>
         <ul class="lines" style="font-size:16px">
           <li><span>Срок действия</span><span>{c.validity}</span></li>
           <li><span>Дата события</span><span>выбирает получатель</span></li>
           <li><span>Бронь даты</span><span>не позже чем за 3 дня</span></li>
-          <li><span>Перенос и возврат</span><span class={isStub(c.terms) ? 'stub' : ''}>{c.terms}</span></li>
-        </ul></div>
+          {!isStub(c.terms) && <li><span>Перенос и возврат</span><span>{c.terms}</span></li>}
+        </ul>
+        <a class="btn brass" style="margin-top:24px" href={url('kontakty/')} data-calc-link data-fmt="cert" data-goal="click_cert">Заказать сертификат <span class="arr">→</span></a>
+      </div>
     </div>
-  </section>
-
-  <section class="sec tone-coal2" data-htone="coal">
-    <div class="wrap"><div class="head"><h2 data-split>Оформить сертификат</h2></div><Calculator preset="cert" /></div>
   </section>
 </Base>

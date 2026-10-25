@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
-import { site, nav, url, links, formats, faq } from '../lib/data';
+import { site, nav, url, links, formats, faq, isStub } from '../lib/data';
+import Calculator from '../components/Calculator.astro';
 
 interface Props {
   title?: string;
@@ -94,7 +95,7 @@ const metrika = site.analytics.metrikaId;
       <nav class="nav" aria-label="Основное меню">
         {nav.map((n) => <a href={url(n.href)} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a>)}
       </nav>
-      <a class="btn sm h-cta" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
+      <a class="btn sm h-cta" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
       <button class="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Открыть меню"><span></span></button>
     </div>
   </header>
@@ -106,7 +107,7 @@ const metrika = site.analytics.metrikaId;
       <a href={url('sertifikaty/')}>Сертификаты</a>
     </nav>
     <div class="row">
-      <a class="btn brass" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
+      <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
       <a class="btn ghost" style="--fg:var(--rice);--bg:var(--coal)" href={links.telegram} data-goal="click_telegram">Telegram</a>
     </div>
     <small>{site.work.text}</small>
@@ -117,41 +118,49 @@ const metrika = site.analytics.metrikaId;
   <footer class="site-f tone-coal">
     <div class="wrap">
       <div class="f-cta">
-        <p class="eyebrow">Дату закрепляет предоплата 30 %</p>
-        <p class="h1 display">Соберём ваш вечер — от первой чашки до последнего трека</p>
+        <p class="f-title display">Соберём ваш вечер — от первой чашки до последнего трека</p>
         <div class="row">
-          <a class="btn brass" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>
-          <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>
-          <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>
+          <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать <span class="arr">→</span></a>
+          <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Telegram</a>
+          <a class="btn ghost" href={links.max} data-goal="click_max">MAX</a>
         </div>
       </div>
       <div class="f-grid">
         <div style="display:grid;gap:10px;align-content:start">
           <a class="logo" href={url('')}>{site.brand.name}</a>
           <p class="muted">{site.brand.tagline}. {site.brand.region}.</p>
-          {links.phone ? <a href={links.phone} data-goal="click_phone" class="link">{site.contacts.phoneDisplay}</a> : <span class="stub" style="justify-self:start">{site.contacts.phoneDisplay}</span>}
+          {links.phone && <a href={links.phone} data-goal="click_phone" class="link">{site.contacts.phoneDisplay}</a>}
           <p class="muted">{site.work.text}</p>
         </div>
         <div><p class="eyebrow" style="margin-bottom:14px">Форматы</p><ul>
           {formats.map((f) => <li><a href={url(f.slug + '/')}>{f.name}</a></li>)}
           <li><a href={url('sertifikaty/')}>Сертификаты</a></li>
         </ul></div>
-        <div><p class="eyebrow" style="margin-bottom:14px">Компания</p><ul>
+        <div class="f-company"><p class="eyebrow" style="margin-bottom:14px">Компания</p><ul>
           {nav.map((n) => <li><a href={url(n.href)}>{n.label}</a></li>)}
         </ul></div>
         <div><p class="eyebrow" style="margin-bottom:14px">Документы</p><ul>
           <li><a href={url('privacy/')}>Политика ПДн</a></li>
           <li><a href={url('consent/')}>Согласие на обработку</a></li>
           <li><a href={url('oferta/')}>Оферта</a></li>
-          <li class="muted">© {new Date().getFullYear()} {site.brand.legal}</li>
+          <li class="muted">© {new Date().getFullYear()} {isStub(site.brand.legal) ? site.brand.name : site.brand.legal}</li>
         </ul></div>
       </div>
-      <p class="f-big" aria-hidden="true" data-text="чай + dj"></p>
     </div>
   </footer>
 
+  <dialog class="drawer tone-coal2" id="calcDrawer" aria-labelledby="drawer-title">
+    <div class="drawer-head">
+      <p class="drawer-title display" id="drawer-title">Расчёт стоимости</p>
+      <button type="button" class="drawer-close" data-drawer-close aria-label="Закрыть расчёт">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <Calculator />
+  </dialog>
+
   <div class="dock" id="dock">
-    <a class="btn brass sm" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать</a>
+    <a class="btn brass sm" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать</a>
     <a class="btn ghost sm" href={links.telegram} data-goal="click_telegram">Telegram</a>
   </div>
 

@@ -67,6 +67,7 @@ collections:
                       - { label: Подпись кнопки переключателя, name: label }
                       - { label: Заголовок, name: title }
                       - { label: Подзаголовок, name: lead, widget: text }
+                      - { label: Подзаголовок на телефоне (короткий), name: leadShort }
                       - { label: Текст главной кнопки, name: cta }
                       - { label: 'Преимущества («Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
                   - label: Для себя
@@ -76,6 +77,7 @@ collections:
                       - { label: Подпись кнопки переключателя, name: label }
                       - { label: Заголовок, name: title }
                       - { label: Подзаголовок, name: lead, widget: text }
+                      - { label: Подзаголовок на телефоне (короткий), name: leadShort }
                       - { label: Текст главной кнопки, name: cta }
                       - { label: 'Преимущества («Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
               - { label: Аудитория по умолчанию, name: defaultSegment, widget: select, options: [{ label: Для компании, value: corp }, { label: Для себя, value: private }] }
@@ -246,7 +248,7 @@ collections:
             widget: list
             summary: '{{fields.client}}'
             fields:
-              - { label: Черновик (показать метку), name: draft, widget: boolean, default: false }
+              - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Тип, name: type, widget: select, options: [{ label: Корпоратив, value: corp }, { label: Частное событие, value: private }, { label: С агентством, value: agency }] }
               - { label: Подпись типа, name: typeLabel }
               - { label: Клиент, name: client }
@@ -260,7 +262,7 @@ collections:
             widget: list
             summary: '{{fields.name}}'
             fields:
-              - { label: Черновик, name: draft, widget: boolean, default: false }
+              - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Текст, name: text, widget: text }
               - { label: Имя, name: name }
               - { label: Должность и компания, name: role }

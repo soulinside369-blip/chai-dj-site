@@ -1,11 +1,12 @@
 ---
 import Photo from './Photo.astro';
 import { cases, isStub } from '../lib/data';
-interface Props { limit?: number; id?: string }
-const { limit = 99, id } = Astro.props;
+interface Props { limit?: number; id?: string; onlyReal?: boolean }
+const { limit = 99, id, onlyReal = false } = Astro.props;
+const list = (onlyReal ? cases.filter((c) => !c.draft) : cases).slice(0, limit);
 ---
 <div class="cards3" id={id}>
-  {cases.slice(0, limit).map((c, i) => (
+  {list.map((c, i) => (
     <article class="case rv" data-type={c.type} style={`--d:${(i % 3) * 0.08}s`}>
       <Photo src={c.photo} alt={isStub(c.client) ? 'Фото события' : `${c.client}: фото события`} need="кадр с события — от заказчика" />
       <p class="eyebrow">{c.typeLabel} · <span class={isStub(c.guests) ? 'stub' : ''}>{c.guests}</span></p>

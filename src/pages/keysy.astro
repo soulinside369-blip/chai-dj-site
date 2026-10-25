@@ -3,18 +3,31 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
-import { url } from '../lib/data';
+import { cases, reviews, url, links } from '../lib/data';
+const realCases = cases.filter((c) => !c.draft);
+const realReviews = reviews.filter((r) => !r.draft).length > 0;
+const types = [...new Set(realCases.map((c) => c.type))];
+const labels: Record<string, string> = { corp: 'Корпоративы', private: 'Частные события', agency: 'С агентствами' };
 ---
 <Base title="Кейсы: корпоративы и частные события" description="Как проходят наши вечера: корпоративы, частные праздники и проекты с ивент-агентствами в Екатеринбурге.">
-  <PageHero title="Кейсы" eyebrow="Доказательства" lead="Корпоративы, частные вечера и проекты с ивент-агентствами." crumbs={[{ label: 'Кейсы' }]}>
-    <div class="chips rv" role="group" aria-label="Фильтр по типу события" data-filter="#caseGrid" style="--d:.4s">
-      <button class="chip" aria-pressed="true" data-f="all">Все</button>
-      <button class="chip" aria-pressed="false" data-f="corp">Корпоративы</button>
-      <button class="chip" aria-pressed="false" data-f="private">Частные события</button>
-      <button class="chip" aria-pressed="false" data-f="agency">С агентствами</button>
-    </div>
+  <PageHero title="Кейсы" eyebrow="Где мы уже были" lead="Корпоративы, частные вечера и проекты с ивент-агентствами." crumbs={[{ label: 'Кейсы' }]}>
+    {types.length > 1 && (
+      <div class="chips" role="group" aria-label="Фильтр по типу события" data-filter="#caseGrid">
+        <button class="chip" aria-pressed="true" data-f="all">Все</button>
+        {types.map((t) => <button class="chip" aria-pressed="false" data-f={t}>{labels[t] ?? t}</button>)}
+      </div>
+    )}
   </PageHero>
-  <section class="sec tone-coal" data-htone="coal"><div class="wrap"><Cases id="caseGrid" /></div></section>
-  <section class="sec tone-coal2" data-htone="coal"><div class="wrap"><div class="head"><p class="eyebrow">Отзывы</p><h2 data-split>Что говорят заказчики</h2></div><Reviews /></div></section>
-  <section class="sec tight tone-coal" data-htone="coal"><div class="wrap head-row" style="margin:0"><h2 data-split>Хотите так же?</h2><a class="btn brass" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a></div></section>
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      {realCases.length > 0 ? <Cases id="caseGrid" onlyReal /> : (
+        <div class="empty-state">
+          <p class="h3 display">Первые истории готовим к публикации</p>
+          <p class="muted">Кейсы выходят только с согласия клиентов. А пока можно посчитать свой вечер или спросить нас о похожих мероприятиях — расскажем лично.</p>
+          <div class="row"><a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Посчитать вечер</a><a class="btn ghost" href={links.telegram} data-goal="click_telegram">Спросить в Telegram</a></div>
+        </div>
+      )}
+    </div>
+  </section>
+  {realReviews && <section class="sec tone-coal2" data-htone="coal"><div class="wrap"><div class="head"><p class="eyebrow">Отзывы</p><h2>Что говорят заказчики</h2></div><Reviews onlyReal /></div></section>}
 </Base>

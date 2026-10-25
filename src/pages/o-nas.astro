@@ -2,34 +2,31 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
 import { site, isStub } from '../lib/data';
 const a = site.about;
+const people = a.people.filter((p) => !isStub(p.name));
 ---
 <Base title="О нас: чайный мастер и DJ" description={a.lead}>
   <PageHero title={a.title} eyebrow="О нас" lead={a.lead} crumbs={[{ label: 'О нас' }]} />
-  <section class="sec tone-rice" data-htone="rice" style="padding-top:0">
-    <div class="wrap split">
-      {a.people.map((p, i) => (
-        <article class="rv" style={`display:grid;gap:18px;--d:${i * .1}s`}>
-          <Photo src={p.photo} alt={`${p.role}${isStub(p.name) ? '' : ': ' + p.name}`} need="портрет — от заказчика" style="aspect-ratio:4/5;max-width:100%" />
-          <p class="eyebrow">{p.role}</p>
-          <h2 class={isStub(p.name) ? 'stub' : ''} style="justify-self:start">{p.name}</h2>
-          <p class={`lead ${isStub(p.text) ? 'stub' : ''}`}>{p.text}</p>
-        </article>
-      ))}
-    </div>
-  </section>
+
+  {people.length > 0 && (
+    <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(40px,6vw,72px)">
+      <div class="wrap people">
+        {people.map((p) => (
+          <article class="person">
+            {p.photo ? <Photo src={p.photo} alt={`${p.role}: ${p.name}`} class="person-photo" /> : <span class="person-ico" aria-hidden="true"><Icon name={/DJ/.test(p.role) ? 'dj' : 'tea'} /></span>}
+            <div><p class="k">{p.role}</p><h2 class="h3">{p.name}</h2>{!isStub(p.text) && <p class="muted">{p.text}</p>}</div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Принципы</p><h2 data-split>Как мы работаем</h2></div>
-      <div class="grid4">{a.principles.map((p, i) => <article class="tile rv" style={`--d:${i * .07}s`}><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
-    </div>
-  </section>
-  <section class="sec tone-coal2" data-htone="coal">
-    <div class="wrap gallery">
-      <Photo alt="Команда на монтаже" need="от заказчика" class="rv" />
-      <Photo alt="Площадка до" need="от заказчика" class="rv" />
-      <Photo alt="Площадка после" need="от заказчика" class="rv" />
+      <div class="head"><p class="eyebrow">Принципы</p><h2>Как мы работаем</h2></div>
+      <div class="grid4">{a.principles.map((p) => <article class="tile"><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
     </div>
   </section>
 </Base>

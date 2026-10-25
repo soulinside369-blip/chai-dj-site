@@ -16,17 +16,37 @@ document.addEventListener('click', (e) => {
   if (el) goal(el.dataset.goal!);
 });
 
-/* ---- Ссылки «Рассчитать»: если калькулятор на этой странице — едем к нему ---- */
+/* ---- Расчёт: на главной — конструктор, иначе — шторка с калькулятором ---- */
+const drawer = document.getElementById('calcDrawer') as HTMLDialogElement | null;
+const calcForm = document.getElementById('calc');
+let lastFocus: HTMLElement | null = null;
+export function openCalc(detail?: { fmt?: string; guests?: number; cert?: string }) {
+  if (!drawer || !calcForm) return;
+  lastFocus = document.activeElement as HTMLElement;
+  if (detail?.guests) calcForm.dispatchEvent(new CustomEvent('calc:prefill', { detail }));
+  else if (detail?.fmt) calcForm.dispatchEvent(new CustomEvent('calc:format', { detail: detail.fmt }));
+  if (detail?.cert) { const sel = calcForm.querySelector<HTMLSelectElement>('#c-cert'); if (sel) { sel.value = detail.cert; sel.dispatchEvent(new Event('change', { bubbles: true })); } }
+  drawer.showModal();
+  document.documentElement.classList.add('drawer-open');
+  goal('calc_open');
+}
+(window as any).__openCalc = openCalc;
+drawer?.addEventListener('close', () => { document.documentElement.classList.remove('drawer-open'); lastFocus?.focus?.(); });
+drawer?.addEventListener('click', (e) => { if (e.target === drawer || (e.target as HTMLElement).closest('[data-drawer-close]')) drawer.close(); });
+
 document.addEventListener('click', (e) => {
   const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('[data-calc-link]');
   if (!a) return;
-  const calc = document.getElementById('calc');
-  if (!calc) return;
   e.preventDefault();
   closeMenu();
   const fmt = a.dataset.fmt;
-  if (fmt) calc.dispatchEvent(new CustomEvent('calc:format', { detail: fmt }));
-  calc.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  const cfg = document.querySelector<HTMLElement>('[data-cfg]');
+  if (cfg && (!fmt || ['tea', 'teadj', 'dj'].includes(fmt))) {
+    if (fmt) cfg.dispatchEvent(new CustomEvent('cfg:set', { detail: fmt }));
+    cfg.querySelector('.cfg-panel')!.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    return;
+  }
+  openCalc({ fmt, cert: a.dataset.cert });
 });
 
 /* ---- Шапка: тон по секции под ней, прячется при прокрутке вниз ---- */
@@ -109,7 +129,7 @@ document.querySelectorAll<HTMLElement>('.steps[data-progress]').forEach((ol) => 
 
 /* ---- Панель «Рассчитать · Telegram» — после первого экрана ---- */
 const dock = document.getElementById('dock');
-const first = document.querySelector('.hero, .page-hero');
+const first = document.querySelector('.cfg-panel, .hero, .page-hero');
 if (dock && first) {
   new IntersectionObserver(([en]) => dock.classList.toggle('up', !en.isIntersecting), { rootMargin: '-100px 0px 0px 0px' }).observe(first);
 }

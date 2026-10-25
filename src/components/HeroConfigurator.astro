@@ -21,7 +21,8 @@ const data = {
       </div>
       <p class="eyebrow">{h.eyebrow}</p>
       <h1 data-seg-text="title">{seg.title}</h1>
-      <p class="lead" data-seg-text="lead">{seg.lead}</p>
+      <p class="lead lead-full" data-seg-text="lead">{seg.lead}</p>
+      <p class="lead lead-short" data-seg-text="leadShort">{seg.leadShort}</p>
       <ul class="usp" data-seg-usp>
         {seg.usp.map((u) => { const [b, ...r] = u.split(' — '); return <li><b>{b}</b>{r.join(' — ')}</li>; })}
       </ul>
