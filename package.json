@@ -10,7 +10,8 @@
     "check:calc": "node scripts/check-calc.mjs",
     "pdf": "node scripts/make-pdf.mjs",
     "cert": "node scripts/make-cert.mjs",
-    "og": "node scripts/make-og.mjs"
+    "og": "node scripts/make-og.mjs",
+    "sound": "node scripts/render-sound.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

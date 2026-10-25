@@ -8,3 +8,4 @@ public/api/private/*
 !public/api/private/.htaccess
 art/
 certs/
+sound-demo/
