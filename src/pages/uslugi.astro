@@ -1,0 +1,48 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FormatCards from '../components/FormatCards.astro';
+import Calculator from '../components/Calculator.astro';
+import { formats, calc } from '../lib/data';
+import { rub, num } from '../lib/price.js';
+const extras = [
+  ['Выезд за пределы Екатеринбурга', `${calc.perKm} ₽/км в обе стороны`],
+  ['Генератор, если нет 220 В', rub(calc.generator)],
+  ...formats.map((f) => [`${f.name}: гость сверх ${f.G}`, rub(f.a)]),
+  ...formats.filter((f) => f.b).map((f) => [`${f.name}: час сверх ${num(f.H)}`, rub(f.b)]),
+  [`Больше ${calc.individualOver} гостей`, 'индивидуальный расчёт'],
+];
+---
+<Base title="Форматы и цены" description="Чай + DJ, чайная церемония, DJ-сет, мастер-класс и сертификаты: что входит и сколько стоит. Екатеринбург и область.">
+  <PageHero title="Форматы и цены" eyebrow="Услуги" crumbs={[{ label: 'Услуги' }]} lead="Пять форматов: от камерного мастер-класса до вечера на 150 гостей. Цены для Екатеринбурга; выезд в область считается по километрам." />
+  <section class="sec tone-rice" data-htone="rice" style="padding-top:0"><div class="wrap"><FormatCards /></div></section>
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Сравнение</p><h2 data-split>Что входит в базовый пакет</h2></div>
+      <div class="tw rv"><table>
+        <thead><tr><th></th>{formats.map((f) => <th>{f.name}</th>)}</tr></thead>
+        <tbody>
+          <tr><td>Длительность</td>{formats.map((f) => <td class="nowrap">{f.duration}</td>)}</tr>
+          <tr><td>Гостей в базе</td>{formats.map((f) => <td class="nowrap">{f.guestsLabel}</td>)}</tr>
+          <tr><td>Что входит</td>{formats.map((f) => <td>{f.what.join(', ')}</td>)}</tr>
+          <tr><td>Цена</td>{formats.map((f) => <td class="nowrap"><b>от {rub(f.base)}</b></td>)}</tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Допуслуги и надбавки</p><h2 data-split>Сверх базового пакета</h2></div>
+      <div class="tw rv"><table><tbody>{extras.map((r) => <tr><td>{r[0]}</td><td class="nowrap">{r[1]}</td></tr>)}</tbody></table></div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Подобрать программу</p><h2 data-split>Ответьте на три вопроса — покажем цену</h2></div>
+      <Calculator />
+    </div>
+  </section>
+</Base>

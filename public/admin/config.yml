@@ -1,0 +1,313 @@
+# Админка «Чай + DJ» (Sveltia CMS, совместима с Decap CMS).
+# Каждое сохранение = коммит в GitHub → автоматическая пересборка сайта (1–2 минуты).
+backend:
+  name: github
+  repo: soulinside369-blip/chai-dj-site
+  branch: main
+  commit_messages:
+    update: 'Админка: {{collection}} — {{slug}}'
+
+locale: ru
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: main
+    label: Сайт
+    files:
+      - name: site
+        label: Тексты, контакты, сертификаты
+        file: src/data/site.json
+        fields:
+          - label: Бренд
+            name: brand
+            widget: object
+            fields:
+              - { label: Название, name: name }
+              - { label: Подпись, name: tagline }
+              - { label: Город, name: city }
+              - { label: Регион выезда, name: region }
+              - { label: 'Юрлицо для подвала (ИП/ООО, ИНН)', name: legal }
+              - { label: Реквизиты полностью, name: requisites, widget: text }
+          - label: Контакты
+            name: contacts
+            widget: object
+            hint: Пустое поле не показывается на сайте; кнопки мессенджеров ведут на страницу контактов.
+            fields:
+              - { label: 'Телефон для ссылки (+79991234567)', name: phone, required: false }
+              - { label: 'Телефон для показа (+7 999 123-45-67)', name: phoneDisplay }
+              - { label: 'Telegram (ник без @)', name: telegram, required: false }
+              - { label: 'MAX (ник или полная ссылка)', name: max, required: false }
+              - { label: 'WhatsApp (номер)', name: whatsapp, required: false }
+              - { label: Почта, name: email, required: false }
+          - label: Рабочее время
+            name: work
+            widget: object
+            fields:
+              - { label: С (час), name: from, widget: number, value_type: int }
+              - { label: До (час), name: to, widget: number, value_type: int }
+              - { label: 'Часовой пояс (UTC+)', name: tz, widget: number, value_type: int }
+              - { label: Подпись пояса, name: tzLabel }
+              - { label: Срок ответа в рабочее время (мин), name: replyMinutes, widget: number, value_type: int }
+              - { label: Ночные заявки — ответ до (час), name: nightReplyBy, widget: number, value_type: int }
+              - { label: Текст для сайта, name: text }
+          - label: Первый экран
+            name: hero
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow }
+              - { label: Заголовок А, name: titleA }
+              - { label: Заголовок Б, name: titleB }
+              - { label: Какой заголовок показывать, name: variant, widget: select, options: [A, B] }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - { label: Подпись к цене, name: priceLabel }
+              - { label: 'Постер (фото фона)', name: poster, widget: image, required: false }
+              - { label: 'Фоновое видео 6–8 с, mp4 до 1,5 МБ', name: video, widget: file, required: false }
+              - { label: 'Преимущества (формат: «Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
+          - label: Сцена «Как проходит вечер»
+            name: evening
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - label: Акты (ровно 3)
+                name: acts
+                widget: list
+                min: 3
+                max: 3
+                fields:
+                  - { label: 'Время (ЧЧ:ММ)', name: time }
+                  - { label: Название, name: title }
+                  - { label: Текст, name: text, widget: text }
+              - { label: 'Тизер 30–45 с (mp4)', name: teaser, widget: file, required: false }
+          - label: Как это работает
+            name: steps
+            widget: list
+            fields:
+              - { label: Шаг, name: title }
+              - { label: Пояснение, name: text, widget: text }
+          - label: О нас
+            name: about
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - label: Люди
+                name: people
+                widget: list
+                fields:
+                  - { label: Роль, name: role }
+                  - { label: Имя, name: name }
+                  - { label: О человеке, name: text, widget: text }
+                  - { label: Портрет, name: photo, widget: image, required: false }
+              - label: Принципы
+                name: principles
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title }
+                  - { label: Текст, name: text, widget: text }
+          - label: Сертификаты
+            name: certificates
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - { label: Срок действия, name: validity }
+              - label: Номиналы
+                name: nominals
+                widget: list
+                fields:
+                  - { label: 'Название («5 000 ₽» или «Чай + DJ»)', name: label }
+                  - { label: Сумма, name: value, widget: number, value_type: int }
+                  - { label: Пояснение, name: note }
+              - label: Как вручить
+                name: steps
+                widget: list
+                fields:
+                  - { label: Шаг, name: title }
+                  - { label: Пояснение, name: text, widget: text }
+              - { label: Перенос и возврат, name: terms, widget: text }
+          - label: Условия
+            name: terms
+            widget: object
+            fields:
+              - { label: Предоплата, name: prepay }
+              - { label: Отмена, name: cancel, widget: text }
+          - label: Аналитика
+            name: analytics
+            widget: object
+            fields:
+              - { label: Номер счётчика Яндекс Метрики, name: metrikaId, required: false }
+          - label: SEO главной
+            name: seo
+            widget: object
+            fields:
+              - { label: Title, name: title }
+              - { label: Description, name: description, widget: text }
+
+      - name: formats
+        label: Форматы и цены
+        file: src/data/formats.json
+        fields:
+          - label: Форматы
+            name: items
+            widget: list
+            allow_add: false
+            summary: '{{fields.name}} — от {{fields.base}} ₽'
+            fields:
+              - { label: Ключ (не менять), name: key, widget: hidden }
+              - { label: Адрес страницы (не менять), name: slug, widget: hidden }
+              - { label: Название, name: name }
+              - { label: Метка на карточке, name: badge }
+              - { label: Длительность (текст), name: duration }
+              - { label: Гости (текст), name: guestsLabel }
+              - { label: Строка на карточке, name: line }
+              - { label: Заголовок страницы, name: h1 }
+              - { label: Подзаголовок страницы, name: lead, widget: text }
+              - { label: SEO title, name: seoTitle }
+              - { label: SEO description, name: seoDescription, widget: text }
+              - { label: 'База, ₽', name: base, widget: number, value_type: int }
+              - { label: 'G — гостей в базе', name: G, widget: number, value_type: int }
+              - { label: 'a — ₽ за гостя сверх', name: a, widget: number, value_type: int }
+              - { label: 'H — часов в базе', name: H, widget: number, value_type: float, step: 0.5 }
+              - { label: 'b — ₽ за час сверх (0 — длительность фиксированная)', name: b, widget: number, value_type: int }
+              - { label: Максимум часов в калькуляторе, name: maxH, widget: number, value_type: float, step: 0.5 }
+              - { label: 'Максимум гостей (0 — без ограничения)', name: maxGuests, widget: number, value_type: int }
+              - { label: Что нужно от площадки, name: venue, widget: text }
+              - { label: Что входит, name: what, widget: list, field: { label: Пункт, name: item } }
+              - label: Программа по времени
+                name: program
+                widget: list
+                fields:
+                  - { label: Время, name: time }
+                  - { label: Этап, name: title }
+                  - { label: Пояснение, name: text }
+
+      - name: calc
+        label: Калькулятор — надбавки и города
+        file: src/data/calc.json
+        fields:
+          - { label: '₽ за км (в одну сторону; считается × 2)', name: perKm, widget: number, value_type: int }
+          - { label: 'Генератор, ₽', name: generator, widget: number, value_type: int }
+          - { label: Индивидуальный расчёт, если гостей больше, name: individualOver, widget: number, value_type: int }
+          - { label: 'Вилка, ± %', name: spreadPercent, widget: number, value_type: int }
+          - { label: Бронь не раньше чем через (дней), name: minDaysAhead, widget: number, value_type: int }
+          - { label: Минимальный сертификат, name: certMin, widget: number, value_type: int }
+          - label: Населённые пункты
+            name: towns
+            widget: list
+            summary: '{{fields.name}} — {{fields.km}} км'
+            fields:
+              - { label: Название, name: name }
+              - { label: 'Км от Екатеринбурга (0 — без доплаты)', name: km, widget: number, value_type: int }
+
+      - name: cases
+        label: Кейсы, отзывы, логотипы
+        file: src/data/cases.json
+        fields:
+          - label: Кейсы
+            name: cases
+            widget: list
+            summary: '{{fields.client}}'
+            fields:
+              - { label: Черновик (показать метку), name: draft, widget: boolean, default: false }
+              - { label: Тип, name: type, widget: select, options: [{ label: Корпоратив, value: corp }, { label: Частное событие, value: private }, { label: С агентством, value: agency }] }
+              - { label: Подпись типа, name: typeLabel }
+              - { label: Клиент, name: client }
+              - { label: Гостей, name: guests }
+              - { label: Задача, name: task, widget: text }
+              - { label: Что сделали, name: solution, widget: text }
+              - { label: Результат (только факты), name: result, widget: text }
+              - { label: Фото, name: photo, widget: image, required: false }
+          - label: Отзывы (только с согласия клиента)
+            name: reviews
+            widget: list
+            summary: '{{fields.name}}'
+            fields:
+              - { label: Черновик, name: draft, widget: boolean, default: false }
+              - { label: Текст, name: text, widget: text }
+              - { label: Имя, name: name }
+              - { label: Должность и компания, name: role }
+              - { label: Источник (Яндекс Карты, 2ГИС), name: source, required: false }
+              - { label: Ссылка на отзыв, name: url, required: false }
+              - { label: Фото, name: photo, widget: image, required: false }
+          - label: Логотипы клиентов (только с согласия)
+            name: logos
+            widget: list
+            fields:
+              - { label: Компания, name: name }
+              - { label: Логотип, name: image, widget: image }
+
+      - name: faq
+        label: Вопросы и ответы
+        file: src/data/faq.json
+        fields:
+          - label: Группы
+            name: groups
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { label: Группа, name: title }
+              - label: Вопросы
+                name: items
+                widget: list
+                summary: '{{fields.q}}'
+                fields:
+                  - { label: Вопрос, name: q }
+                  - { label: Ответ, name: a, widget: text }
+                  - { label: Показывать на главной, name: top, widget: boolean, default: false }
+
+      - name: equipment
+        label: Оборудование и чайная карта
+        file: src/data/equipment.json
+        fields:
+          - label: Комплектация
+            name: kit
+            widget: list
+            summary: '{{fields.what}}'
+            fields:
+              - { label: Что, name: what }
+              - { label: До 50 гостей, name: small, widget: text }
+              - { label: 50–150 гостей, name: large, widget: text }
+          - label: Требования к площадке
+            name: venue
+            widget: list
+            summary: '{{fields.what}}'
+            fields:
+              - { label: Требование, name: what }
+              - { label: До 50 гостей, name: small, widget: text }
+              - { label: 50–150 гостей, name: large, widget: text }
+          - label: Чайная карта
+            name: teas
+            widget: list
+            summary: '{{fields.kind}} — {{fields.name}}'
+            fields:
+              - { label: Вид, name: kind }
+              - { label: Сорт, name: name }
+              - { label: Описание, name: note }
+          - { label: Добавка для больших событий, name: teasLarge, widget: text }
+          - { label: PDF техтребований для площадки, name: venuePdf, widget: file, required: false }
+
+      - name: legal
+        label: Юридические тексты
+        file: src/data/legal.json
+        fields:
+          - { label: Дата редакции, name: updated }
+          - { label: Служебная пометка, name: note, widget: hidden }
+          - label: Политика ПДн
+            name: privacy
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - { label: Разделы, name: sections, widget: list, fields: [{ label: Заголовок, name: title, required: false }, { label: Текст, name: text, widget: text }] }
+          - label: Согласие
+            name: consent
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - { label: Разделы, name: sections, widget: list, fields: [{ label: Заголовок, name: title, required: false }, { label: Текст, name: text, widget: text }] }
+          - label: Оферта
+            name: oferta
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
+              - { label: Разделы, name: sections, widget: list, fields: [{ label: Заголовок, name: title, required: false }, { label: Текст, name: text, widget: text }] }

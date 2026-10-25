@@ -1,0 +1,13 @@
+---
+import { faq } from '../lib/data';
+interface Props { top?: boolean }
+const { top = false } = Astro.props;
+---
+<div class="faq">
+  {top
+    ? faq.groups.flatMap((g) => g.items).filter((i) => i.top).slice(0, 5).map((i) => <details class="rv"><summary>{i.q}</summary><p>{i.a}</p></details>)
+    : faq.groups.map((g) => (<>
+        <h3>{g.title}</h3>
+        {g.items.map((i) => <details><summary>{i.q}</summary><p>{i.a}</p></details>)}
+      </>))}
+</div>

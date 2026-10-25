@@ -1,0 +1,5 @@
+# Закрываем настройки и служебные файлы
+<FilesMatch "^(config(\.example)?\.php|.*\.csv|.*\.txt)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes

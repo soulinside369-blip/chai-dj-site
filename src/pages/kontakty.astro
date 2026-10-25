@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import QuickForm from '../components/QuickForm.astro';
+import Zone from '../components/Zone.astro';
+import { site, links, calc, isStub } from '../lib/data';
+import { rub } from '../lib/price.js';
+const c = site.contacts;
+const rows = [
+  ['Телефон', c.phone ? c.phoneDisplay : '', links.phone, 'click_phone'],
+  ['Telegram', c.telegram, c.telegram ? links.telegram : '', 'click_telegram'],
+  ['MAX', c.max, c.max ? links.max : '', 'click_max'],
+  ['WhatsApp', c.whatsapp, links.whatsapp, 'click_whatsapp'],
+  ['Почта', c.email, c.email ? `mailto:${c.email}` : '', 'click_email'],
+].filter((r, i) => r[1] || i < 3);
+---
+<Base title="Контакты" description={`Телефон, Telegram и MAX. ${site.work.text}. Екатеринбург без доплаты за выезд.`}>
+  <PageHero title="Обсудим ваш вечер" eyebrow="Контакты" lead={`${site.work.text}. Отвечаем за ${site.work.replyMinutes} минут; ночные заявки — до ${site.work.nightReplyBy}:00.`} crumbs={[{ label: 'Контакты' }]}>
+    <div class="row rv" style="--d:.4s">
+      <a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>
+      <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>
+    </div>
+  </PageHero>
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap split">
+      <div style="display:grid;gap:36px;align-content:start">
+        <ul class="lines" style="font-size:17px">
+          {rows.map((r) => <li><span>{r[0]}</span>{r[2] ? <a class="link" href={r[2]} data-goal={r[3]}>{r[1]}</a> : <span class="stub">[от заказчика]</span>}</li>)}
+        </ul>
+        <div style="display:grid;gap:8px"><p class="eyebrow">Реквизиты</p><p class={isStub(site.brand.requisites) ? 'stub' : 'muted'} style="justify-self:start">{site.brand.requisites}</p></div>
+      </div>
+      <div class="calc" style="grid-template-columns:1fr"><div class="calc-main">
+        <h2 style="font-size:clamp(32px,3vw,44px)">Быстрая заявка</h2>
+        <p class="muted" style="margin-top:-16px">Имя и контакт — остальное уточним сами.</p>
+        <QuickForm />
+      </div></div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap split" style="align-items:center">
+      <div class="head" style="margin:0"><p class="eyebrow">Зона выезда</p><h2 data-split>Екатеринбург — без доплаты</h2><p class="lead">{`За городом — ${calc.perKm} ₽ за километр в обе стороны. Арамиль, 25 км: +${rub(25 * 2 * calc.perKm)}.`}</p></div>
+      <Zone />
+    </div>
+  </section>
+</Base>

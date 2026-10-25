@@ -1,0 +1,10 @@
+---
+import ContactFields from './ContactFields.astro';
+import { site } from '../lib/data';
+---
+<form data-quick novalidate data-work={JSON.stringify(site.work)}>
+  <ContactFields kind="quick" submitLabel="Отправить заявку" />
+</form>
+<script>
+  import '../scripts/forms';
+</script>

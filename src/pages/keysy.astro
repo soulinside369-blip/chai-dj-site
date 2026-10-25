@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Cases from '../components/Cases.astro';
+import Reviews from '../components/Reviews.astro';
+import { url } from '../lib/data';
+---
+<Base title="Кейсы: корпоративы и частные события" description="Как проходят наши вечера: корпоративы, частные праздники и проекты с ивент-агентствами в Екатеринбурге.">
+  <PageHero title="Кейсы" eyebrow="Доказательства" lead="Корпоративы, частные вечера и проекты с ивент-агентствами." crumbs={[{ label: 'Кейсы' }]}>
+    <div class="chips rv" role="group" aria-label="Фильтр по типу события" data-filter="#caseGrid" style="--d:.4s">
+      <button class="chip" aria-pressed="true" data-f="all">Все</button>
+      <button class="chip" aria-pressed="false" data-f="corp">Корпоративы</button>
+      <button class="chip" aria-pressed="false" data-f="private">Частные события</button>
+      <button class="chip" aria-pressed="false" data-f="agency">С агентствами</button>
+    </div>
+  </PageHero>
+  <section class="sec tone-coal" data-htone="coal"><div class="wrap"><Cases id="caseGrid" /></div></section>
+  <section class="sec tone-coal2" data-htone="coal"><div class="wrap"><div class="head"><p class="eyebrow">Отзывы</p><h2 data-split>Что говорят заказчики</h2></div><Reviews /></div></section>
+  <section class="sec tight tone-coal" data-htone="coal"><div class="wrap head-row" style="margin:0"><h2 data-split>Хотите так же?</h2><a class="btn brass" href={url('#calc')} data-calc-link data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a></div></section>
+</Base>

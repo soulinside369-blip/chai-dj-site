@@ -1,0 +1,21 @@
+---
+import Photo from './Photo.astro';
+import { cases, isStub } from '../lib/data';
+interface Props { limit?: number; id?: string }
+const { limit = 99, id } = Astro.props;
+---
+<div class="cards3" id={id}>
+  {cases.slice(0, limit).map((c, i) => (
+    <article class="case rv" data-type={c.type} style={`--d:${(i % 3) * 0.08}s`}>
+      <Photo src={c.photo} alt={isStub(c.client) ? 'Фото события' : `${c.client}: фото события`} need="кадр с события — от заказчика" />
+      <p class="eyebrow">{c.typeLabel} · <span class={isStub(c.guests) ? 'stub' : ''}>{c.guests}</span></p>
+      <h3 class={isStub(c.client) ? 'stub' : ''} style="justify-self:start">{c.client}</h3>
+      {c.draft && <span class="draft-mark">Черновик — заполните в админке</span>}
+      <dl>
+        <div><dt>Задача</dt><dd>{c.task}</dd></div>
+        <div><dt>Сделали</dt><dd>{c.solution}</dd></div>
+        <div><dt>Результат</dt><dd>{c.result}</dd></div>
+      </dl>
+    </article>
+  ))}
+</div>

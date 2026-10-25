@@ -1,0 +1,106 @@
+---
+// Калькулятор: 4 шага, вилка до контактов (разделы 6–7 ТЗ). Коэффициенты — из calc.json и formats.json (админка).
+import ContactFields from './ContactFields.astro';
+import { formats, calc, site } from '../lib/data';
+import { rub } from '../lib/price.js';
+interface Props { preset?: string }
+const { preset = '' } = Astro.props;
+const data = {
+  formats: formats.map(({ key, name, base, G, a, H, b, maxH, maxGuests, what }) => ({ key, name, base, G, a, H, b, maxH, maxGuests, what })),
+  calc,
+  cert: site.certificates.nominals,
+  work: site.work,
+  preset,
+};
+---
+<form class="calc" id="calc" novalidate data-calc>
+  <script type="application/json" data-calc-json set:html={JSON.stringify(data)} />
+  <div class="calc-main">
+    <ol class="prog" aria-label="Шаги расчёта">
+      <li class="on">1<span> · Формат</span></li><li>2<span> · Дата и место</span></li><li>3<span> · Гости</span></li><li>4<span> · Контакты</span></li>
+    </ol>
+
+    <fieldset class="cstep" data-step="1">
+      <legend>Какой вечер планируете?</legend>
+      <div class="opts">
+        {formats.map((f) => (
+          <label class="opt"><input type="radio" name="fmt" value={f.key} checked={preset === f.key} /><span>{f.name}<small>{f.duration}, {f.guestsLabel} · от {rub(f.base)}</small></span></label>
+        ))}
+        <label class="opt"><input type="radio" name="fmt" value="cert" checked={preset === 'cert'} /><span>Сертификат<small>в подарок, {site.certificates.validity}</small></span></label>
+      </div>
+      <p class="errmsg" data-err="fmt">Выберите формат — без него не посчитать</p>
+    </fieldset>
+
+    <fieldset class="cstep" data-step="2" hidden>
+      <legend>Когда и где?</legend>
+      <div class="two">
+        <div class="field" data-f="date">
+          <label for="c-date">Дата события</label>
+          <input class="input" type="date" id="c-date" name="date" />
+          <small>Не раньше чем через {calc.minDaysAhead} дня — нужно время на подготовку</small>
+          <span class="errmsg">Выберите дату не раньше чем через {calc.minDaysAhead} дня</span>
+        </div>
+        <div class="field">
+          <label for="c-town">Населённый пункт</label>
+          <select class="input" id="c-town" name="town">
+            {calc.towns.map((t, i) => <option value={i}>{t.name}{t.km ? ` · ${t.km} км` : ' · без доплаты'}</option>)}
+            <option value="other">Другой пункт</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" data-f="km" hidden>
+        <label for="c-km">Сколько километров от Екатеринбурга в одну сторону?</label>
+        <input class="input" type="number" id="c-km" name="km" min="1" max="500" inputmode="numeric" value="30" />
+        <span class="errmsg">Укажите расстояние от 1 до 500 км</span>
+      </div>
+    </fieldset>
+
+    <fieldset class="cstep" data-step="3" hidden>
+      <legend>Гости и площадка</legend>
+      <div class="two">
+        <div class="field" data-f="guests">
+          <label for="c-guests">Сколько гостей?</label>
+          <input class="input" type="number" id="c-guests" name="guests" min="1" max="500" inputmode="numeric" value="30" />
+          <small data-guests-hint></small>
+          <span class="errmsg">Укажите число гостей — от 1</span>
+        </div>
+        <div class="field">
+          <label for="c-hours">Длительность</label>
+          <select class="input" id="c-hours" name="hours"></select>
+        </div>
+      </div>
+      <div style="display:grid;gap:10px"><span class="legend" id="l-place">Где пройдёт событие?</span>
+        <div class="seg" role="group" aria-labelledby="l-place"><button type="button" class="chip" data-place="in" aria-pressed="true">В помещении</button><button type="button" class="chip" data-place="out" aria-pressed="false">На улице</button></div></div>
+      <div style="display:grid;gap:10px"><span class="legend" id="l-power">Есть розетка 220 В рядом с местом?</span>
+        <div class="seg" role="group" aria-labelledby="l-power"><button type="button" class="chip" data-power="yes" aria-pressed="true">Да</button><button type="button" class="chip" data-power="no" aria-pressed="false">Нет</button><button type="button" class="chip" data-power="unknown" aria-pressed="false">Не знаю</button></div></div>
+    </fieldset>
+
+    <fieldset class="cstep" data-step="4" hidden>
+      <legend data-l4>Куда прислать точный расчёт?</legend>
+      <div class="field" data-f="cert" hidden>
+        <label for="c-cert">Номинал сертификата</label>
+        <select class="input" id="c-cert" name="cert">
+          {site.certificates.nominals.map((n, i) => <option value={n.value} selected={i === site.certificates.nominals.length - 1}>{n.label}{/₽/.test(n.label) ? '' : ` — ${rub(n.value)}`}</option>)}
+        </select>
+      </div>
+      <ContactFields kind="calc" />
+    </fieldset>
+
+    <div class="calc-nav">
+      <button type="button" class="btn ghost sm" data-back hidden>← Назад</button>
+      <button type="button" class="btn next" data-next>Дальше <span class="arr">→</span></button>
+    </div>
+  </div>
+
+  <aside class="calc-side" aria-live="polite">
+    <p class="eyebrow" data-sum-label>Примерная стоимость</p>
+    <p class="total" data-total>—</p>
+    <p class="muted" style="font-size:14px" data-note>Выберите формат — покажем вилку</p>
+    <ul class="lines" data-lines></ul>
+    <p class="warn" data-warn hidden></p>
+  </aside>
+</form>
+
+<script>
+  import '../scripts/calc';
+</script>

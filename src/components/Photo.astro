@@ -1,0 +1,12 @@
+---
+// Фото из админки; пока его нет — тёплая заглушка с подписью, что за кадр нужен (раздел 9 ТЗ)
+import { url } from '../lib/data';
+interface Props { src?: string; alt: string; need?: string; class?: string; style?: string; eager?: boolean }
+const { src, alt, need, class: cls = '', style, eager = false } = Astro.props;
+const href = src ? (src.startsWith('http') ? src : url(src)) : '';
+---
+{href ? (
+  <figure class={`photo ${cls}`} style={style}><img src={href} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" /></figure>
+) : (
+  <figure class={`photo empty ${cls}`} style={style} role="img" aria-label={alt}><span><b>{alt}</b>{need}</span></figure>
+)}

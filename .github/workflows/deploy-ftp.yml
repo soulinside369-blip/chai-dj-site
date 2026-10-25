@@ -1,0 +1,32 @@
+name: Выкладка на хостинг (FTP)
+# Включается, когда в Settings → Secrets заданы FTP_SERVER, FTP_USERNAME, FTP_PASSWORD и переменная SITE_URL (https://ваш-домен.ru).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  deploy:
+    if: ${{ vars.SITE_URL != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check:calc
+      - run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          BASE_PATH: /
+      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ${{ vars.FTP_DIR || './' }}
+          exclude: |
+            **/api/config.php
+            **/api/private/**

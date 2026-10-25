@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/data';
+---
+<Base title="Страница не найдена" tone="coal" noindex>
+  <section class="page-hero tone-coal" data-htone="coal" style="min-height:100svh;display:grid;align-items:center">
+    <div class="wrap">
+      <p class="thx-num">404</p>
+      <h1 style="font-size:clamp(40px,6vw,80px)">Чай остыл, страницы нет</h1>
+      <p class="lead">Возможно, ссылка устарела. Начните с главной или посчитайте свой вечер.</p>
+      <div class="row"><a class="btn brass" href={url('')}>На главную</a><a class="btn ghost" href={url('#calc')}>Рассчитать стоимость</a></div>
+    </div>
+  </section>
+</Base>

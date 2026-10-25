@@ -1,0 +1,14 @@
+---
+import { url } from '../lib/data';
+interface Props { title: string; lead?: string; eyebrow?: string; crumbs?: { href?: string; label: string }[] }
+const { title, lead, eyebrow, crumbs = [] } = Astro.props;
+---
+<section class="page-hero tone-rice" data-htone="rice">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки"><a href={url('')}>Главная</a>{crumbs.map((c) => <><span aria-hidden="true">/</span>{c.href ? <a href={url(c.href)}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</>)}</nav>
+    {eyebrow && <p class="eyebrow rv">{eyebrow}</p>}
+    <h1 data-split style="max-width:16ch">{title}</h1>
+    {lead && <p class="lead rv" style="--d:.4s">{lead}</p>}
+    <slot />
+  </div>
+</section>

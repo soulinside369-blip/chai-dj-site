@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from './PageHero.astro';
+import legal from '../data/legal.json';
+interface Props { doc: 'privacy' | 'consent' | 'oferta' }
+const d = legal[Astro.props.doc];
+---
+<Base title={d.title} description={`${d.title} — ${legal.updated}`}>
+  <PageHero title={d.title} eyebrow={`Редакция от ${legal.updated}`} crumbs={[{ label: d.title }]} />
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap legal">
+      {d.sections.map((s) => (<>
+        {s.title && <h2>{s.title}</h2>}
+        {s.text.split('\n').map((p) => <p>{p}</p>)}
+      </>))}
+    </div>
+  </section>
+</Base>

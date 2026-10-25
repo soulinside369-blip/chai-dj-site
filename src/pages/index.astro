@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Gaiwan from '../components/Gaiwan.astro';
+import Evening from '../components/Evening.astro';
+import FormatCards from '../components/FormatCards.astro';
+import Photo from '../components/Photo.astro';
+import Cases from '../components/Cases.astro';
+import Reviews from '../components/Reviews.astro';
+import Calculator from '../components/Calculator.astro';
+import FaqList from '../components/FaqList.astro';
+import { site, url, fmtByKey } from '../lib/data';
+import { rub } from '../lib/price.js';
+
+const h = site.hero;
+const title = h.variant === 'B' ? h.titleB : h.titleA;
+const main = fmtByKey('teadj');
+const marquee = ['Бай Му Дань', 'Бас', 'Гайвань', 'Тёплый свет', 'Те Гуань Инь', 'Танцпол', 'Шу пуэр', 'Микрофон ведущему', 'Чабань', 'Финальный трек'];
+---
+<Base tone="rice" faqLd>
+  <!-- 1. Первый экран -->
+  <section class="hero tone-rice" data-htone="rice">
+    {h.poster && <Photo src={h.poster} alt="Чайная церемония и DJ-сет" class="hero-bg" eager />}
+    {h.video && <video class="photo hero-bg" muted loop playsinline preload="none" data-src={url(h.video)} poster={h.poster ? url(h.poster) : undefined} aria-hidden="true"></video>}
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow rv">{h.eyebrow}</p>
+          <h1 data-split>{title}</h1>
+          <p class="lead rv" style="--d:.5s">{h.lead}</p>
+          <div class="row rv" style="--d:.65s">
+            <a class="btn" href="#calc" data-calc-link data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>
+            <a class="btn ghost" href={url('keysy/')}>Смотреть кейсы</a>
+          </div>
+        </div>
+        <div style="display:grid;gap:18px">
+          <Gaiwan />
+          <p class="price rv" style="--d:.8s;justify-self:end;text-align:right"><span class="muted" style="font-size:14px">{h.priceLabel}</span><b>от {rub(main.base)}</b></p>
+        </div>
+      </div>
+      <ul class="usp">
+        {h.usp.map((u, i) => { const [b, ...rest] = u.split(' — '); return <li class="rv" style={`--d:${0.8 + i * 0.08}s`}><b>{b}</b>{rest.join(' — ')}</li>; })}
+      </ul>
+    </div>
+  </section>
+
+  <div class="marquee tone-rice" data-htone="rice" aria-hidden="true">
+    <div class="marquee-track">{[0, 1].map(() => marquee.map((m) => <span>{m}</span>))}</div>
+  </div>
+
+  <!-- 2. Форматы -->
+  <section class="sec tone-rice" data-htone="rice" id="formats">
+    <div class="wrap">
+      <div class="head-row">
+        <div class="head"><p class="eyebrow">Форматы</p><h2 data-split>Выберите, каким будет вечер</h2></div>
+        <a class="btn ghost sm" href={url('uslugi/')}>Сравнить форматы</a>
+      </div>
+      <FormatCards />
+    </div>
+  </section>
+
+  <!-- 3. Атмосфера: сцена «пар → звук» -->
+  <Evening />
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="gallery">
+        {site.evening.teaser
+          ? <a class="photo play" href={url(site.evening.teaser)} target="_blank" rel="noopener" aria-label="Смотреть тизер"><Photo alt="Тизер вечера" need="" /><span class="play-btn" aria-hidden="true">▶</span></a>
+          : <div class="photo empty rv" role="img" aria-label="Тизер 30–45 секунд"><span class="play-btn" aria-hidden="true">▶</span><span><b>Тизер 30–45 с</b>запуск по клику — загрузите видео в админке</span></div>}
+        <Photo alt="Руки мастера, пар над гайванью" need="крупный план — от заказчика" class="rv" />
+        <Photo alt="Чайная зона, общий план" need="от заказчика" class="rv" />
+        <Photo alt="DJ за пультом" need="от заказчика" class="rv" />
+        <Photo alt="Гости на танцполе" need="от заказчика" class="rv" />
+        <Photo alt="Свет в зале" need="от заказчика" class="rv" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Как это работает -->
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Как это работает</p><h2 data-split>От заявки до последнего трека — четыре шага</h2></div>
+      <ol class="steps" data-progress>
+        {site.steps.map((s, i) => <li class="rv" style={`--d:${i * 0.1}s`}><b>{s.title}</b><span>{s.text}</span></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5. Кейсы -->
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <div class="head-row">
+        <div class="head"><p class="eyebrow">Кейсы</p><h2 data-split>Где мы уже были</h2></div>
+        <a class="btn ghost sm" href={url('keysy/')}>Все кейсы</a>
+      </div>
+      <Cases limit={3} />
+    </div>
+  </section>
+
+  <!-- 6. Отзывы -->
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Отзывы</p><h2 data-split>Что говорят заказчики</h2></div>
+      <Reviews />
+    </div>
+  </section>
+
+  <!-- 7. Калькулятор -->
+  <section class="sec tone-coal2" data-htone="coal" aria-labelledby="calc-title">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Калькулятор</p><h2 id="calc-title" data-split>Посчитайте свой вечер за минуту</h2><p class="lead">Примерная стоимость — сразу, до звонка. Точную смету пришлёт менеджер.</p></div>
+      <Calculator />
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap split">
+      <div class="head" style="align-content:start"><p class="eyebrow">Вопросы</p><h2 data-split>Коротко о главном</h2><p class="lead">Не нашли ответ — напишите в Telegram, ответим за {site.work.replyMinutes} минут в рабочее время.</p><a class="btn ghost sm" style="justify-self:start" href={url('faq/')}>Все вопросы</a></div>
+      <FaqList top />
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Фоновое видео: только после загрузки страницы, только на широком экране и без «экономии трафика»
+  const v = document.querySelector<HTMLVideoElement>('video[data-src]');
+  const saveData = (navigator as any).connection?.saveData;
+  if (v && matchMedia('(min-width: 861px)').matches && !saveData && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    addEventListener('load', () => { v.src = v.dataset.src!; v.play().catch(() => {}); });
+  }
+</script>

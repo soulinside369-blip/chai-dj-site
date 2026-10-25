@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import FaqList from '../components/FaqList.astro';
+import { site, links } from '../lib/data';
+---
+<Base title="Вопросы и ответы" description="Цены, выезд, требования к площадке, оплата и отмена — ответы на частые вопросы о чайных церемониях и DJ-сетах." faqLd>
+  <PageHero title="Вопросы и ответы" eyebrow="FAQ" lead={`Не нашли ответ — напишите в Telegram, ответим за ${site.work.replyMinutes} минут в рабочее время.`} crumbs={[{ label: 'Вопросы' }]}>
+    <div class="row rv" style="--d:.4s"><a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a></div>
+  </PageHero>
+  <section class="sec tone-coal" data-htone="coal"><div class="wrap" style="max-width:960px"><FaqList /></div></section>
+</Base>

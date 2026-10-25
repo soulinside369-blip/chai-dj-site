@@ -1,0 +1,50 @@
+---
+// Поля контактов — общие для калькулятора и быстрой заявки (раздел 7 ТЗ)
+import { formats, url } from '../lib/data';
+interface Props { kind: 'calc' | 'quick'; submitLabel?: string }
+const { kind, submitLabel = 'Получить точный расчёт' } = Astro.props;
+const id = (n: string) => `${kind}-${n}`;
+---
+<div class="form" data-contact={kind}>
+  <div class="hp" aria-hidden="true"><label for={id('site')}>Не заполняйте</label><input id={id('site')} name="website" tabindex="-1" autocomplete="off" /></div>
+  <div class="two">
+    <div class="field" data-f="name">
+      <label for={id('name')}>Имя</label>
+      <input class="input" id={id('name')} name="name" autocomplete="name" />
+      <span class="errmsg">Как к вам обращаться? Нужно хотя бы 2 буквы</span>
+    </div>
+    <div class="field" data-f="contact">
+      <label for={id('contact')}>Телефон или @telegram</label>
+      <input class="input" id={id('contact')} name="contact" type="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" />
+      <span class="errmsg">Нужен номер из 11 цифр или ник вида @name</span>
+    </div>
+  </div>
+  {kind === 'quick' && (
+    <div class="field">
+      <label for={id('fmt')}>Формат <span class="opt-l">— необязательно</span></label>
+      <select class="input" id={id('fmt')} name="fmt">
+        <option value="">Ещё не решили</option>
+        {formats.map((f) => <option value={f.key}>{f.name}</option>)}
+        <option value="cert">Сертификат</option>
+      </select>
+    </div>
+  )}
+  {kind === 'calc' && (
+    <div class="field" data-f="email">
+      <label for={id('email')}>Почта <span class="opt-l">— необязательно, пришлём смету</span></label>
+      <input class="input" id={id('email')} name="email" type="email" autocomplete="email" />
+      <span class="errmsg">Проверьте адрес — например, name@mail.ru</span>
+    </div>
+  )}
+  <div class="field">
+    <label for={id('comment')}>Комментарий <span class="opt-l">— необязательно</span></label>
+    <textarea class="input" id={id('comment')} name="comment" placeholder="Повод, площадка, пожелания по музыке"></textarea>
+  </div>
+  <div class="check" data-f="consent">
+    <input type="checkbox" id={id('consent')} name="consent" />
+    <label for={id('consent')}>Согласен на обработку персональных данных по <a class="link" href={url('consent/')}>условиям согласия</a> и <a class="link" href={url('privacy/')}>политике</a></label>
+    <span class="errmsg">Без согласия мы не можем принять заявку</span>
+  </div>
+  <div class="row"><button class="btn brass" type="submit">{submitLabel} <span class="arr">→</span></button></div>
+  <p class="form-status" role="status" aria-live="polite"></p>
+</div>

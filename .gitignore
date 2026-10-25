@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+# Секреты и заявки — только на сервере
+public/api/config.php
+public/api/private/*
+!public/api/private/.htaccess

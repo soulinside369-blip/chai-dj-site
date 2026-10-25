@@ -1,0 +1,21 @@
+---
+// Схема зоны выезда: кольца 25/50/100 км, города по направлениям (не карта)
+import { calc } from '../lib/data';
+const dir: Record<string, number> = { 'Верхняя Пышма': -95, 'Берёзовский': -40, 'Арамиль': 40, 'Среднеуральск': -125, 'Сысерть': 95, 'Первоуральск': 182, 'Ревда': 196, 'Полевской': 128, 'Каменск-Уральский': 50, 'Нижний Тагил': -98 };
+const R = (km: number) => 30 + Math.min(km, 150) * 1.2;
+const pts = calc.towns.filter((t) => t.km > 0).map((t) => {
+  const a = ((dir[t.name] ?? 0) * Math.PI) / 180, r = R(t.km);
+  return { ...t, x: 220 + Math.cos(a) * r, y: 220 + Math.sin(a) * r };
+});
+---
+<figure class="zone">
+  <svg viewBox="0 0 440 440" role="img" aria-label={`Схема зоны выезда. Екатеринбург без доплаты, дальше ${calc.perKm} ₽ за километр в обе стороны.`}>
+    <circle class="ring" cx="220" cy="220" r={R(25)} /><circle class="ring d" cx="220" cy="220" r={R(50)} /><circle class="ring d" cx="220" cy="220" r={R(100)} /><circle class="ring d" cx="220" cy="220" r={R(150)} />
+    <text class="lbl" x="224" y={220 - R(25) - 4}>25 км</text><text class="lbl" x="224" y={220 - R(50) - 4}>50 км</text><text class="lbl" x="224" y={220 - R(100) - 4}>100 км</text>
+    <circle cx="220" cy="220" r="7" fill="var(--brass)" /><text x="232" y="236">Екатеринбург · 0 ₽</text>
+    {pts.map((p) => (<>
+      <circle class="town" cx={p.x} cy={p.y} r="3.5" />
+      <text x={p.x + (p.x < 220 ? -8 : 8)} y={p.y + 4} text-anchor={p.x < 220 ? 'end' : 'start'}>{p.name}</text>
+    </>))}
+  </svg>
+</figure>

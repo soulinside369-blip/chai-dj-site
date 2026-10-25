@@ -1,0 +1,15 @@
+---
+import { reviews, logos, url } from '../lib/data';
+---
+<div class="cards3">
+  {reviews.map((r, i) => (
+    <figure class="review rv" style={`--d:${i * 0.08}s`}>
+      <blockquote>{r.text}</blockquote>
+      <figcaption class="who">
+        {r.photo ? <img class="ava" src={url(r.photo)} alt="" loading="lazy" /> : <span class="ava" aria-hidden="true"></span>}
+        <span><b>{r.name}</b>{r.role}{r.source && (r.url ? <> · <a class="link" href={r.url} rel="nofollow noopener" target="_blank">{r.source}</a></> : ` · ${r.source}`)}</span>
+      </figcaption>
+    </figure>
+  ))}
+</div>
+{logos.length > 0 && <div class="logos">{logos.map((l) => <img src={url(l.image)} alt={l.name} loading="lazy" />)}</div>}

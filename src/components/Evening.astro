@@ -1,0 +1,32 @@
+---
+import { site } from '../lib/data';
+const ev = site.evening;
+---
+<section class="evening" aria-labelledby="ev-title" data-evening>
+  <div class="stage" data-htone="rice">
+    <canvas aria-hidden="true"></canvas>
+    <div class="beams" aria-hidden="true"><i class="beam"></i><i class="beam"></i><i class="beam"></i></div>
+    <div class="wrap copy">
+      <div style="display:grid;gap:22px">
+        <p class="eyebrow">Как проходит вечер</p>
+        <h2 id="ev-title">{ev.title}</h2>
+      </div>
+      <div style="display:grid;gap:18px">
+        <p class="clock" aria-hidden="true" data-clock>{ev.acts[0].time}</p>
+        <div class="acts">
+          {ev.acts.map((a, i) => (
+            <div class={`act${i === 0 ? ' on' : ''}`} data-act={i} data-time={a.time}>
+              <h3>{a.title}</h3>
+              <p>{a.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="ev-progress" aria-hidden="true">{ev.acts.map((a, i) => <span class={i === 0 ? 'on' : ''}>{a.title}</span>)}</div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/evening';
+</script>

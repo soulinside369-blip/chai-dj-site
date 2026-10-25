@@ -1,0 +1,52 @@
+---
+// Страница формата: программа → что входит → требования → цена → заявка (раздел 3 ТЗ)
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Calculator from '../components/Calculator.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { formats, calc, url } from '../lib/data';
+import { rub, num } from '../lib/price.js';
+
+export function getStaticPaths() {
+  return formats.map((f) => ({ params: { slug: f.slug }, props: { f } }));
+}
+const { f } = Astro.props as { f: (typeof formats)[number] };
+const growth = f.b
+  ? `Гость сверх ${f.G} — ${rub(f.a)}, час сверх ${num(f.H)} — ${rub(f.b)}. Выезд за город — ${calc.perKm} ₽/км в обе стороны.`
+  : `Длительность фиксированная — ${num(f.H)} ч. Каждый участник сверх ${f.G} — ${rub(f.a)}${f.maxGuests ? `, максимум ${f.maxGuests}` : ''}.`;
+---
+<Base title={f.seoTitle} description={f.seoDescription} service={{ name: f.name, description: f.seoDescription, price: f.base }}>
+  <PageHero title={f.h1} eyebrow={`${f.duration} · ${f.guestsLabel}`} lead={f.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: f.name }]}>
+    <div class="row rv" style="--d:.55s">
+      <a class="btn" href="#calc" data-calc-link data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>
+      <a class="btn ghost" href={url('keysy/')}>Кейсы</a>
+      <span class="price" style="margin-left:8px"><span class="muted" style="font-size:13px">базовый пакет</span><b>от {rub(f.base)}</b></span>
+    </div>
+  </PageHero>
+
+  <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(48px,7vw,96px)">
+    <div class="wrap"><Photo alt={`${f.name}: общий план`} need="широкий кадр формата — от заказчика" class="wide-photo" /></div>
+  </section>
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap split">
+      <div>
+        <div class="head"><p class="eyebrow">Программа</p><h2 data-split>По времени</h2></div>
+        <ol class="tl">{f.program.map((p) => <li class="rv"><time>{p.time}</time><span><b>{p.title}</b><span>{p.text}</span></span></li>)}</ol>
+      </div>
+      <div style="display:grid;gap:48px;align-content:start">
+        <div><div class="head"><p class="eyebrow">Что входит</p><h2 data-split>В базовом пакете</h2></div>
+          <ul class="ticks">{f.what.map((w) => <li class="rv">{w}</li>)}</ul></div>
+        <div class="tile rv"><Icon name={f.key} /><p class="k">От площадки</p><p>{f.venue}</p><a class="link" href={url('oborudovanie/')}>Все требования и оборудование →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Цена</p><h2 data-split>{`От ${rub(f.base)} — дальше зависит от гостей и часов`}</h2><p class="lead">{growth}</p></div>
+      <Calculator preset={f.key} />
+    </div>
+  </section>
+</Base>
