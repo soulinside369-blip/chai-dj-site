@@ -787,7 +787,7 @@ html.drawer-open { overflow: hidden; }
 .how .faq summary { font-size: clamp(18px, 1.6vw, 22px); padding-block: 16px; }
 @media (max-width: 700px) {
   .f-grid > div:nth-child(2) { display: none; }
-  .f-grid { grid-template-columns: 1fr; }
+  .f-grid { grid-template-columns: 1fr 1fr; }
   .site-f { padding-top: 32px; }
 }
 @media (min-width: 761px) { .fcard:not(.main) .fcard-img { aspect-ratio: 2 / 1; } }
@@ -1019,3 +1019,50 @@ html { hyphens: manual; }
 .wrap.solo { display: grid; justify-items: center; }
 .wrap.solo > .calc { width: 100%; max-width: 720px; }
 @media (min-width: 981px) { .cfg-copy h1 { max-width: none; font-size: clamp(38px, 3.3vw, 52px); } }
+
+/* ===== v0.9: визуальная полировка ===== */
+/* Сравнение форматов: на телефоне — карточки вместо узкой таблицы */
+.cmp-cards { display: none; }
+@media (max-width: 760px) {
+  .cmp-table { display: none; }
+  .cmp-cards { display: grid; grid-auto-flow: column; grid-auto-columns: 84%; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gut)); padding: 2px var(--gut) 6px; scroll-padding-inline: var(--gut); }
+  .cmp-cards::-webkit-scrollbar { display: none; }
+  .cmp-card { scroll-snap-align: start; display: grid; align-content: start; gap: 14px; padding: 20px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); }
+  .cmp-card header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .cmp-card header b { font: 600 20px/1.15 var(--display); letter-spacing: -.02em; }
+  .cmp-price { color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .cmp-card dl { display: grid; gap: 0; margin: 0; }
+  .cmp-card dl div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 14.5px; }
+  .cmp-card dt { color: var(--muted); }
+  .cmp-card dd { margin: 0; font-weight: 600; text-align: right; }
+  .cmp-incl { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cmp-incl li { padding: 6px 12px; border-radius: 999px; background: var(--coal-3); font-size: 13px; font-weight: 600; }
+}
+
+/* Плитки-принципы и «почему подходит»: на телефоне — лента вместо длинной колонки */
+@media (max-width: 560px) {
+  .grid4 { grid-template-columns: none !important; grid-auto-flow: column; grid-auto-columns: 80%; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gut)); padding: 2px var(--gut) 6px; scroll-padding-inline: var(--gut); }
+  .grid4::-webkit-scrollbar { display: none; }
+  .grid4 > * { scroll-snap-align: start; }
+  .grid4 .tile { padding: 20px; }
+  .grid4 .tile h3 { font-size: 20px; }
+  .grid4 .tile p { font-size: 14.5px; }
+  /* ссылки-плашки одной ширины */
+  .others { display: grid; grid-template-columns: 1fr; }
+  .other { width: 100%; }
+}
+.grid4 .tile { counter-increment: t; position: relative; }
+.grid4 { counter-reset: t; }
+.grid4 .tile::before { content: '0' counter(t); display: block; margin-bottom: 14px; font: 600 13px/1 var(--display); letter-spacing: .08em; color: var(--accent); }
+
+/* Первый экран внутренних страниц: тёплое свечение и зерно — не «лист бумаги» */
+.page-hero::before { content: ''; position: absolute; inset: -20% -10% auto auto; width: min(780px, 90vw); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(200 161 101 / .26), rgb(232 116 59 / .07) 55%, transparent 72%); filter: blur(10px); pointer-events: none; z-index: 0; }
+.page-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.35  0 0 0 0 0.3  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+@media (prefers-reduced-motion: no-preference) {
+  .page-hero::before { animation: glow-drift 14s ease-in-out infinite alternate; }
+}
+@keyframes glow-drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-6%, 8%) scale(1.08); } }

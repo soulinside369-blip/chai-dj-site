@@ -12,7 +12,22 @@ import { rub, num } from '../lib/price.js';
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
       <div class="head"><p class="eyebrow">Сравнение</p><h2>Что входит и что добавляется</h2></div>
-      <div class="tw"><table>
+      <div class="cmp-cards" role="list">
+        {formats.map((f) => (
+          <article class="cmp-card" role="listitem">
+            <header><b>{f.name}</b><span class="cmp-price">от {rub(f.base)}</span></header>
+            <dl>
+              <div><dt>Длительность</dt><dd>{f.duration}</dd></div>
+              <div><dt>Гостей в базе</dt><dd>{f.guestsLabel}</dd></div>
+              <div><dt>Гость сверх</dt><dd>{rub(f.a)}</dd></div>
+              <div><dt>Час сверх</dt><dd>{f.b ? rub(f.b) : `фикс. ${num(f.H)} ч`}</dd></div>
+            </dl>
+            <ul class="cmp-incl">{f.what.map((w) => <li>{w}</li>)}</ul>
+            <a class="link" href={url(f.slug + '/')}>Подробнее о формате →</a>
+          </article>
+        ))}
+      </div>
+      <div class="tw cmp-table"><table>
         <thead><tr><th></th>{formats.map((f) => <th scope="col">{f.name}</th>)}</tr></thead>
         <tbody>
           <tr><th scope="row">Длительность</th>{formats.map((f) => <td class="nowrap">{f.duration}</td>)}</tr>
