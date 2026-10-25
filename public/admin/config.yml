@@ -288,7 +288,7 @@ collections:
           - label: Кейсы
             name: cases
             widget: list
-            summary: '{{fields.client}}'
+            summary: '{{fields.typeLabel}} — {{fields.client}}'
             fields:
               - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Тип, name: type, widget: select, options: [{ label: Корпоратив, value: corp }, { label: Частное событие, value: private }, { label: С агентством, value: agency }] }
@@ -302,7 +302,7 @@ collections:
           - label: Отзывы (только с согласия клиента)
             name: reviews
             widget: list
-            summary: '{{fields.name}}'
+            summary: '{{fields.source}} — {{fields.name}}'
             fields:
               - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Текст, name: text, widget: text }
