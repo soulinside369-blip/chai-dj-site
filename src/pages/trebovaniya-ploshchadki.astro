@@ -48,7 +48,7 @@ const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.tel
 
     <h2>Что нужно от площадки</h2>
     <table>
-      <thead><tr><th>Требование</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
+      <thead><tr><th>Требование</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
       <tbody>{equipment.venue.map((r) => <tr><td><b>{r.what}</b></td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
     </table>
 
@@ -56,20 +56,20 @@ const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.tel
       <svg viewBox="0 0 900 200" role="img" aria-label="Схема: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">
         <rect x="30" y="40" width="210" height="120" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
         <text x="135" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">Чайная зона</text>
-        <text x="135" y="124" text-anchor="middle" font-size="13" fill="#5C554A">3 × 3 м · 220 В до 4 кВт</text>
+        <text x="135" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 3 × 3 м · отдельная линия 220 В</text>
         <rect x="660" y="55" width="210" height="90" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
         <text x="765" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">DJ-зона</text>
-        <text x="765" y="124" text-anchor="middle" font-size="13" fill="#5C554A">2 × 2 м · 220 В до 3 кВт</text>
+        <text x="765" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 2 × 2 м · отдельная линия 220 В</text>
         <path d="M255 100 H645" stroke="#5C554A" stroke-dasharray="6 6" />
         <path d="M255 100 l12 -7 v14 z M645 100 l-12 -7 v14 z" fill="#5C554A" />
         <text x="450" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#1C1B18">не ближе 8 м</text>
-        <text x="450" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 50 гостей — 12 м или соседний зал</text>
+        <text x="450" y="124" text-anchor="middle" font-size="13" fill="#5C554A">на больших событиях — дальше или в соседнем зале</text>
       </svg>
     </div>
 
     <h2 class="newpage">Что привозим</h2>
     <table>
-      <thead><tr><th>Что</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
+      <thead><tr><th>Что</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
       <tbody>{equipment.kit.map((r) => <tr><td><b>{r.what}</b></td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
     </table>
 

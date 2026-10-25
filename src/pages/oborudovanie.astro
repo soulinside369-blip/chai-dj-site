@@ -16,8 +16,8 @@ import { equipment, url } from '../lib/data';
       <div class="head"><p class="eyebrow">Комплектация</p><h2 data-split>Собираем под ваш вечер</h2></div>
       {(equipment as any).kitNote && <p class="lead rv" style="margin:-8px 0 24px;max-width:60ch">{(equipment as any).kitNote}</p>}
       <div class="tw rv stack-table"><table>
-        <thead><tr><th>Что</th><th>Пример: до 50 гостей</th><th>Пример: 50–150 гостей</th></tr></thead>
-        <tbody>{equipment.kit.map((r) => <tr><td>{r.what}</td><td data-l="До 50 гостей">{r.small}</td><td data-l="50–150 гостей">{r.large}</td></tr>)}</tbody>
+        <thead><tr><th>Что</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
+        <tbody>{equipment.kit.map((r) => <tr><td>{r.what}</td><td data-l="Камерное событие">{r.small}</td><td data-l="Большое событие">{r.large}</td></tr>)}</tbody>
       </table></div>
     </div>
   </section>
@@ -34,23 +34,23 @@ import { equipment, url } from '../lib/data';
 
   <section class="sec tone-coal2" data-htone="coal" id="venue">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Техтребования</p><h2 data-split>Что нужно от площадки</h2><p class="lead">Эту таблицу мы сами отправляем администратору площадки после брони.</p></div>
+      <div class="head"><p class="eyebrow">Техтребования</p><h2 data-split>Что нужно от площадки</h2><p class="lead">Точные требования под ваш вечер мы сами отправляем администратору площадки после брони.</p></div>
       <div class="tw rv stack-table"><table>
-        <thead><tr><th>Требование</th><th>Пример: до 50 гостей</th><th>Пример: 50–150 гостей</th></tr></thead>
-        <tbody>{equipment.venue.map((r) => <tr><td>{r.what}</td><td data-l="До 50 гостей">{r.small}</td><td data-l="50–150 гостей">{r.large}</td></tr>)}</tbody>
+        <thead><tr><th>Требование</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
+        <tbody>{equipment.venue.map((r) => <tr><td>{r.what}</td><td data-l="Камерное событие">{r.small}</td><td data-l="Большое событие">{r.large}</td></tr>)}</tbody>
       </table></div>
       <figure class="rv" style="margin-top:40px">
         <svg viewBox="0 0 900 260" role="img" aria-label="Схема расстановки: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">
           <rect x="40" y="60" width="200" height="150" rx="10" fill="none" stroke="var(--brass)" stroke-width="1.5" />
           <text x="140" y="130" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="26">Чайная зона</text>
-          <text x="140" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">3 × 3 м · линия 220 В до 4 кВт</text>
+          <text x="140" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">от 3 × 3 м · отдельная линия 220 В</text>
           <rect x="660" y="85" width="200" height="100" rx="10" fill="none" stroke="var(--brass)" stroke-width="1.5" />
           <text x="760" y="132" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="26">DJ-зона</text>
-          <text x="760" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">2 × 2 м · линия 220 В до 3 кВт</text>
+          <text x="760" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">от 2 × 2 м · отдельная линия 220 В</text>
           <path d="M260 135 H640" stroke="var(--on-coal-muted)" stroke-dasharray="6 6" />
           <path d="M260 135 l12 -7 v14 z M640 135 l-12 -7 v14 z" fill="var(--on-coal-muted)" />
           <text x="450" y="122" text-anchor="middle" fill="currentColor" font-size="15" font-weight="700">не ближе 8 м</text>
-          <text x="450" y="160" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">от 50 гостей — 12 м или соседний зал</text>
+          <text x="450" y="160" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">на больших событиях — дальше или в соседнем зале</text>
         </svg>
       </figure>
     </div>
