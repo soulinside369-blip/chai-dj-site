@@ -1066,3 +1066,26 @@ html { hyphens: manual; }
   .page-hero::before { animation: glow-drift 14s ease-in-out infinite alternate; }
 }
 @keyframes glow-drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-6%, 8%) scale(1.08); } }
+
+/* Подпись на сцене конструктора читается поверх пара и света */
+.stage-label::before { content: ''; position: absolute; z-index: -1; left: -18px; right: -18px; bottom: -14px; height: calc(100% + 70px); background: linear-gradient(to top, rgb(12 11 10 / .78), rgb(12 11 10 / .35) 60%, transparent); pointer-events: none; }
+/* Вопросы: поиск и разделы */
+.faq-tools { position: sticky; top: calc(var(--head-h) + 8px); z-index: 5; display: grid; gap: 12px; padding: 12px 0 16px; margin-bottom: 8px; background: linear-gradient(var(--bg) 80%, transparent); }
+.faq-search { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); }
+.faq-search:focus-within { border-color: var(--accent); }
+.faq-search svg { width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; flex: none; }
+.faq-search input { flex: 1; min-width: 0; border: 0; background: transparent; color: inherit; font: 500 16px/1 var(--body); outline: none; }
+.faq-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.faq-chips::-webkit-scrollbar { display: none; }
+.faq-chips .chip { display: inline-flex; align-items: center; white-space: nowrap; text-decoration: none; color: inherit; }
+.faq h3[id] { scroll-margin-top: calc(var(--head-h) + 150px); }
+@media (max-width: 980px) { .faq-tools { top: calc(var(--head-h) + 4px); } }
+/* Курсор-кольцо на компьютере: следует за мышью, растёт над ссылками */
+.cur { position: fixed; left: 0; top: 0; z-index: 90; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; pointer-events: none;
+  border: 1.5px solid rgb(200 161 101 / .8); transition: width .25s var(--ease), height .25s var(--ease), margin .25s var(--ease), background .25s, opacity .25s; opacity: 0; mix-blend-mode: normal; }
+.cur.on { opacity: 1; }
+.cur.big { width: 64px; height: 64px; margin: -32px 0 0 -32px; background: rgb(200 161 101 / .12); }
+.cur.text { opacity: 0; }
+.faq-search input::-webkit-search-cancel-button { -webkit-appearance: none; width: 18px; height: 18px; cursor: pointer;
+  background: no-repeat center/14px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C8A165' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E"); }
+.faq-tools.searching .faq-chips { display: none; }

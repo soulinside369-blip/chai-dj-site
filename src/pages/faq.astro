@@ -2,11 +2,39 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FaqList from '../components/FaqList.astro';
-import { site, links } from '../lib/data';
+import { site, links, faq } from '../lib/data';
 ---
 <Base title="Вопросы и ответы" description="Цены, выезд, требования к площадке, оплата и отмена — ответы на частые вопросы о чайных церемониях и DJ-сетах." faqLd>
   <PageHero title="Вопросы и ответы" eyebrow="FAQ" lead={`Не нашли ответ — напишите в Telegram, ответим за ${site.work.replyMinutes} минут в рабочее время.`} crumbs={[{ label: 'Вопросы' }]}>
     <div class="row rv" style="--d:.4s"><a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a></div>
   </PageHero>
-  <section class="sec tone-coal" data-htone="coal"><div class="wrap" style="max-width:960px"><FaqList /></div></section>
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap" style="max-width:960px">
+      <div class="faq-tools" data-faq-tools>
+        <label class="faq-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <span class="sr-only">Поиск по вопросам</span><input type="search" placeholder="Найти: цена, выезд, отмена…" data-faq-q autocomplete="off" /></label>
+        <nav class="chips faq-chips" aria-label="Разделы вопросов">{faq.groups.map((g, gi) => <a class="chip" href={`#faq-${gi + 1}`}>{g.title}</a>)}</nav>
+        <p class="muted faq-none" data-faq-none hidden>Ничего не нашли — <a class="link" href={links.telegram}>спросите в Telegram</a>, ответим за {site.work.replyMinutes} минут.</p>
+      </div>
+      <FaqList />
+    </div>
+  </section>
+  <script>
+    const q = document.querySelector<HTMLInputElement>('[data-faq-q]')!;
+    const none = document.querySelector<HTMLElement>('[data-faq-none]')!;
+    const items = [...document.querySelectorAll<HTMLDetailsElement>('.faq details')];
+    const groups = [...document.querySelectorAll<HTMLElement>('[data-faq-group]')];
+    q.addEventListener('input', () => {
+      const v = q.value.trim().toLowerCase();
+      let shown = 0;
+      for (const d of items) {
+        const hit = !v || d.textContent!.toLowerCase().includes(v);
+        d.hidden = !hit; if (hit) shown++;
+        d.open = !!v && hit && v.length > 2;
+      }
+      for (const g of groups) { let n = g.nextElementSibling, any = false; while (n && n.tagName === 'DETAILS') { if (!(n as HTMLElement).hidden) any = true; n = n.nextElementSibling; } g.hidden = !any; }
+      none.hidden = shown > 0;
+      q.closest('[data-faq-tools]')!.classList.toggle('searching', !!v);
+    });
+  </script>
 </Base>

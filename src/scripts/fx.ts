@@ -150,6 +150,22 @@ if (fine && !reduce) {
   });
 }
 
+/* ---- Курсор-кольцо (только мышь, без «уменьшить движение») ---- */
+if (fine && !reduce) {
+  const c = document.createElement('div'); c.className = 'cur'; c.setAttribute('aria-hidden', 'true'); document.body.appendChild(c);
+  let x = -100, y = -100, cx = x, cy = y, raf = 0;
+  const loop = () => { cx += (x - cx) * 0.22; cy += (y - cy) * 0.22; c.style.transform = `translate(${cx}px, ${cy}px)`; raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(loop) : 0; };
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    x = e.clientX; y = e.clientY; c.classList.add('on');
+    const t = e.target as HTMLElement;
+    c.classList.toggle('big', !!t.closest('a, button, summary, [role="button"], input[type="range"], .chip, label.check'));
+    c.classList.toggle('text', !!t.closest('input:not([type="range"]), textarea, select'));
+    if (!raf) raf = requestAnimationFrame(loop);
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => c.classList.remove('on'));
+}
+
 /* ---- Линия прогресса у шагов ---- */
 document.querySelectorAll<HTMLElement>('.steps[data-progress]').forEach((ol) => {
   const upd = () => {
