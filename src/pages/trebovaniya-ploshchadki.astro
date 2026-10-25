@@ -16,7 +16,7 @@ const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.tel
     @page { size: A4; margin: 14mm 14mm 16mm; }
     body { background: #fff; color: var(--coal); font: 400 10.5pt/1.45 var(--body); }
     body::after { display: none; }
-    .sheet { max-width: 182mm; margin: 0 auto; padding: 24px 0; display: grid; gap: 14pt; }
+    .a4 { max-width: 182mm; margin: 0 auto; padding: 24px 0; display: grid; gap: 14pt; }
     header { display: flex; justify-content: space-between; align-items: end; border-bottom: 1.5pt solid var(--coal); padding-bottom: 10pt; }
     header b { font: 600 26pt/1 var(--display); }
     header span { font-size: 9pt; color: var(--on-rice-muted); text-align: right; }
@@ -34,12 +34,12 @@ const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.tel
     footer { margin-top: 10pt; }
     footer { border-top: 1px solid var(--line-rice); padding-top: 8pt; font-size: 9pt; color: var(--on-rice-muted); display: flex; justify-content: space-between; gap: 12pt; }
     .stub { background: #EFE6D4; }
-    @media screen { body { background: var(--rice-2); } .sheet { background: #fff; padding: 18mm 14mm; margin-block: 24px; box-shadow: 0 10px 40px rgb(0 0 0 / .12); } }
-    @media screen and (max-width: 720px) { .sheet { margin: 0; padding: 20px 16px; } table { display: block; overflow-x: auto; } }
+    @media screen { body { background: var(--rice-2); } .a4 { background: #fff; padding: 18mm 14mm; margin-block: 24px; box-shadow: 0 10px 40px rgb(0 0 0 / .12); } }
+    @media screen and (max-width: 720px) { .a4 { margin: 0; padding: 20px 16px; } table { display: block; overflow-x: auto; } }
   </style>
 </head>
 <body>
-  <main class="sheet">
+  <main class="a4">
     <header><b>{site.brand.name}</b><span>{site.brand.tagline}<br />{site.brand.region}</span></header>
     <div>
       <h1>Техтребования для площадки</h1>
@@ -55,11 +55,11 @@ const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.tel
     <div class="scheme">
       <svg viewBox="0 0 900 200" role="img" aria-label="Схема: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">
         <rect x="30" y="40" width="210" height="120" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
-        <text x="135" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">Чайная зона</text>
-        <text x="135" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 3 × 3 м · отдельная линия 220 В</text>
+        <text x="135" y="98" text-anchor="middle" font-size="24" style="font-family:'Geologica Variable',sans-serif;font-weight:600" fill="#1C1B18">Чайная зона</text>
+        <text x="135" y="124" text-anchor="middle" font-size="13" fill="#5C554A"><tspan x="135" y="124">от 3 × 3 м</tspan><tspan x="135" y="142">отдельная линия 220 В</tspan></text>
         <rect x="660" y="55" width="210" height="90" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
-        <text x="765" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">DJ-зона</text>
-        <text x="765" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 2 × 2 м · отдельная линия 220 В</text>
+        <text x="765" y="98" text-anchor="middle" font-size="24" style="font-family:'Geologica Variable',sans-serif;font-weight:600" fill="#1C1B18">DJ-зона</text>
+        <text x="765" y="124" text-anchor="middle" font-size="13" fill="#5C554A"><tspan x="765" y="124">от 2 × 2 м</tspan><tspan x="765" y="142">отдельная линия 220 В</tspan></text>
         <path d="M255 100 H645" stroke="#5C554A" stroke-dasharray="6 6" />
         <path d="M255 100 l12 -7 v14 z M645 100 l-12 -7 v14 z" fill="#5C554A" />
         <text x="450" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#1C1B18">не ближе 8 м</text>

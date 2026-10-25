@@ -378,6 +378,8 @@ collections:
             widget: list
             summary: '{{fields.kind}} — {{fields.name}}'
             fields:
+              - { label: Иероглифы (необязательно), name: hanzi, required: false }
+              - { label: 'Цвет настоя (HEX, например #D9A441)', name: color, required: false }
               - { label: Вид, name: kind }
               - { label: Сорт, name: name }
               - { label: Описание, name: note }

@@ -13,6 +13,7 @@ const rows = [
   ['WhatsApp', c.whatsapp, links.whatsapp, 'click_whatsapp'],
   ['Почта', c.email, c.email ? `mailto:${c.email}` : '', 'click_email'],
 ].filter((r) => r[1] && r[2]);
+const hasSide = rows.length > 0 || !isStub(site.brand.requisites);
 ---
 <Base title="Контакты" description={`Телефон, Telegram и MAX. ${site.work.text}. Екатеринбург без доплаты за выезд.`}>
   <PageHero title="Обсудим ваш вечер" eyebrow="Контакты" lead={`${site.work.text}. Отвечаем за ${site.work.replyMinutes} минут; ночные заявки — до ${site.work.nightReplyBy}:00.`} crumbs={[{ label: 'Контакты' }]}>
@@ -23,13 +24,13 @@ const rows = [
   </PageHero>
 
   <section class="sec tone-coal" data-htone="coal">
-    <div class="wrap split">
-      <div style="display:grid;gap:28px;align-content:start">
+    <div class={hasSide ? 'wrap split' : 'wrap solo'}>
+      {hasSide && <div style="display:grid;gap:28px;align-content:start">
         {rows.length > 0 && <ul class="lines" style="font-size:17px">
           {rows.map((r) => <li><span>{r[0]}</span><a class="link" href={r[2]} data-goal={r[3]}>{r[1]}</a></li>)}
         </ul>}
         {!isStub(site.brand.requisites) && <div style="display:grid;gap:8px"><p class="eyebrow">Реквизиты</p><p class="muted">{site.brand.requisites}</p></div>}
-      </div>
+      </div>}
       <div class="calc" style="grid-template-columns:1fr"><div class="calc-main">
         <h2 style="font-size:clamp(32px,3vw,44px)">Быстрая заявка</h2>
         <p class="muted" style="margin-top:-16px">Имя и контакт — остальное уточним сами.</p>

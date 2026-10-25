@@ -25,10 +25,21 @@ import { equipment, url } from '../lib/data';
   <section class="sec tone-rice" data-htone="rice">
     <div class="wrap">
       <div class="head"><p class="eyebrow">Чайная карта</p><h2 data-split>Чай под каждое состояние вечера</h2></div>
-      <div class="grid5">
-        {equipment.teas.map((t, i) => <article class="tile rv" style={`--d:${i * .06}s`}><p class="k">{t.kind}</p><h3>{t.name}</h3><p class="muted">{t.note}</p></article>)}
+      <ul class="teas" aria-label="Чайная карта">
+        {equipment.teas.map((t: any, i) => (
+          <li class="tea rv" style={`--d:${i * .06}s;--liq:${t.color || '#C8A165'}`}>
+            <span class="tea-cup" aria-hidden="true"><span></span></span>
+            <p class="k">{t.kind}</p>
+            <h3>{t.name}</h3>
+            {t.hanzi && <p class="tea-hz" lang="zh">{t.hanzi}</p>}
+            <p class="muted">{t.note}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="tea-notes rv">
+        {(equipment as any).teasNote && <p class="lead">{(equipment as any).teasNote}</p>}
+        {equipment.teasLarge && <p class="lead">{equipment.teasLarge}</p>}
       </div>
-      <p class="lead rv" style="margin-top:28px">{(equipment as any).teasNote && <>{(equipment as any).teasNote} </>}{equipment.teasLarge}</p>
     </div>
   </section>
 
@@ -42,11 +53,11 @@ import { equipment, url } from '../lib/data';
       <figure class="rv" style="margin-top:40px">
         <svg viewBox="0 0 900 260" role="img" aria-label="Схема расстановки: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">
           <rect x="40" y="60" width="200" height="150" rx="10" fill="none" stroke="var(--brass)" stroke-width="1.5" />
-          <text x="140" y="130" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="26">Чайная зона</text>
-          <text x="140" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">от 3 × 3 м · отдельная линия 220 В</text>
+          <text x="140" y="130" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="24" font-weight="600">Чайная зона</text>
+          <text x="140" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13"><tspan x="140" y="158">от 3 × 3 м</tspan><tspan x="140" y="176">отдельная линия 220 В</tspan></text>
           <rect x="660" y="85" width="200" height="100" rx="10" fill="none" stroke="var(--brass)" stroke-width="1.5" />
-          <text x="760" y="132" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="26">DJ-зона</text>
-          <text x="760" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13">от 2 × 2 м · отдельная линия 220 В</text>
+          <text x="760" y="132" text-anchor="middle" fill="currentColor" font-family="var(--display)" font-size="24" font-weight="600">DJ-зона</text>
+          <text x="760" y="158" text-anchor="middle" fill="var(--on-coal-muted)" font-size="13"><tspan x="760" y="158">от 2 × 2 м</tspan><tspan x="760" y="176">отдельная линия 220 В</tspan></text>
           <path d="M260 135 H640" stroke="var(--on-coal-muted)" stroke-dasharray="6 6" />
           <path d="M260 135 l12 -7 v14 z M640 135 l-12 -7 v14 z" fill="var(--on-coal-muted)" />
           <text x="450" y="122" text-anchor="middle" fill="currentColor" font-size="15" font-weight="700">не ближе 8 м</text>

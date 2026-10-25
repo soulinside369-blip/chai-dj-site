@@ -16,6 +16,8 @@ export function typo(text) {
   if (!/[А-Яа-яЁё]/.test(text)) return text;
   let t = text;
   for (let i = 0; i < 2; i++) t = t.replace(reShort, (m, pre, w) => `${pre}${w}${NB}`); // дважды: «и в доме»
+  // короткие слова через дефис не рвём: DJ‑сет, мастер‑класс
+  t = t.replace(/(^|[^\p{L}\d])([\p{L}\d]{1,7})-([\p{L}\d]{1,8})(?![\p{L}\d-])/gu, (m, pre, a, b) => (a.length + b.length <= 13 ? `${pre}${a}\u2011${b}` : m));
   t = t.replace(reDash, `${NB}$1`).replace(reUnit, `$1${NB}`).replace(reTimes, `${NB}×${NB}`);
   return t;
 }
@@ -24,8 +26,8 @@ export function typo(text) {
 const BLOCK = /^(h1|h2|h3|h4|p|li|summary|dd|dt|figcaption|blockquote|b|button|a)$/i;
 
 /** Склеить последнее слово с предыдущим, только если получается короткий кусок (≤ 14 знаков), чтобы не вылезало на узких экранах */
-function glueLast(t) {
-  return t.replace(/([^\s\u00a0]+)[ \t\n]+([^\s\u00a0]+\s*)$/, (m, a, b) => (a.length + b.trim().length <= 13 && b.trim().length <= 7 ? `${a}\u00a0${b}` : m));
+function glueLast(t, max = 13) {
+  return t.replace(/([^\s\u00a0]+)[ \t\n]+([^\s\u00a0]+\s*)$/, (m, a, b) => (a.length + b.trim().length <= max && b.trim().length <= 8 ? `${a}\u00a0${b}` : m));
 }
 
 /** Для строк, которые подставляет скрипт: типограф + склейка последних слов */
@@ -49,7 +51,7 @@ export function processHtml(html) {
           const top = stack.pop();
           if (top && top[1] >= 0) {
             // склеиваем два последних слова, если последнее короткое
-            parts[top[1]] = glueLast(parts[top[1]]);
+            parts[top[1]] = glueLast(parts[top[1]], /^h[1-4]$/.test(top[0]) ? 13 : 22);
           }
         }
       }

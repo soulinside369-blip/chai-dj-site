@@ -988,3 +988,34 @@ html { hyphens: manual; }
 .nominals { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
 .nominals li, .nominal { min-width: 0; }
 @media (min-width: 981px) { .cfg-copy h1 { max-width: 17ch; font-size: clamp(40px, 4.2vw, 64px); } }
+
+/* Чайная карта: карточки с «пиалой» цвета настоя, имя не вылезает, на телефоне — лента */
+.teas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tea {
+  position: relative; display: grid; grid-template-rows: auto auto auto auto 1fr; align-content: start; gap: 6px; min-width: 0;
+  padding: 22px 20px 24px; border-radius: 22px; background: var(--card); border: 1px solid var(--line); overflow: hidden;
+  transition: transform .35s var(--ease), border-color .25s, box-shadow .35s;
+}
+.tea:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--liq) 60%, var(--line)); box-shadow: 0 18px 40px -20px color-mix(in srgb, var(--liq) 70%, transparent); }
+.tea::after { content: ''; position: absolute; inset: auto -30% -60% -30%; height: 70%; background: radial-gradient(closest-side, color-mix(in srgb, var(--liq) 22%, transparent), transparent); pointer-events: none; }
+.tea-cup { width: 46px; height: 46px; border-radius: 50%; margin-bottom: 10px; display: grid; place-items: center; background: #F7F2EA; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08), 0 6px 14px -6px rgb(0 0 0 / .25); }
+.tea-cup span { width: 32px; height: 32px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--liq) 55%, #fff), var(--liq) 70%); box-shadow: inset 0 -3px 6px rgb(0 0 0 / .18); }
+.tea .k { font: 650 11px/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.tea h3 { font-size: clamp(19px, 1.5vw, 22px); line-height: 1.15; letter-spacing: -.025em; overflow-wrap: normal; word-break: normal; hyphens: manual; }
+.tea-hz { font: 500 15px/1 var(--serif); color: var(--accent); letter-spacing: .08em; }
+.tea .muted { font-size: 14.5px; line-height: 1.45; margin-top: 4px; }
+.tea-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 40px; margin-top: 28px; }
+.tea-notes .lead { margin: 0; max-width: none; font-size: 16px; }
+@media (max-width: 1100px) { .teas { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .teas { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gut)); padding-inline: var(--gut); scroll-padding-inline: var(--gut); }
+  .teas::-webkit-scrollbar { display: none; }
+  .tea { scroll-snap-align: start; }
+  .tea-notes { grid-template-columns: 1fr; }
+}
+
+/* контакты без левой колонки — форма по центру */
+.wrap.solo { display: grid; justify-items: center; }
+.wrap.solo > .calc { width: 100%; max-width: 720px; }
+@media (min-width: 981px) { .cfg-copy h1 { max-width: none; font-size: clamp(38px, 3.3vw, 52px); } }
