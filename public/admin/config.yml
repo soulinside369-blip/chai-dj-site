@@ -293,7 +293,7 @@ collections:
               - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Тип, name: type, widget: select, options: [{ label: Корпоратив, value: corp }, { label: Частное событие, value: private }, { label: С агентством, value: agency }] }
               - { label: Подпись типа, name: typeLabel }
-              - { label: Клиент, name: client }
+              - { label: 'Клиент (пока есть слово ПРИМЕР — кейс на сайт не попадёт)', name: client }
               - { label: Гостей, name: guests }
               - { label: Задача, name: task, widget: text }
               - { label: Что сделали, name: solution, widget: text }

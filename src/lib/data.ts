@@ -13,6 +13,8 @@ export const occasions = occasionsData.items;
 export const isPreview = import.meta.env.BASE_URL !== '/';
 export const cases = casesData.cases;
 export const reviews = casesData.reviews;
+/** На сайт попадает только реальный кейс: не черновик и не пример (в поле «Клиент» нет слова ПРИМЕР) */
+export const isRealCase = (c: { draft?: boolean; client?: string }) => !c.draft && !/ПРИМЕР/i.test(c.client || '');
 export const logos = casesData.logos as { name: string; image: string }[];
 
 export const B = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';

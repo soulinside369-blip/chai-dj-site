@@ -6,10 +6,10 @@ import FormatCards from '../components/FormatCards.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
-import { site, url, cases, reviews } from '../lib/data';
+import { site, url, cases, isRealCase, reviews } from '../lib/data';
 
 // Показываем только реальные материалы: пустые рамки и заглушки посетителю не нужны
-const realCases = cases.filter((c) => !c.draft).length > 0;
+const realCases = cases.filter(isRealCase).length > 0;
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
 ---
 <Base tone="rice" faqLd>
