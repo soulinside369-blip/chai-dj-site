@@ -4,9 +4,13 @@ import calc from '../data/calc.json';
 import faq from '../data/faq.json';
 import casesData from '../data/cases.json';
 import equipment from '../data/equipment.json';
+import occasionsData from '../data/occasions.json';
 
 export { site, calc, faq, equipment };
 export const formats = formatsData.items;
+export const occasions = occasionsData.items;
+/** Превью на github.io (сайт не в корне) — закрываем от индексации, чтобы не было дублей боевого домена */
+export const isPreview = import.meta.env.BASE_URL !== '/';
 export const cases = casesData.cases;
 export const reviews = casesData.reviews;
 export const logos = casesData.logos as { name: string; image: string }[];

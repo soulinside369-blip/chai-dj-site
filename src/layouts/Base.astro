@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { site, nav, url, links, formats, faq, isStub } from '../lib/data';
+import { site, nav, url, links, formats, occasions, faq, isStub, isPreview } from '../lib/data';
 import Calculator from '../components/Calculator.astro';
 
 interface Props {
@@ -10,8 +10,9 @@ interface Props {
   faqLd?: boolean;
   service?: { name: string; description: string; price: number };
   noindex?: boolean;
+  faqItems?: { q: string; a: string }[];
 }
-const { title, description, tone = 'rice', faqLd = false, service, noindex = false } = Astro.props;
+const { title, description, tone = 'rice', faqLd = false, service, noindex = false, faqItems } = Astro.props;
 const fullTitle = title ? `${title} — ${site.brand.name}` : site.seo.title;
 const desc = description || site.seo.description;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -36,10 +37,11 @@ const business = {
     priceSpecification: { '@type': 'PriceSpecification', minPrice: f.base, priceCurrency: 'RUB' },
   })),
 };
-const faqSchema = faqLd && {
+const faqSource = faqItems ?? (faqLd ? faq.groups.flatMap((g) => g.items) : null);
+const faqSchema = faqSource && {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faq.groups.flatMap((g) => g.items).map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
+  mainEntity: faqSource.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
 };
 const serviceSchema = service && {
   '@context': 'https://schema.org',
@@ -60,7 +62,7 @@ const metrika = site.analytics.metrikaId;
   <title>{fullTitle}</title>
   <meta name="description" content={desc} />
   <link rel="canonical" href={canonical} />
-  {noindex && <meta name="robots" content="noindex" />}
+  {(noindex || isPreview) && <meta name="robots" content="noindex" />}
   <meta name="theme-color" content={tone === 'rice' ? '#EDE6DA' : '#1C1B18'} />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ru_RU" />
@@ -107,6 +109,7 @@ const metrika = site.analytics.metrikaId;
       <a href={url('chai-dj/')}>Чай + DJ</a>
       {nav.map((n) => <a href={url(n.href)}>{n.label}</a>)}
       <a href={url('sertifikaty/')}>Сертификаты</a>
+      {occasions.map((o) => <a href={url(o.slug + '/')}>{o.menu}</a>)}
     </nav>
     <div class="row">
       <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
@@ -137,6 +140,9 @@ const metrika = site.analytics.metrikaId;
         <div><p class="eyebrow" style="margin-bottom:14px">Форматы</p><ul>
           {formats.map((f) => <li><a href={url(f.slug + '/')}>{f.name}</a></li>)}
           <li><a href={url('sertifikaty/')}>Сертификаты</a></li>
+        </ul></div>
+        <div><p class="eyebrow" style="margin-bottom:14px">Поводы</p><ul>
+          {occasions.map((o) => <li><a href={url(o.slug + '/')}>{o.menu}</a></li>)}
         </ul></div>
         <div class="f-company"><p class="eyebrow" style="margin-bottom:14px">Компания</p><ul>
           {nav.map((n) => <li><a href={url(n.href)}>{n.label}</a></li>)}

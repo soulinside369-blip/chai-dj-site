@@ -2,10 +2,10 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FormatCards from '../components/FormatCards.astro';
-import { formats, calc, url } from '../lib/data';
+import { formats, occasions, calc, url } from '../lib/data';
 import { rub, num } from '../lib/price.js';
 ---
-<Base title="Форматы и цены" description="Чай + DJ, чайная церемония, DJ-сет, мастер-класс и сертификаты: что входит и сколько стоит. Екатеринбург и область.">
+<Base title="Цены на чайную церемонию и DJ — форматы и что входит" description="Сколько стоит выездная чайная церемония, DJ-сет и «Чай + DJ» в Екатеринбурге: базовые пакеты от 15 000 ₽, надбавки за гостей, часы и выезд. Онлайн-калькулятор.">
   <PageHero title="Форматы и цены" eyebrow="Услуги" crumbs={[{ label: 'Услуги' }]} lead="Пять форматов: от камерного мастер-класса до вечера на 150 гостей. Цены для Екатеринбурга; выезд в область считается по километрам." />
   <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(40px,6vw,72px)"><div class="wrap"><h2 class="sr-only">Пять форматов</h2><FormatCards /></div></section>
 
@@ -25,6 +25,13 @@ import { rub, num } from '../lib/price.js';
       </table></div>
       <p class="muted" style="margin-top:16px">Для всех форматов: выезд за пределы Екатеринбурга — {calc.perKm} ₽/км в обе стороны, генератор при отсутствии 220 В — {rub(calc.generator)}, больше {calc.individualOver} гостей — индивидуальный расчёт.</p>
       <a class="btn brass" style="margin-top:24px" href={url('kontakty/')} data-calc-link data-goal="click_calc">Посчитать свой вечер <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <section class="sec tight tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <p class="eyebrow" style="margin-bottom:16px">Под повод</p>
+      <div class="others">{occasions.map((o) => <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{o.h1}</span></a>)}</div>
     </div>
   </section>
 </Base>

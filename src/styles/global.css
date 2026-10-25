@@ -422,7 +422,7 @@ td:first-child { font-weight: 700; }
 .site-f { padding-top: clamp(64px, 9vw, 120px); padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); overflow: hidden; }
 .f-cta { display: grid; gap: 28px; padding-bottom: clamp(48px, 7vw, 88px); border-bottom: 1px solid var(--line); }
 .f-cta .h1 { max-width: 14ch; }
-.f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px; padding-top: 48px; font-size: 14.5px; }
+.f-grid { display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 32px; padding-top: 48px; font-size: 14.5px; }
 @media (max-width: 860px) { .f-grid { grid-template-columns: 1fr 1fr; } }
 .f-grid ul { list-style: none; padding: 0; display: grid; gap: 10px; }
 .f-grid a { text-decoration: none; color: var(--muted); }

@@ -230,6 +230,39 @@ collections:
                   - { label: Этап, name: title }
                   - { label: Пояснение, name: text }
 
+      - name: occasions
+        label: Страницы под повод (Новый год, день рождения, свадьба)
+        file: src/data/occasions.json
+        fields:
+          - label: Поводы
+            name: items
+            widget: list
+            allow_add: false
+            summary: '{{fields.name}}'
+            fields:
+              - { label: Адрес страницы (не менять), name: slug, widget: hidden }
+              - { label: Название, name: name }
+              - { label: Пункт в меню, name: menu }
+              - { label: Заголовок страницы (H1), name: h1 }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - { label: SEO title, name: seoTitle }
+              - { label: SEO description, name: seoDescription, widget: text }
+              - { label: 'Кадр (временная иллюстрация — замените реальным фото)', name: image, widget: image, required: false }
+              - { label: Подпись к кадру (alt), name: imageAlt, required: false }
+              - { label: 'Форматы на странице (первый — главный)', name: formats, widget: select, multiple: true, options: [{ label: Чай + DJ, value: teadj }, { label: Чайная церемония, value: tea }, { label: DJ-сет, value: dj }, { label: Мастер-класс, value: mk }] }
+              - label: Почему подходит (4 пункта)
+                name: points
+                widget: list
+                fields:
+                  - { label: Заголовок, name: title }
+                  - { label: Текст, name: text, widget: text }
+              - label: Вопросы на странице
+                name: faq
+                widget: list
+                fields:
+                  - { label: Вопрос, name: q }
+                  - { label: Ответ, name: a, widget: text }
+
       - name: calc
         label: Калькулятор — надбавки и города
         file: src/data/calc.json

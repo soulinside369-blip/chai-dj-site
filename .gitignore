@@ -7,3 +7,4 @@ public/api/config.php
 public/api/private/*
 !public/api/private/.htaccess
 art/
+certs/

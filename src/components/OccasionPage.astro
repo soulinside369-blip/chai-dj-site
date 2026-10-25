@@ -1,0 +1,57 @@
+---
+// Страница под повод: зачем этот формат на таком празднике → подходящие форматы с ценой → вопросы
+import PageHero from './PageHero.astro';
+import Photo from './Photo.astro';
+import { formats, occasions, url } from '../lib/data';
+import { rub } from '../lib/price.js';
+interface Props { o: (typeof occasions)[number] }
+const { o } = Astro.props;
+const fmts = o.formats.map((k) => formats.find((f) => f.key === k)).filter(Boolean) as typeof formats;
+const main = fmts[0];
+const others = occasions.filter((x) => x.slug !== o.slug);
+---
+<PageHero title={o.h1} eyebrow={o.name} lead={o.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: o.name }]}>
+  {o.image && <Photo src={o.image} alt={o.imageAlt} class="hero-media" eager sizes="(max-width: 860px) 100vw, 45vw" />}
+  {main && (
+    <div class="price-bar">
+      <p class="price"><span class="muted">{main.name}, {main.duration}</span><b>от {rub(main.base)}</b></p>
+      <a class="btn brass" href={url('kontakty/')} data-calc-link data-fmt={main.key} data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>
+    </div>
+  )}
+</PageHero>
+
+<section class="sec tone-coal" data-htone="coal">
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Почему подходит</p><h2>Что получает ваш праздник</h2></div>
+    <div class="grid4">{o.points.map((p) => <article class="tile"><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
+  </div>
+</section>
+
+<section class="sec tone-coal2" data-htone="coal">
+  <div class="wrap how">
+    <div>
+      <div class="head"><p class="eyebrow">Форматы</p><h2>Что выбрать</h2></div>
+      <div class="others" style="display:grid;gap:10px">
+        {fmts.map((f) => (
+          <a class="other" href={url(f.slug + '/')}><b>{f.name}</b><span class="muted">{f.duration} · {f.guestsLabel} · от {rub(f.base)}</span></a>
+        ))}
+      </div>
+      <a class="btn brass sm" style="margin-top:16px" href={url('kontakty/')} data-calc-link data-fmt={main?.key} data-goal="click_calc">Посчитать свой вечер</a>
+    </div>
+    <div>
+      <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2></div>
+      <div class="faq">{o.faq.map((i) => <details><summary>{i.q}</summary><p>{i.a}</p></details>)}</div>
+      <a class="link" style="display:inline-block;margin-top:16px" href={url('faq/')}>Все вопросы →</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec tight tone-coal" data-htone="coal">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:16px">Другие поводы</p>
+    <div class="others">
+      {others.map((x) => { const m = formats.find((f) => f.key === x.formats[0]); return <a class="other" href={url(x.slug + '/')}><b>{x.name}</b><span class="muted">{m ? `${m.name} · от ${rub(m.base)}` : x.menu}</span></a>; })}
+      <a class="other" href={url('sertifikaty/')}><b>Подарочный сертификат</b><span class="muted">если праздник не ваш</span></a>
+    </div>
+  </div>
+</section>
