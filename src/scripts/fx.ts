@@ -99,7 +99,6 @@ if (fine && !reduce) {
 
 /* ---- Линия прогресса у шагов ---- */
 document.querySelectorAll<HTMLElement>('.steps[data-progress]').forEach((ol) => {
-  const bar = document.createElement('i'); bar.className = 'bar'; ol.prepend(bar);
   const upd = () => {
     const r = ol.getBoundingClientRect();
     const p = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (innerHeight * 0.6)));

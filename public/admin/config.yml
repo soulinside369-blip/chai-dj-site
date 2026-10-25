@@ -285,7 +285,7 @@ collections:
               - { label: Сорт, name: name }
               - { label: Описание, name: note }
           - { label: Добавка для больших событий, name: teasLarge, widget: text }
-          - { label: PDF техтребований для площадки, name: venuePdf, widget: file, required: false }
+          - { label: "PDF техтребований (необязательно: без файла PDF собирается сам из таблиц выше)", name: venuePdf, widget: file, required: false }
 
       - name: legal
         label: Юридические тексты

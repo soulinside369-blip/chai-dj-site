@@ -7,12 +7,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check:calc": "node scripts/check-calc.mjs"
+    "check:calc": "node scripts/check-calc.mjs",
+    "pdf": "node scripts/make-pdf.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/manrope": "^5.3.0",
     "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
   }
 }

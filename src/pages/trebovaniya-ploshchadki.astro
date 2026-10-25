@@ -1,0 +1,82 @@
+---
+// Лист А4 «Техтребования для площадки». Из него при выкладке собирается PDF (scripts/make-pdf.mjs).
+import '../styles/global.css';
+import { equipment, site } from '../lib/data';
+const c = site.contacts;
+const contactLine = [c.phone && c.phoneDisplay, c.telegram && `Telegram @${c.telegram.replace(/^@/, '')}`, c.max && `MAX ${c.max}`, c.email].filter(Boolean).join(' · ');
+---
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Техтребования для площадки — {site.brand.name}</title>
+  <style>
+    @page { size: A4; margin: 14mm 14mm 16mm; }
+    body { background: #fff; color: var(--coal); font: 400 10.5pt/1.45 var(--body); }
+    body::after { display: none; }
+    .sheet { max-width: 182mm; margin: 0 auto; padding: 24px 0; display: grid; gap: 14pt; }
+    header { display: flex; justify-content: space-between; align-items: end; border-bottom: 1.5pt solid var(--coal); padding-bottom: 10pt; }
+    header b { font: 600 26pt/1 var(--display); }
+    header span { font-size: 9pt; color: var(--on-rice-muted); text-align: right; }
+    h1 { font-size: 30pt; margin-top: 4pt; }
+    h2 { font-size: 15pt; margin-top: 6pt; }
+    .lead { font-size: 10.5pt; color: var(--on-rice-muted); max-width: none; }
+    table { min-width: 0; font-size: 9.5pt; border: 1px solid var(--line-rice); }
+    th, td { padding: 6pt 8pt; border-bottom: 1px solid var(--line-rice); }
+    th { color: var(--on-rice-muted); font-size: 8pt; }
+    td:first-child { width: 26%; }
+    tr { break-inside: avoid; }
+    .scheme { border: 1px solid var(--line-rice); border-radius: 6pt; padding: 8pt; }
+    .scheme text { font-family: 'Manrope', sans-serif; }
+    .newpage { break-before: page; }
+    footer { margin-top: 10pt; }
+    footer { border-top: 1px solid var(--line-rice); padding-top: 8pt; font-size: 9pt; color: var(--on-rice-muted); display: flex; justify-content: space-between; gap: 12pt; }
+    .stub { background: #EFE6D4; }
+    @media screen { body { background: var(--rice-2); } .sheet { background: #fff; padding: 18mm 14mm; margin-block: 24px; box-shadow: 0 10px 40px rgb(0 0 0 / .12); } }
+    @media screen and (max-width: 720px) { .sheet { margin: 0; padding: 20px 16px; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header><b>{site.brand.name}</b><span>{site.brand.tagline}<br />{site.brand.region}</span></header>
+    <div>
+      <h1>Техтребования для площадки</h1>
+      <p class="lead">Для администратора площадки. Звук, свет, посуду, воду и мебель привозим сами — от площадки нужны место, электричество и заезд.</p>
+    </div>
+
+    <h2>Что нужно от площадки</h2>
+    <table>
+      <thead><tr><th>Требование</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
+      <tbody>{equipment.venue.map((r) => <tr><td><b>{r.what}</b></td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
+    </table>
+
+    <div class="scheme">
+      <svg viewBox="0 0 900 200" role="img" aria-label="Схема: чайная зона и DJ-зона минимум в 8 метрах друг от друга" style="width:100%;height:auto">
+        <rect x="30" y="40" width="210" height="120" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
+        <text x="135" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">Чайная зона</text>
+        <text x="135" y="124" text-anchor="middle" font-size="13" fill="#5C554A">3 × 3 м · 220 В до 4 кВт</text>
+        <rect x="660" y="55" width="210" height="90" rx="10" fill="none" stroke="#7A5A2B" stroke-width="2" />
+        <text x="765" y="98" text-anchor="middle" font-size="24" style="font-family:'Cormorant Garamond',serif" fill="#1C1B18">DJ-зона</text>
+        <text x="765" y="124" text-anchor="middle" font-size="13" fill="#5C554A">2 × 2 м · 220 В до 3 кВт</text>
+        <path d="M255 100 H645" stroke="#5C554A" stroke-dasharray="6 6" />
+        <path d="M255 100 l12 -7 v14 z M645 100 l-12 -7 v14 z" fill="#5C554A" />
+        <text x="450" y="88" text-anchor="middle" font-size="15" font-weight="700" fill="#1C1B18">не ближе 8 м</text>
+        <text x="450" y="124" text-anchor="middle" font-size="13" fill="#5C554A">от 50 гостей — 12 м или соседний зал</text>
+      </svg>
+    </div>
+
+    <h2 class="newpage">Что привозим</h2>
+    <table>
+      <thead><tr><th>Что</th><th>До 50 гостей</th><th>50–150 гостей</th></tr></thead>
+      <tbody>{equipment.kit.map((r) => <tr><td><b>{r.what}</b></td><td>{r.small}</td><td>{r.large}</td></tr>)}</tbody>
+    </table>
+
+    <footer>
+      <span>Вопросы по техническим деталям: {contactLine || <span class="stub">[контакты — от заказчика]</span>}</span>
+      <span>{site.brand.legal}</span>
+    </footer>
+  </main>
+</body>
+</html>

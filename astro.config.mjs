@@ -10,7 +10,7 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  integrations: [sitemap({ filter: (p) => !/\/(spasibo|admin)\//.test(p) })],
+  integrations: [sitemap({ filter: (p) => !/\/(spasibo|admin|trebovaniya-ploshchadki)\//.test(p) })],
   build: { inlineStylesheets: 'always', format: 'directory' },
   compressHTML: true,
 });

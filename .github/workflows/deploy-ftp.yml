@@ -20,6 +20,10 @@ jobs:
         env:
           SITE_URL: ${{ vars.SITE_URL }}
           BASE_PATH: /
+      - run: npx playwright install --with-deps chromium
+      - run: npm run pdf
+        env:
+          BASE_PATH: /
       - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}

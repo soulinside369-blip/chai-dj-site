@@ -6,9 +6,8 @@ import { equipment, url } from '../lib/data';
 <Base title="Оборудование, чайная карта и требования к площадке" description="Звук, свет, чайная станция и пять сортов чая. Что нужно от площадки: место, электричество, заезд.">
   <PageHero title="Оборудование и чайная карта" eyebrow="Без сюрпризов на площадке" lead="Привозим всё своё: звук, свет, чайную станцию, воду и мебель. Площадке нужны только место и электричество." crumbs={[{ label: 'Оборудование' }]}>
     <div class="row rv" style="--d:.45s">
-      {equipment.venuePdf
-        ? <a class="btn" href={url(equipment.venuePdf)} download data-goal="download_pdf">Техтребования для площадки, PDF</a>
-        : <a class="btn ghost" href="#venue">Техтребования для площадки</a>}
+      <a class="btn" href={url(equipment.venuePdf || 'docs/trebovaniya-ploshchadki.pdf')} download data-goal="download_pdf">Скачать техтребования, PDF</a>
+      <a class="btn ghost" href="#venue">Смотреть на сайте</a>
     </div>
   </PageHero>
 

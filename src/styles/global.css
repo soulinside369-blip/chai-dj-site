@@ -272,7 +272,7 @@ em, .it { font-style: italic; font-weight: 500; }
 .steps li { counter-increment: s; display: grid; gap: 10px; align-content: start; padding-top: 22px; position: relative; }
 .steps li::before { content: '0' counter(s); font: 600 54px/1 var(--display); color: var(--accent); }
 .steps li::after { content: ''; position: absolute; top: 0; left: 0; height: 1px; width: 100%; background: var(--line); }
-.steps .bar { position: absolute; top: 0; left: 0; height: 2px; background: var(--brass); width: calc(var(--sp, 0) * 100%); transition: width .2s linear; z-index: 1; }
+.steps::before { content: ''; position: absolute; top: 0; left: 0; height: 2px; background: var(--brass); width: calc(var(--sp, 0) * 100%); transition: width .2s linear; z-index: 1; }
 .steps b { font-size: 18px; }
 .steps span { color: var(--muted); font-size: 15px; }
 @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } }
@@ -427,6 +427,7 @@ td:first-child { font-weight: 700; }
 .f-grid ul { list-style: none; padding: 0; display: grid; gap: 10px; }
 .f-grid a { text-decoration: none; color: var(--muted); }
 .f-grid a:hover { color: var(--fg); }
+.f-big::before { content: attr(data-text); }
 .f-big { font: 600 clamp(80px, 18vw, 260px)/.8 var(--display); letter-spacing: -.04em; margin-top: 56px; color: var(--coal-3); white-space: nowrap; user-select: none; }
 
 /* Нижняя панель на телефоне */
@@ -473,3 +474,8 @@ h1, h2, h3 { overflow-wrap: break-word; }
 .photo.wide-photo { aspect-ratio: 21 / 9; min-height: 0; width: 100%; max-width: 100%; }
 @media (max-width: 760px) { .photo.wide-photo { aspect-ratio: 4 / 3; } }
 .photo[style*='aspect-ratio'] { min-height: 0; }
+
+/* Первый экран виден сразу (LCP): только сдвиг, без прозрачности */
+.js .hero .rv, .js .page-hero .rv, .js .hero .split-words .w, .js .page-hero .split-words .w { opacity: 1; }
+.js .hero .split-words:not(.in) .w, .js .page-hero .split-words:not(.in) .w { transform: translateY(.18em); }
+.js .hero .rv:not(.in), .js .page-hero .rv:not(.in) { transform: translateY(14px); }

@@ -25,6 +25,10 @@ jobs:
         env:
           SITE_URL: https://soulinside369-blip.github.io
           BASE_PATH: /chai-dj-site/
+      - run: npx playwright install --with-deps chromium
+      - run: npm run pdf
+        env:
+          BASE_PATH: /chai-dj-site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
