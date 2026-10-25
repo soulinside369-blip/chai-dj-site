@@ -51,34 +51,71 @@ collections:
               - { label: Срок ответа в рабочее время (мин), name: replyMinutes, widget: number, value_type: int }
               - { label: Ночные заявки — ответ до (час), name: nightReplyBy, widget: number, value_type: int }
               - { label: Текст для сайта, name: text }
-          - label: Первый экран
+          - label: Первый экран — конструктор вечера
             name: hero
             widget: object
             fields:
               - { label: Надзаголовок, name: eyebrow }
-              - { label: Заголовок А, name: titleA }
-              - { label: Заголовок Б, name: titleB }
-              - { label: Какой заголовок показывать, name: variant, widget: select, options: [A, B] }
-              - { label: Подзаголовок, name: lead, widget: text }
-              - { label: Подпись к цене, name: priceLabel }
-              - { label: 'Постер (фото фона)', name: poster, widget: image, required: false }
-              - { label: 'Фоновое видео 6–8 с, mp4 до 1,5 МБ', name: video, widget: file, required: false }
-              - { label: 'Преимущества (формат: «Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
-          - label: Сцена «Как проходит вечер»
-            name: evening
-            widget: object
-            fields:
-              - { label: Заголовок, name: title }
-              - label: Акты (ровно 3)
-                name: acts
+              - label: Тексты для двух аудиторий
+                name: segments
+                widget: object
+                fields:
+                  - label: Для компании
+                    name: corp
+                    widget: object
+                    fields:
+                      - { label: Подпись кнопки переключателя, name: label }
+                      - { label: Заголовок, name: title }
+                      - { label: Подзаголовок, name: lead, widget: text }
+                      - { label: Текст главной кнопки, name: cta }
+                      - { label: 'Преимущества («Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
+                  - label: Для себя
+                    name: private
+                    widget: object
+                    fields:
+                      - { label: Подпись кнопки переключателя, name: label }
+                      - { label: Заголовок, name: title }
+                      - { label: Подзаголовок, name: lead, widget: text }
+                      - { label: Текст главной кнопки, name: cta }
+                      - { label: 'Преимущества («Заголовок — пояснение»)', name: usp, widget: list, field: { label: Пункт, name: item } }
+              - { label: Аудитория по умолчанию, name: defaultSegment, widget: select, options: [{ label: Для компании, value: corp }, { label: Для себя, value: private }] }
+              - { label: Заголовок над ползунком, name: sliderTitle }
+              - label: Точки ползунка (3 шт.)
+                name: stops
                 widget: list
                 min: 3
                 max: 3
                 fields:
-                  - { label: 'Время (ЧЧ:ММ)', name: time }
-                  - { label: Название, name: title }
-                  - { label: Текст, name: text, widget: text }
+                  - { label: 'Позиция 0–100', name: at, widget: number, value_type: int }
+                  - { label: Формат, name: fmt, widget: select, options: [{ label: Чайная церемония, value: tea }, { label: Чай + DJ, value: teadj }, { label: DJ-сет, value: dj }, { label: Мастер-класс, value: mk }] }
+                  - { label: 'Время на часах (ЧЧ:ММ)', name: time }
+                  - { label: Название, name: label }
+                  - { label: Описание, name: text, widget: text }
+          - label: Атмосфера (фото и тизер)
+            name: atmosphere
+            widget: object
+            fields:
+              - { label: Заголовок, name: title }
               - { label: 'Тизер 30–45 с (mp4)', name: teaser, widget: file, required: false }
+              - label: Фото
+                name: photos
+                widget: list
+                fields:
+                  - { label: Фото, name: photo, widget: image, required: false }
+                  - { label: Подпись (alt), name: alt }
+                  - { label: Какой кадр нужен (видно, пока фото нет), name: need, required: false }
+          - label: Заметки под аудиторию (после «Как это работает»)
+            name: segmentNotes
+            widget: object
+            fields:
+              - label: Для компании
+                name: corp
+                widget: object
+                fields: [{ label: Заголовок, name: title }, { label: Текст, name: text, widget: text }, { label: Ссылка, name: link }, { label: Текст ссылки, name: linkLabel }]
+              - label: Для себя
+                name: private
+                widget: object
+                fields: [{ label: Заголовок, name: title }, { label: Текст, name: text, widget: text }, { label: Ссылка, name: link }, { label: Текст ссылки, name: linkLabel }]
           - label: Как это работает
             name: steps
             widget: list

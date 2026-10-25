@@ -133,6 +133,7 @@ if (form) {
   $$('[data-place]').forEach((b) => b.addEventListener('click', () => { S.place = b.dataset.place!; $$('[data-place]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); }));
   $$('[data-power]').forEach((b) => b.addEventListener('click', () => { S.power = b.dataset.power!; $$('[data-power]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); }));
   form.addEventListener('calc:format', ((e: CustomEvent) => { setFmt(e.detail); show(e.detail === 'cert' ? 4 : 2); }) as EventListener);
+  form.addEventListener('calc:prefill', ((e: CustomEvent) => { setFmt(e.detail.fmt); guestsIn.value = String(e.detail.guests); show(2); }) as EventListener);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();

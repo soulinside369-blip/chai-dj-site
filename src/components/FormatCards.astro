@@ -12,7 +12,7 @@ const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
       <span class="badge">{f.badge}</span>
       <h3>{f.name}</h3>
       <p class="muted">{f.line}</p>
-      <div class="meta"><span>{f.duration} · {f.guestsLabel}</span><b class="tnum">от {rub(f.base)}</b></div>
+      <div class="meta"><span>{f.duration} · {f.guestsLabel}</span><b class="tnum">от {rub(f.base)}</b><span class="per">≈ {rub(Math.round(f.base / f.G / 50) * 50)} на гостя в базовом пакете</span></div>
       <div class="row">
         <a class={`btn sm${f.key === 'teadj' ? ' brass' : ''}`} href={url(f.slug + '/#calc')} data-calc-link data-fmt={f.key} data-goal="click_calc">Рассчитать</a>
         <a class="btn sm ghost" href={url(f.slug + '/')}>Подробнее</a>

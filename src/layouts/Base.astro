@@ -81,7 +81,8 @@ const metrika = site.analytics.metrikaId;
     </script>
   )}
 </head>
-<body>
+<body data-seg={site.hero.defaultSegment}>
+  <script is:inline>try{var s=localStorage.getItem('cdj_seg');if(s)document.body.dataset.seg=s}catch(e){}</script>
   <a class="skip" href="#main">К содержанию</a>
 
   <header class="site-h" data-tone={tone} id="siteHeader">
