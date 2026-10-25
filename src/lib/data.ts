@@ -5,10 +5,12 @@ import faq from '../data/faq.json';
 import casesData from '../data/cases.json';
 import equipment from '../data/equipment.json';
 import occasionsData from '../data/occasions.json';
+import scenariosData from '../data/scenarios.json';
 
 export { site, calc, faq, equipment };
 export const formats = formatsData.items;
 export const occasions = occasionsData.items;
+export const scenarios = scenariosData;
 /** Превью на github.io (сайт не в корне) — закрываем от индексации, чтобы не было дублей боевого домена */
 export const isPreview = import.meta.env.BASE_URL !== '/';
 export const cases = casesData.cases;

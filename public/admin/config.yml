@@ -293,7 +293,7 @@ collections:
               - { label: 'Черновик — не показывать на сайте', name: draft, widget: boolean, default: false }
               - { label: Тип, name: type, widget: select, options: [{ label: Корпоратив, value: corp }, { label: Частное событие, value: private }, { label: С агентством, value: agency }] }
               - { label: Подпись типа, name: typeLabel }
-              - { label: 'Клиент (пока есть слово ПРИМЕР — кейс на сайт не попадёт)', name: client }
+              - { label: 'Клиент (если есть слово ПРИМЕР — кейс на сайт не попадёт)', name: client }
               - { label: Гостей, name: guests }
               - { label: Задача, name: task, widget: text }
               - { label: Что сделали, name: solution, widget: text }
@@ -317,6 +317,22 @@ collections:
             fields:
               - { label: Компания, name: name }
               - { label: Логотип, name: image, widget: image }
+
+      - name: scenarios
+        label: Сценарии вечеров (страница «Кейсы»)
+        file: src/data/scenarios.json
+        fields:
+          - { label: 'Подпись (не убирайте: сценарии — не отчёты о прошедших событиях)', name: note, widget: text }
+          - label: Сценарии
+            name: items
+            widget: list
+            summary: '{{fields.label}} — {{fields.title}}'
+            fields:
+              - { label: Повод, name: label }
+              - { label: Название, name: title }
+              - { label: Гостей, name: guests, required: false }
+              - { label: Запрос, name: task, widget: text }
+              - { label: Сценарий, name: plan, widget: text }
 
       - name: faq
         label: Вопросы и ответы

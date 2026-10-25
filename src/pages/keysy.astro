@@ -3,14 +3,15 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
-import { cases, isRealCase, reviews, url, links } from '../lib/data';
+import { cases, isRealCase, reviews, scenarios, url, links } from '../lib/data';
 const realCases = cases.filter(isRealCase);
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
+const guestsLabel = (g: string) => { const n = parseInt(g); if (!n) return g; const m10 = n % 10, m100 = n % 100; return `${n} ${m10 === 1 && m100 !== 11 ? 'гость' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'гостя' : 'гостей'}`; };
 const types = [...new Set(realCases.map((c) => c.type))];
 const labels: Record<string, string> = { corp: 'Корпоративы', private: 'Частные события', agency: 'С агентствами' };
 ---
-<Base title="Кейсы: корпоративы и частные события" description="Как проходят наши вечера: корпоративы, частные праздники и проекты с ивент-агентствами в Екатеринбурге.">
-  <PageHero title="Кейсы" eyebrow="Где мы уже были" lead="Корпоративы, частные вечера и проекты с ивент-агентствами." crumbs={[{ label: 'Кейсы' }]}>
+<Base title="Кейсы и сценарии вечеров" description="Как мы планируем вечера: юбилей в загородной резиденции, день рождения в пентхаусе, приём для партнёров, семейный праздник. Чайная церемония и DJ под ваш повод.">
+  <PageHero title="Кейсы" eyebrow="Где мы уже были" lead="Корпоративы, частные вечера и проекты с ивент-агентствами — и сценарии того, как мы собираем вечер под повод." crumbs={[{ label: 'Кейсы' }]}>
     {types.length > 1 && (
       <div class="chips" role="group" aria-label="Фильтр по типу события" data-filter="#caseGrid">
         <button class="chip" aria-pressed="true" data-f="all">Все</button>
@@ -23,11 +24,31 @@ const labels: Record<string, string> = { corp: 'Корпоративы', private
       {realCases.length > 0 ? <Cases id="caseGrid" onlyReal /> : (
         <div class="empty-state">
           <p class="h3 display">Первые истории готовим к публикации</p>
-          <p class="muted">Кейсы выходят только с согласия клиентов. А пока можно посчитать свой вечер или спросить нас о похожих мероприятиях — расскажем лично.</p>
+          <p class="muted">Кейсы выходят только с согласия клиентов. Ниже — сценарии вечеров, а о похожих мероприятиях расскажем лично.</p>
           <div class="row"><a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Посчитать вечер</a><a class="btn ghost" href={links.telegram} data-goal="click_telegram">Спросить в Telegram</a></div>
         </div>
       )}
     </div>
   </section>
+  {scenarios.items.length > 0 && (
+    <section class="sec tone-coal2" data-htone="coal">
+      <div class="wrap">
+        <div class="head"><p class="eyebrow">Сценарии</p><h2>Как может пройти ваш вечер</h2>{scenarios.note && <p class="lead">{scenarios.note}</p>}</div>
+        <div class="cards3">
+          {scenarios.items.map((c, i) => (
+            <article class="case tile rv" style={`--d:${(i % 3) * 0.08}s`}>
+              <p class="eyebrow">{c.label}{c.guests && ` · ${guestsLabel(c.guests)}`}</p>
+              <h3>{c.title}</h3>
+              <dl>
+                <div><dt>Запрос</dt><dd>{c.task}</dd></div>
+                <div><dt>Сценарий</dt><dd>{c.plan}</dd></div>
+              </dl>
+              <a class="link" href={url('kontakty/')} data-calc-link data-goal="click_calc">Похожий вечер →</a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
   {realReviews && <section class="sec tone-coal2" data-htone="coal"><div class="wrap"><div class="head"><p class="eyebrow">Отзывы</p><h2>Что говорят заказчики</h2></div><Reviews onlyReal /></div></section>}
 </Base>
