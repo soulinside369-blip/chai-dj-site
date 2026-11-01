@@ -1,0 +1,40 @@
+---
+// Опция «Выездной бар»: добавляется к любому формату, цена — по запросу
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { extras, occasions, formats, url } from '../lib/data';
+import { rub } from '../lib/price.js';
+const b = extras.bar;
+const corp = occasions.slice(0, 4);
+---
+<Base title={b.seoTitle} description={b.seoDescription} faqItems={b.faq}>
+  <PageHero title={b.h1} eyebrow="Опция · 18+" lead={b.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: b.name }]}>
+    <div class="price-bar">
+      <p class="price"><span class="muted">{b.priceNote}</span></p>
+      <a class="btn brass" href={url('kontakty/')} data-calc-link data-bar="1" data-goal="click_calc">Добавить бар к расчёту <span class="arr">→</span></a>
+    </div>
+  </PageHero>
+
+  <section class="sec tone-coal" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Как работаем</p><h2>Бар в одной программе с чаем и музыкой</h2></div>
+      <div class="grid4">{b.points.map((p) => <article class="tile"><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
+    </div>
+  </section>
+
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap how">
+      <div>
+        <div class="head"><p class="eyebrow">Чаще всего заказывают</p><h2>На какие события</h2></div>
+        <div class="others" style="display:grid;gap:10px">
+          {corp.map((o) => { const m = formats.find((f) => f.key === o.formats[0]); return <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{m ? `${m.name} · от ${rub(m.base)}` : ''}</span></a>; })}
+        </div>
+      </div>
+      <div>
+        <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2></div>
+        <div class="faq">{b.faq.map((i) => <details><summary>{i.q}</summary><p>{i.a}</p></details>)}</div>
+        <p class="muted" style="margin-top:20px;font-size:13px">{b.age}</p>
+      </div>
+    </div>
+  </section>
+</Base>

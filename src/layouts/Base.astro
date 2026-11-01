@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { site, nav, url, links, formats, occasions, faq, isStub, isPreview } from '../lib/data';
+import { site, nav, url, links, formats, occasions, faq, isStub, isPreview, extras } from '../lib/data';
 import Calculator from '../components/Calculator.astro';
 import Icon from '../components/Icon.astro';
 import { rub } from '../lib/price.js';
@@ -127,6 +127,7 @@ const metrika = site.analytics.metrikaId;
       <p class="sheet-k">Под повод</p>
       <div class="sheet-chips">
         {occasions.map((o) => <a class="chip" href={url(o.slug + '/')}>{o.menu}</a>)}
+        <a class="chip" href={url(extras.bar.slug + '/')}>Выездной бар</a>
         <a class="chip" href={url('sertifikaty/')}>Сертификат в подарок</a>
       </div>
       <nav class="sheet-links" aria-label="Разделы">
@@ -162,6 +163,7 @@ const metrika = site.analytics.metrikaId;
         </div>
         <div><p class="eyebrow" style="margin-bottom:14px">Форматы</p><ul>
           {formats.map((f) => <li><a href={url(f.slug + '/')}>{f.name}</a></li>)}
+          <li><a href={url(extras.bar.slug + '/')}>Выездной бар</a></li>
           <li><a href={url('sertifikaty/')}>Сертификаты</a></li>
         </ul></div>
         <div><p class="eyebrow" style="margin-bottom:14px">Поводы</p><ul>

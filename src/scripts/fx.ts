@@ -22,11 +22,12 @@ document.addEventListener('click', (e) => {
 const drawer = document.getElementById('calcDrawer') as HTMLDialogElement | null;
 const calcForm = document.getElementById('calc');
 let lastFocus: HTMLElement | null = null;
-export function openCalc(detail?: { fmt?: string; guests?: number; cert?: string }) {
+export function openCalc(detail?: { fmt?: string; guests?: number; cert?: string; bar?: boolean }) {
   if (!drawer || !calcForm) return;
   lastFocus = document.activeElement as HTMLElement;
   if (detail?.guests) calcForm.dispatchEvent(new CustomEvent('calc:prefill', { detail }));
   else if (detail?.fmt) calcForm.dispatchEvent(new CustomEvent('calc:format', { detail: detail.fmt }));
+  if (detail?.bar) calcForm.dispatchEvent(new CustomEvent('calc:bar'));
   if (detail?.cert) { const sel = calcForm.querySelector<HTMLSelectElement>('#c-cert'); if (sel) { sel.value = detail.cert; sel.dispatchEvent(new Event('change', { bubbles: true })); } }
   drawer.showModal();
   document.documentElement.classList.add('drawer-open');
@@ -43,12 +44,12 @@ document.addEventListener('click', (e) => {
   closeMenu();
   const fmt = a.dataset.fmt;
   const cfg = document.querySelector<HTMLElement>('[data-cfg]');
-  if (cfg && (!fmt || ['tea', 'teadj', 'dj'].includes(fmt))) {
+  if (cfg && !a.dataset.bar && (!fmt || ['tea', 'teadj', 'dj'].includes(fmt))) {
     if (fmt) cfg.dispatchEvent(new CustomEvent('cfg:set', { detail: fmt }));
     cfg.querySelector('.cfg-panel')!.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
     return;
   }
-  openCalc({ fmt, cert: a.dataset.cert });
+  openCalc({ fmt, cert: a.dataset.cert, bar: !!a.dataset.bar });
 });
 
 /* ---- Шапка: тон по секции под ней, прячется при прокрутке вниз ---- */

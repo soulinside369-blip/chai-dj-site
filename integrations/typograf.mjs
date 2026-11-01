@@ -27,6 +27,7 @@ const BLOCK = /^(h1|h2|h3|h4|p|li|summary|dd|dt|figcaption|blockquote|b|button|a
 
 /** Склеить последнее слово с предыдущим, только если получается короткий кусок (≤ 14 знаков), чтобы не вылезало на узких экранах */
 function glueLast(t, max = 13) {
+  if (t.trim().split(/[ \t\n\u00a0]+/).length < 4) return t; // короткие подписи (пункты меню) переносятся сами
   return t.replace(/([^\s\u00a0]+)[ \t\n]+([^\s\u00a0]+\s*)$/, (m, a, b) => (a.length + b.trim().length <= max && b.trim().length <= 8 ? `${a}\u00a0${b}` : m));
 }
 

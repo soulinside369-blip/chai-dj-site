@@ -20,7 +20,7 @@ if (form) {
   const certIn = $<HTMLSelectElement>('#c-cert');
   const contact = $('[data-contact]');
   const totalEl = $('[data-total]');
-  const S = { fmt: '', place: 'in', power: 'yes', step: 1, shown: 0 };
+  const S = { fmt: '', place: 'in', power: 'yes', step: 1, shown: 0, bar: false };
 
   maskPhone(contact.querySelector('[name="contact"]')!);
 
@@ -89,7 +89,8 @@ if (form) {
       note.textContent = `Вилка ±${D.calc.spreadPercent} %. Точную смету пришлёт менеджер.`;
     }
     lines.innerHTML = r.lines.map((l: any) => `<li><span>${l.label}</span><span>${l.base ? '' : '+'}${rub(l.sum)}</span></li>`).join('')
-      + `<li><span>Входит</span><span>${f.what.length} пункта</span></li>`;
+      + `<li><span>Входит</span><span>${f.what.length} пункта</span></li>`
+      + (S.bar ? '<li><span>Выездной бар</span><span>по запросу</span></li>' : '');
     if (f.maxGuests && guests > f.maxGuests) { warn.hidden = false; warn.textContent = `Мастер-класс — максимум для ${f.maxGuests} человек. Для большой группы подойдёт «Чайная церемония» или «Чай + DJ».`; }
     else if (S.power === 'unknown') { warn.hidden = false; warn.textContent = `Уточним у площадки. Если розетки нет — генератор +${rub(D.calc.generator)}.`; }
     else if (S.place === 'out') { warn.hidden = false; warn.textContent = 'На улице нужен шатёр или навес над техникой и ровная поверхность.'; }
@@ -131,6 +132,10 @@ if (form) {
   });
   form.addEventListener('input', (e) => { if ((e.target as HTMLElement).closest('.cstep[data-step="2"], .cstep[data-step="3"]')) render(); });
   $$('[data-place]').forEach((b) => b.addEventListener('click', () => { S.place = b.dataset.place!; $$('[data-place]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); }));
+  const barBtn = $<HTMLButtonElement>('[data-bar-toggle]');
+  const setBar = (on: boolean) => { S.bar = on; barBtn.setAttribute('aria-pressed', String(on)); render(); };
+  barBtn.addEventListener('click', () => setBar(!S.bar));
+  form.addEventListener('calc:bar', () => setBar(true));
   $$('[data-power]').forEach((b) => b.addEventListener('click', () => { S.power = b.dataset.power!; $$('[data-power]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); render(); }));
   form.addEventListener('calc:format', ((e: CustomEvent) => { setFmt(e.detail); show(e.detail === 'cert' ? 4 : 2); }) as EventListener);
   form.addEventListener('calc:prefill', ((e: CustomEvent) => { setFmt(e.detail.fmt); guestsIn.value = String(e.detail.guests); show(2); }) as EventListener);
@@ -145,7 +150,7 @@ if (form) {
     if (S.fmt === 'cert') payload.cert = +certIn.value;
     else Object.assign(payload, {
       date: dateIn.value, town: townName, km: km(), guests: +guestsIn.value, hours: +hoursIn.value || f.H,
-      place: S.place, power: S.power, estimate: last && !last.individual ? { low: last.low, high: last.high, total: last.total } : 'индивидуальный расчёт',
+      place: S.place, power: S.power, bar: S.bar, estimate: last && !last.individual ? { low: last.low, high: last.high, total: last.total } : 'индивидуальный расчёт',
     });
     send(payload, contact.querySelector('.form-status'), D.work, contact.querySelector('button[type="submit"]'));
   });

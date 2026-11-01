@@ -6,7 +6,7 @@ import FormatCards from '../components/FormatCards.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
-import { site, url, cases, isRealCase, reviews } from '../lib/data';
+import { site, url, cases, isRealCase, reviews, occasions, extras } from '../lib/data';
 
 // Показываем только реальные материалы: пустые рамки и заглушки посетителю не нужны
 const realCases = cases.filter(isRealCase).length > 0;
@@ -24,6 +24,11 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
         <a class="link" href={url('uslugi/')}>Сравнить форматы →</a>
       </div>
       <FormatCards />
+      <nav class="occ-strip" aria-label="Для бизнеса">
+        <span class="k">Для бизнеса</span>
+        {occasions.slice(0, 4).map((o) => <a class="chip" href={url(o.slug + '/')}>{o.name}</a>)}
+        <a class="chip chip-bar" href={url(extras.bar.slug + '/')}>+ Выездной бар</a>
+      </nav>
     </div>
   </section>
 

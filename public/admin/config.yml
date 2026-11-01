@@ -231,7 +231,7 @@ collections:
                   - { label: Пояснение, name: text }
 
       - name: occasions
-        label: Страницы под повод (Новый год, день рождения, свадьба)
+        label: Страницы под повод (открытие, корпоративы, день рождения компании…)
         file: src/data/occasions.json
         fields:
           - label: Поводы
@@ -317,6 +317,32 @@ collections:
             fields:
               - { label: Компания, name: name }
               - { label: Логотип, name: image, widget: image }
+
+      - name: extras
+        label: Опция «Выездной бар»
+        file: src/data/extras.json
+        fields:
+          - label: Выездной бар
+            name: bar
+            widget: object
+            fields:
+              - { label: Адрес страницы (не менять), name: slug, widget: hidden }
+              - { label: Название, name: name }
+              - { label: Строка в списках, name: short }
+              - { label: Заголовок страницы, name: h1 }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - { label: Про цену, name: priceNote }
+              - { label: SEO title, name: seoTitle }
+              - { label: SEO description, name: seoDescription, widget: text }
+              - label: Как работаем (4 пункта)
+                name: points
+                widget: list
+                fields: [{ label: Заголовок, name: title }, { label: Текст, name: text, widget: text }]
+              - label: Вопросы
+                name: faq
+                widget: list
+                fields: [{ label: Вопрос, name: q }, { label: Ответ, name: a, widget: text }]
+              - { label: Возрастная пометка, name: age }
 
       - name: scenarios
         label: Сценарии вечеров (страница «Кейсы»)

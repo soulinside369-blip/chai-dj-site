@@ -2,7 +2,7 @@
 // Страница под повод: зачем этот формат на таком празднике → подходящие форматы с ценой → вопросы
 import PageHero from './PageHero.astro';
 import Photo from './Photo.astro';
-import { formats, occasions, url } from '../lib/data';
+import { formats, occasions, url, extras } from '../lib/data';
 import { rub } from '../lib/price.js';
 interface Props { o: (typeof occasions)[number] }
 const { o } = Astro.props;
@@ -51,6 +51,7 @@ const others = occasions.filter((x) => x.slug !== o.slug);
     <p class="eyebrow" style="margin-bottom:16px">Другие поводы</p>
     <div class="others">
       {others.map((x) => { const m = formats.find((f) => f.key === x.formats[0]); return <a class="other" href={url(x.slug + '/')}><b>{x.name}</b><span class="muted">{m ? `${m.name} · от ${rub(m.base)}` : x.menu}</span></a>; })}
+      <a class="other" href={url(extras.bar.slug + '/')}><b>Выездной бар</b><span class="muted">опция к любому формату · 18+</span></a>
       <a class="other" href={url('sertifikaty/')}><b>Подарочный сертификат</b><span class="muted">если праздник не ваш</span></a>
     </div>
   </div>

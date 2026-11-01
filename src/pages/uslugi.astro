@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FormatCards from '../components/FormatCards.astro';
-import { formats, occasions, calc, url } from '../lib/data';
+import { formats, occasions, calc, url, extras } from '../lib/data';
 import { rub, num } from '../lib/price.js';
 ---
 <Base title="Цены на чайную церемонию и DJ — форматы и что входит" description="Сколько стоит выездная чайная церемония, DJ-сет и «Чай + DJ» в Екатеринбурге: базовые пакеты от 15 000 ₽, надбавки за гостей, часы и выезд. Онлайн-калькулятор.">
@@ -45,7 +45,10 @@ import { rub, num } from '../lib/price.js';
 
   <section class="sec tight tone-coal2" data-htone="coal">
     <div class="wrap">
-      <p class="eyebrow" style="margin-bottom:16px">Под повод</p>
+      <a class="opt-card" href={url(extras.bar.slug + '/')}>
+        <span class="k">Опция · 18+</span><b>{extras.bar.name}</b><span class="muted">{extras.bar.short}. Цена — по запросу.</span><span class="arr" aria-hidden="true">→</span>
+      </a>
+      <p class="eyebrow" style="margin:32px 0 16px">Под повод</p>
       <div class="others">{occasions.map((o) => <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{o.h1}</span></a>)}</div>
     </div>
   </section>
