@@ -1,5 +1,5 @@
 ---
-// Опция «Выездной бар»: добавляется к любому формату, цена — по запросу
+// Опция «Услуга бармена»: добавляется к любому формату, расчёт индивидуально
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import { extras, occasions, formats, url } from '../lib/data';
@@ -8,16 +8,28 @@ const b = extras.bar;
 const corp = occasions.slice(0, 4);
 ---
 <Base title={b.seoTitle} description={b.seoDescription} faqItems={b.faq}>
-  <PageHero title={b.h1} eyebrow="Опция · 18+" lead={b.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: b.name }]}>
+  <PageHero title={b.h1} eyebrow="Опция к любому формату" lead={b.lead} crumbs={[{ href: 'uslugi/', label: 'Услуги' }, { label: b.name }]}>
     <div class="price-bar">
       <p class="price"><span class="muted">{b.priceNote}</span></p>
-      <a class="btn brass" href={url('kontakty/')} data-calc-link data-bar="1" data-goal="click_calc">Добавить бар к расчёту <span class="arr">→</span></a>
+      <a class="btn brass" href={url('kontakty/')} data-calc-link data-bar="1" data-goal="click_calc">Добавить бармена к заявке <span class="arr">→</span></a>
     </div>
   </PageHero>
 
+  <section class="sec tone-coal2" data-htone="coal">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">В услуге</p><h2>Что входит</h2></div>
+      <ul class="incl">{(b as any).includes.map((w: string) => <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 10.5 3 3 7-7"/></svg>{w}</li>)}</ul>
+      <div class="spec2">
+        {(b as any).modes.map((m: any) => (
+          <div class="spec"><p class="k">Вариант</p><h3 class="h3">{m.title}</h3><p class="muted">{m.text}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Как работаем</p><h2>Бар в одной программе с чаем и музыкой</h2></div>
+      <div class="head"><p class="eyebrow">Как работаем</p><h2>Бармен в одной программе с чаем и музыкой</h2></div>
       <div class="grid4">{b.points.map((p) => <article class="tile"><h3>{p.title}</h3><p class="muted">{p.text}</p></article>)}</div>
     </div>
   </section>

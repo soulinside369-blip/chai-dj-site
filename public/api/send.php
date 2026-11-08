@@ -88,7 +88,7 @@ if ($kind === 'calc') {
     $params['Гостей'] = (string)(int)($in['guests'] ?? 0);
     $params['Часов'] = str_replace('.', ',', (string)(float)($in['hours'] ?? 0));
     $params['Площадка'] = ($in['place'] ?? '') === 'out' ? 'улица' : 'помещение';
-    if (!empty($in['bar'])) $params['Бар'] = 'нужен выездной бар — посчитать отдельно';
+    if (!empty($in['bar'])) $params['Бар'] = 'нужен бармен — посчитать отдельно';
     $params['220 В'] = ['yes' => 'есть', 'no' => 'нет — нужен генератор', 'unknown' => 'не знают'][$in['power'] ?? ''] ?? '—';
     $est = $in['estimate'] ?? null;
     if (is_array($est)) { $params['Оценка'] = $money($est['low']) . ' – ' . $money($est['high']); $estimateTotal = (int)$est['total']; }

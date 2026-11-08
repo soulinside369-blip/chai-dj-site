@@ -29,7 +29,10 @@ export const isStub = (s?: string) => !s || /^\[.*\]$/.test(s.trim());
 export const fmtByKey = (k: string) => formats.find((f) => f.key === k)!;
 
 /** Ссылки мессенджеров: пусто в данных — ведём на страницу контактов */
+const chan = (v: string, base: string) => (!v ? '' : /^https?:/.test(v) ? v : base + v.replace(/^@/, ''));
 export const links = {
+  tgChannel: chan((site.contacts as any).telegramChannel || '', 'https://t.me/'),
+  maxChannel: chan((site.contacts as any).maxChannel || '', 'https://max.ru/'),
   telegram: site.contacts.telegram ? `https://t.me/${site.contacts.telegram.replace(/^@/, '')}` : url('kontakty/'),
   max: site.contacts.max ? (site.contacts.max.startsWith('http') ? site.contacts.max : `https://max.ru/${site.contacts.max.replace(/^@/, '')}`) : url('kontakty/'),
   whatsapp: site.contacts.whatsapp ? `https://wa.me/${site.contacts.whatsapp.replace(/\D/g, '')}` : '',

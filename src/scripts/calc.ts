@@ -90,7 +90,7 @@ if (form) {
     }
     lines.innerHTML = r.lines.map((l: any) => `<li><span>${l.label}</span><span>${l.base ? '' : '+'}${rub(l.sum)}</span></li>`).join('')
       + `<li><span>Входит</span><span>${f.what.length} пункта</span></li>`
-      + (S.bar ? '<li><span>Выездной бар</span><span>по запросу</span></li>' : '');
+      + (S.bar ? '<li><span>Бармен</span><span>по запросу</span></li>' : '');
     if (f.maxGuests && guests > f.maxGuests) { warn.hidden = false; warn.textContent = `Мастер-класс — максимум для ${f.maxGuests} человек. Для большой группы подойдёт «Чайная церемония» или «Чай + DJ».`; }
     else if (S.power === 'unknown') { warn.hidden = false; warn.textContent = `Уточним у площадки. Если розетки нет — генератор +${rub(D.calc.generator)}.`; }
     else if (S.place === 'out') { warn.hidden = false; warn.textContent = 'На улице нужен шатёр или навес над техникой и ровная поверхность.'; }

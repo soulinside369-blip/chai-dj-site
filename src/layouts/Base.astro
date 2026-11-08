@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { site, nav, url, links, formats, occasions, faq, isStub, isPreview, extras } from '../lib/data';
 import Calculator from '../components/Calculator.astro';
 import Icon from '../components/Icon.astro';
+import Channels from '../components/Channels.astro';
 import { rub } from '../lib/price.js';
 import geoCyr from '@fontsource-variable/geologica/files/geologica-cyrillic-wght-normal.woff2?url';
 
@@ -105,7 +106,7 @@ const metrika = site.analytics.metrikaId;
         <span class="nav-pill" aria-hidden="true"></span>
         {nav.map((n) => <a href={url(n.href)} aria-current={current(n.href) ? 'page' : undefined}>{n.label}</a>)}
       </nav>
-      <a class="btn sm h-cta" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать стоимость</a>
+      <a class="btn sm h-cta" href={url('kontakty/')} data-calc-link data-goal="click_calc">Получить предложение</a>
     </div>
     <span class="h-progress" aria-hidden="true"></span>
   </header>
@@ -120,14 +121,14 @@ const metrika = site.analytics.metrikaId;
           <a class="s-tile" href={url(f.slug + '/')} aria-current={current(f.slug + '/') ? 'page' : undefined}>
             <Icon name={f.key} />
             <b>{f.name}</b>
-            <span>от {rub(f.base)}</span>
+            <span>{f.duration} · {f.guestsLabel}</span>
           </a>
         ))}
       </div>
       <p class="sheet-k">Под повод</p>
       <div class="sheet-chips">
         {occasions.map((o) => <a class="chip" href={url(o.slug + '/')}>{o.menu}</a>)}
-        <a class="chip" href={url(extras.bar.slug + '/')}>Выездной бар</a>
+        <a class="chip" href={url(extras.bar.slug + '/')}>Услуга бармена</a>
         <a class="chip" href={url('sertifikaty/')}>Сертификат в подарок</a>
       </div>
       <nav class="sheet-links" aria-label="Разделы">
@@ -138,6 +139,7 @@ const metrika = site.analytics.metrikaId;
         <a class="btn ghost sm" href={links.max} data-goal="click_max">MAX</a>
         {links.phone && <a class="btn ghost sm" href={links.phone} data-goal="click_phone">Позвонить</a>}
       </div>
+      <Channels />
       <small class="sheet-note">{site.work.text}</small>
     </div>
   </div>
@@ -149,7 +151,7 @@ const metrika = site.analytics.metrikaId;
       <div class="f-cta">
         <p class="f-title display">Соберём ваш вечер — от первой чашки до последнего трека</p>
         <div class="row">
-          <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Рассчитать <span class="arr">→</span></a>
+          <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Получить предложение <span class="arr">→</span></a>
           <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Telegram</a>
           <a class="btn ghost" href={links.max} data-goal="click_max">MAX</a>
         </div>
@@ -160,10 +162,11 @@ const metrika = site.analytics.metrikaId;
           <p class="muted">{site.brand.tagline}. {site.brand.region}.</p>
           {links.phone && <a href={links.phone} data-goal="click_phone" class="link">{site.contacts.phoneDisplay}</a>}
           <p class="muted">{site.work.text}</p>
+          <Channels />
         </div>
         <div><p class="eyebrow" style="margin-bottom:14px">Форматы</p><ul>
           {formats.map((f) => <li><a href={url(f.slug + '/')}>{f.name}</a></li>)}
-          <li><a href={url(extras.bar.slug + '/')}>Выездной бар</a></li>
+          <li><a href={url(extras.bar.slug + '/')}>Услуга бармена</a></li>
           <li><a href={url('sertifikaty/')}>Сертификаты</a></li>
         </ul></div>
         <div><p class="eyebrow" style="margin-bottom:14px">Поводы</p><ul>
@@ -207,7 +210,7 @@ const metrika = site.analytics.metrikaId;
     </button>
     <a class="tb-main" href={url('kontakty/')} data-calc-link data-goal="click_calc">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8.5 7.5h7M8.5 12h1M12 12h1M15.5 12h0M8.5 16h1M12 16h1M15.5 16h0"/></svg>
-      <span>Рассчитать</span>
+      <span>Заявка</span>
     </a>
   </nav>
 

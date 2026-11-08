@@ -40,6 +40,8 @@ collections:
               - { label: 'MAX (ник или полная ссылка)', name: max, required: false }
               - { label: 'WhatsApp (номер)', name: whatsapp, required: false }
               - { label: Почта, name: email, required: false }
+              - { label: 'Канал в Telegram (ник канала без @ или ссылка)', name: telegramChannel, required: false }
+              - { label: 'Канал в MAX (ссылка)', name: maxChannel, required: false }
           - label: Рабочее время
             name: work
             widget: object
@@ -87,6 +89,18 @@ collections:
                 fields:
                   - { label: 'Тишина (слева на ползунке)', name: quiet, widget: image, required: false }
                   - { label: 'Танцпол (справа на ползунке)', name: party, widget: image, required: false }
+              - label: 'Звук ползунка — свои файлы (если пусто — встроенный синтезатор)'
+                name: audio
+                widget: object
+                collapsed: true
+                hint: 'Три петли одной длины, темпа и тональности (M4A/AAC или MP3). Работают, только когда загружены все три.'
+                fields:
+                  - { label: 'Петля «Чай» (слева)', name: tea, widget: file, required: false, media_folder: /public/audio, public_folder: /audio }
+                  - { label: 'Петля «Чай + DJ» (центр)', name: teadj, widget: file, required: false, media_folder: /public/audio, public_folder: /audio }
+                  - { label: 'Петля «Танцпол» (справа)', name: dj, widget: file, required: false, media_folder: /public/audio, public_folder: /audio }
+                  - { label: 'Подъём перед переходом (необязательно)', name: riser, widget: file, required: false, media_folder: /public/audio, public_folder: /audio }
+                  - { label: 'Удар на переходе (необязательно)', name: hit, widget: file, required: false, media_folder: /public/audio, public_folder: /audio }
+                  - { label: 'Темп петель, BPM', name: bpm, widget: number, value_type: int, default: 120 }
               - { label: Заголовок над ползунком, name: sliderTitle }
               - label: Точки ползунка (3 шт.)
                 name: stops

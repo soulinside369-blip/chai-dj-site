@@ -6,13 +6,14 @@ import FormatCards from '../components/FormatCards.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
-import { site, url, cases, isRealCase, reviews, occasions, extras } from '../lib/data';
+import { site, url, cases, isRealCase, reviews, occasions, extras, faq } from '../lib/data';
+const topFaq = faq.groups.flatMap((g) => g.items).filter((i) => (i as any).top).slice(0, 3);
 
 // Показываем только реальные материалы: пустые рамки и заглушки посетителю не нужны
 const realCases = cases.filter(isRealCase).length > 0;
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
 ---
-<Base tone="rice" faqLd>
+<Base tone="rice" faqItems={topFaq}>
   {(site.hero as any).scene?.quiet && /-1280\.webp$/.test((site.hero as any).scene.quiet) && <link slot="head" rel="preload" as="image" type="image/webp" imagesrcset={`${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-640.webp'))} 640w, ${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-900.webp'))} 900w, ${url((site.hero as any).scene.quiet)} 1280w`} imagesizes="(max-width: 600px) calc(100vw - 40px), 520px" fetchpriority="high" />}
   <Trailer slot="top" />
   <HeroConfigurator />
@@ -23,11 +24,11 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
         <div class="head"><p class="eyebrow">Форматы</p><h2>Пять форматов — от мастер-класса до вечера на 150 гостей</h2></div>
         <a class="link" href={url('uslugi/')}>Сравнить форматы →</a>
       </div>
-      <FormatCards />
+      <FormatCards closed />
       <nav class="occ-strip" aria-label="Для бизнеса">
         <span class="k">Для бизнеса</span>
         {occasions.slice(0, 4).map((o) => <a class="chip" href={url(o.slug + '/')}>{o.name}</a>)}
-        <a class="chip chip-bar" href={url(extras.bar.slug + '/')}>+ Выездной бар</a>
+        <a class="chip chip-bar" href={url(extras.bar.slug + '/')}>+ Бармен</a>
       </nav>
     </div>
   </section>

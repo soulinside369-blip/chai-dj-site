@@ -3,6 +3,7 @@ import { price, rub } from '../lib/price.js';
 import { goal } from './fx';
 import { maskPhone, validateContact, contactData, send } from './forms';
 import { EveningSound } from './sound';
+import { StemSound } from './stems';
 import { feel } from './feel';
 
 const root = document.querySelector<HTMLElement>('[data-cfg]');
@@ -19,7 +20,9 @@ if (root) {
   const fmtBy = (k: string) => D.formats.find((f: any) => f.key === k);
   const smooth = (a: number, b: number, x: number) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
   const S = { p: 0.5, shown: 0.5, fmt: 'teadj', seg: D.defaultSegment as string, last: null as any, touched: false, pStr: '', lastStop: '' as string, lastG: undefined as number | undefined };
-  const sound = new EveningSound();
+  // свои аудиофайлы из админки (три петли) — если заданы все три; иначе синтезатор
+  const A = (D as any).audio || {};
+  const sound: { start(): any; stop(): any; setMix(p: number): any } = A.tea && A.teadj && A.dj ? new StemSound(A) : new EveningSound();
 
   /* ---------- Сегмент: компании / для себя ---------- */
   function setSeg(k: string, save = true) {
@@ -66,17 +69,12 @@ if (root) {
     const f = fmtBy(S.fmt);
     const g = +guests.value;
     $('[data-guests-out]').textContent = String(g);
-    $('[data-fmt-name]').textContent = f.name;
-    $('[data-fmt-dur]').textContent = f.duration;
     const r = price(f, D.calc, { guests: g, hours: f.H, km: 0, generator: false });
-    S.last = r;
-    if (r.individual) {
-      $('[data-price]').textContent = 'Индивидуальный расчёт';
-      $('[data-per]').textContent = `Больше ${D.calc.individualOver} гостей — второй мастер и больше звука, посчитаем вручную`;
-    } else {
-      $('[data-price]').textContent = `${rub(r.low).replace(/\s₽$/, '')} – ${rub(r.high)}`;
-      $('[data-per]').textContent = `≈ ${rub(Math.round(r.total / g / 50) * 50)} на гостя · Екатеринбург, ${f.duration}`;
-    }
+    S.last = r; // смета считается для заявки (видит только команда), на экране цен нет — закрытый формат
+    $('[data-fmt-name]').textContent = f.name;
+    $('[data-per]').textContent = r.individual
+      ? `${f.duration} · ${g} гостей · большое событие — соберём команду и комплект под вас`
+      : `${f.duration} · ${g} гостей · предложение под вашу задачу`;
     sound.setMix(S.p);
     if (reduce) draw(0);
   }
@@ -192,7 +190,7 @@ if (root) {
   });
 
   /* ---------- Подробный расчёт — передаём выбор в большой калькулятор ---------- */
-  $('[data-cfg-more]').addEventListener('click', (e) => {
+  root.querySelector('[data-cfg-more]')?.addEventListener('click', (e) => {
     e.preventDefault();
     (window as any).__openCalc?.({ fmt: S.fmt, guests: +guests.value });
   });
@@ -213,10 +211,10 @@ if (root) {
   shareBtn?.addEventListener('click', async () => {
     const u = new URL(location.href); u.search = `?p=${mood.value}&g=${guests.value}`; u.hash = 'vecher';
     const f = fmtBy(S.fmt);
-    const text = `${f.name}, ${guests.value} гостей — ${$('[data-price]').textContent}`;
+    const text = `${f.name}, ${guests.value} гостей — соберите похожий вечер`;
     const label = shareBtn.querySelector('[data-share-label]')!;
     try {
-      if (navigator.share) await navigator.share({ title: 'Расчёт вечера — Чай + DJ', text, url: u.href });
+      if (navigator.share) await navigator.share({ title: 'Вечер — Чай + DJ', text, url: u.href });
       else { await navigator.clipboard.writeText(`${text}\n${u.href}`); label.textContent = 'Ссылка скопирована'; setTimeout(() => (label.textContent = 'Поделиться'), 2200); }
       feel('press'); goal('share_calc');
     } catch {}

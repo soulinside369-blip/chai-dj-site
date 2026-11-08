@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site, links, url, formats } from '../lib/data';
+import Channels from '../components/Channels.astro';
 const names = Object.fromEntries(formats.map((f) => [f.key, f.name]));
 ---
 <Base title="Заявка принята" tone="coal" noindex>
@@ -24,6 +25,7 @@ const names = Object.fromEntries(formats.map((f) => [f.key, f.name]));
         <p class="muted"><b data-thx-cal-what></b> — дата пока не забронирована: её закрепляет предоплата. Поставьте предварительную метку в календарь, чтобы не занять вечер другим.</p>
         <button class="btn sm" type="button" data-thx-ics>Добавить в календарь</button>
       </div>
+      <Channels variant="card" />
     </div>
   </section>
   <script define:vars={{ names, brand: site.brand.name }}>

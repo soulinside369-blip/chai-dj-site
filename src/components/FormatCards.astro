@@ -4,6 +4,8 @@ import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import { formats, site, url } from '../lib/data';
 import { rub } from '../lib/price.js';
+interface Props { closed?: boolean }
+const { closed = false } = Astro.props;
 const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
 const items = [
   ...formats.map((f) => ({ image: f.image, imageAlt: f.imageAlt, key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj' })),
@@ -22,8 +24,10 @@ const items = [
       <p class="fcard-line">{f.line}</p>
       <p class="fcard-meta">{f.meta}</p>
       <div class="fcard-foot">
-        <p class="fcard-price tnum">от {rub(f.price)}{f.per > 0 && <small>≈ {rub(f.per)} / гость</small>}</p>
-        <a class="btn sm fcard-btn" href={url(f.href)} data-calc-link data-fmt={f.key} data-goal="click_calc" aria-label={`Посчитать: ${f.name}`}>Посчитать</a>
+        {closed
+          ? <p class="fcard-price fcard-closed">Под ваш запрос</p>
+          : <p class="fcard-price tnum">от {rub(f.price)}{f.per > 0 && <small>≈ {rub(f.per)} / гость</small>}</p>}
+        <a class="btn sm fcard-btn" href={url(f.href)} data-calc-link data-fmt={f.key} data-goal="click_calc" aria-label={`${closed ? 'Выбрать' : 'Посчитать'}: ${f.name}`}>{closed ? 'Выбрать' : 'Посчитать'}</a>
       </div>
     </li>
   ))}

@@ -1,0 +1,16 @@
+---
+// Каналы в Telegram и MAX. Если в админке не заполнены — блок не показывается.
+import { site, links } from '../lib/data';
+interface Props { variant?: 'card' | 'inline' }
+const { variant = 'inline' } = Astro.props;
+const has = links.tgChannel || links.maxChannel;
+---
+{has && (
+  <div class={`chan chan-${variant}`}>
+    {variant === 'card' && <><p class="eyebrow">Наш канал</p><p class="muted">{(site as any).channelNote}</p></>}
+    <div class="chan-btns">
+      {links.tgChannel && <a class="btn ghost sm" href={links.tgChannel} target="_blank" rel="noopener" data-goal="click_tg_channel">Канал в Telegram</a>}
+      {links.maxChannel && <a class="btn ghost sm" href={links.maxChannel} target="_blank" rel="noopener" data-goal="click_max_channel">Канал в MAX</a>}
+    </div>
+  </div>
+)}
