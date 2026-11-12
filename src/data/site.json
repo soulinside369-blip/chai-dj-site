@@ -90,11 +90,11 @@
       "party": "/img/scene-dance-1280.webp"
     },
     "audio": {
-      "tea": "",
-      "teadj": "",
-      "dj": "",
-      "riser": "",
-      "hit": "",
+      "tea": "/audio/tea.mp3",
+      "teadj": "/audio/teadj.mp3",
+      "dj": "/audio/dj.mp3",
+      "riser": "/audio/riser.mp3",
+      "hit": "/audio/hit.mp3",
       "bpm": 128
     }
   },
