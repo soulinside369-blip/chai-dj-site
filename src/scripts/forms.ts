@@ -1,3 +1,4 @@
+import { fmtOf, type Zone } from './mood';
 // Формы: маска телефона, проверка на русском, отправка в api/send.php, экран «Спасибо».
 import { goal } from './fx';
 
@@ -98,14 +99,24 @@ document.addEventListener('input', (e) => { (e.target as HTMLElement).closest('.
 document.addEventListener('change', (e) => { (e.target as HTMLElement).closest('.err')?.classList.remove('err'); });
 
 /* Быстрые формы на странице */
+const MOOD_LABEL: Record<string, string> = { quiet: 'Тишина', rhythm: 'Чай и ритм', dance: 'Танцпол' };
 document.querySelectorAll<HTMLFormElement>('form[data-quick]').forEach((form) => {
   const node = form.querySelector<HTMLElement>('[data-contact]')!;
   maskPhone(node.querySelector('[name="contact"]')!);
   const work = JSON.parse(form.dataset.work || '{}');
+  // формат подставляем по настроению, пока человек не выбрал сам
+  const sel = form.querySelector<HTMLSelectElement>('[name="fmt"]');
+  let manual = false;
+  sel?.addEventListener('change', () => { manual = true; });
+  const auto = (z?: string) => { if (sel && !manual && z) sel.value = fmtOf(z as Zone); };
+  auto(document.documentElement.dataset.mood);
+  addEventListener('cdj:mood', (e) => auto((e as CustomEvent).detail));
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!validateContact(node)) return;
-    const fmt = (form.querySelector<HTMLSelectElement>('[name="fmt"]')?.value) || '';
-    send({ kind: 'quick', fmt, ...contactData(node) }, node.querySelector('.form-status'), work, form.querySelector('button[type="submit"]'));
+    const fmt = sel?.value || '';
+    const mz = document.documentElement.dataset.mood;
+    const g = document.querySelector<HTMLInputElement>('#cfg-guests');
+    send({ kind: 'quick', fmt, ...(mz ? { mood: MOOD_LABEL[mz] } : {}), ...(g ? { guests: +g.value } : {}), ...contactData(node) }, node.querySelector('.form-status'), work, form.querySelector('button[type="submit"]'));
   });
 });

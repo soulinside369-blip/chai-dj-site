@@ -77,13 +77,14 @@ if ($h >= $from && $h < $to) {
 $fmtNames = ['teadj' => 'Чай + DJ', 'tea' => 'Чайная церемония', 'dj' => 'DJ-сет', 'mk' => 'Мастер-класс', 'cert' => 'Сертификат'];
 $money = fn($v) => number_format((float)$v, 0, ',', ' ') . ' ₽';
 $params = ['Форма' => $kind === 'calc' ? 'калькулятор' : 'быстрая заявка', 'Формат' => $fmtNames[$fmtKey] ?? 'не выбран'];
+if (!empty($in['mood'])) $params['Настроение'] = $s('mood', 30);
+if ($kind === 'quick' && !empty($in['guests'])) $params['Гостей'] = (string)(int)$in['guests'];
 $estimateTotal = 0;
 if ($kind === 'calc') {
   if ($fmtKey === 'cert') {
     $params['Номинал'] = $money($in['cert'] ?? 0);
     $estimateTotal = (int)($in['cert'] ?? 0);
   } else {
-    if (!empty($in['mood'])) $params['Настроение'] = $s('mood', 30);
     $params['Дата'] = $s('date', 10);
     $params['Место'] = $s('town', 60) . (!empty($in['km']) ? ' (' . (int)$in['km'] . ' км)' : '');
     $params['Гостей'] = (string)(int)($in['guests'] ?? 0);

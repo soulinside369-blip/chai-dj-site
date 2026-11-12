@@ -16,8 +16,9 @@ interface Props {
   service?: { name: string; description: string; price?: number };
   noindex?: boolean;
   faqItems?: { q: string; a: string }[];
+  footCta?: boolean;          // большой призыв в подвале (на главной — свой финальный блок с формой)
 }
-const { title, description, tone = 'rice', faqLd = false, service, noindex = false, faqItems } = Astro.props;
+const { title, description, tone = 'rice', faqLd = false, service, noindex = false, faqItems, footCta = true } = Astro.props;
 const fullTitle = title ? `${title} — ${site.brand.name}` : site.seo.title;
 const desc = description || site.seo.description;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -156,7 +157,7 @@ const metrika = site.analytics.metrikaId;
 
   <footer class="site-f tone-coal">
     <div class="wrap">
-      <div class="f-cta">
+      {footCta && <div class="f-cta">
         <p class="f-title display">Соберём ваш вечер — от первой чашки до последнего трека</p>
         <div class="row">
           <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Получить предложение <span class="arr">→</span></a>
@@ -164,7 +165,7 @@ const metrika = site.analytics.metrikaId;
           {hasMax && <a class="btn ghost" href={links.max} data-goal="click_max">MAX</a>}
           {links.phone && <a class="btn ghost" href={links.phone} data-goal="click_phone">{site.contacts.phoneDisplay}</a>}
         </div>
-      </div>
+      </div>}
       <div class="f-grid">
         <div style="display:grid;gap:10px;align-content:start">
           <a class="logo" href={url('')}>{site.brand.name}</a>

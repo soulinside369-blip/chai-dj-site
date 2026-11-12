@@ -13,7 +13,7 @@ export function applyMood(p: number, save = true) {
   const z = zoneOf(p);
   html.style.setProperty('--mood', p.toFixed(3));
   html.style.setProperty('--beat', (60 / bpmOf(p)).toFixed(3) + 's');
-  if (html.dataset.mood !== z) html.dataset.mood = z;
+  if (html.dataset.mood !== z) { html.dataset.mood = z; dispatchEvent(new CustomEvent('cdj:mood', { detail: z })); }
   if (save) { clearTimeout(saveT); saveT = window.setTimeout(() => { try { localStorage.setItem('cdj_mood', p.toFixed(2)); } catch {} }, 250); }
   return z;
 }

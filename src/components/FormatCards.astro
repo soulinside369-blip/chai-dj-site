@@ -4,25 +4,25 @@ import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import { formats, site, url, showPrices } from '../lib/data';
 import { rub } from '../lib/price.js';
-interface Props { closed?: boolean }
-const { closed: closedProp = false } = Astro.props;
+interface Props { closed?: boolean; pick?: boolean }
+const { closed: closedProp = false, pick = false } = Astro.props;
 const closed = closedProp || !showPrices;
 const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
 const items = [
-  ...formats.map((f) => ({ image: f.image, imageAlt: f.imageAlt, key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj', what: f.what.slice(0, 4) })),
-  { image: (site.certificates as any).image, imageAlt: 'Иллюстрация: конверт с сургучной печатью и чай', key: 'cert', href: 'sertifikaty/', name: 'Сертификат', line: `Подарок на сумму или формат, ${site.certificates.validity}`, meta: 'PDF или печатный', price: certFrom, per: 0, main: false, what: [] as string[] },
+  ...formats.map((f) => ({ image: f.image, imageAlt: f.imageAlt, key: f.key, href: f.slug + '/', name: f.name, line: f.line, meta: `${f.duration} · ${f.guestsLabel}`, price: f.base, per: Math.round(f.base / f.G / 50) * 50, main: f.key === 'teadj', what: f.what.slice(0, 4), vt: true })),
+  { image: (site.certificates as any).image, imageAlt: 'Иллюстрация: конверт с сургучной печатью и чай', key: 'cert', href: 'sertifikaty/', name: 'Сертификат', line: `Подарок на сумму или формат, ${site.certificates.validity}`, meta: 'PDF или печатный', price: certFrom, per: 0, main: false, what: [] as string[], vt: false },
 ];
 ---
-<ul class="fmt-rail">
+<ul class="fmt-rail" data-pick={pick ? '' : undefined}>
   {items.map((f) => (
-    <li class={`fcard${f.main ? ' main' : ''}${f.image ? ' has-img' : ''}`}>
-      {f.image && <Photo src={f.image} alt={f.imageAlt} class="fcard-img" sizes="(max-width: 760px) 76vw, 240px" />}
+    <li class={`fcard${f.main ? ' main' : ''}${f.image ? ' has-img' : ''}`} data-k={f.key}>
+      {f.image && <Photo src={f.image} alt={f.imageAlt} class="fcard-img" sizes="(max-width: 760px) 76vw, 480px" style={f.vt ? `view-transition-name: fmt-${f.key}` : undefined} />}
       <div class="fcard-top">
         <Icon name={f.key} class="ico" />
-        {f.main && <span class="badge">Главный</span>}
+        {f.vt && <span class="badge">{pick ? 'Под ваш вечер' : 'Главный'}</span>}
       </div>
       <h3><a href={url(f.href)} class="fcard-link">{f.name}</a></h3>
-      {f.main && f.what.length > 0 && <ul class="fcard-what">{f.what.map((w) => <li>{w}</li>)}</ul>}
+      {f.what.length > 0 && <ul class="fcard-what">{f.what.map((w) => <li>{w}</li>)}</ul>}
       <p class="fcard-line">{f.line}</p>
       <p class="fcard-meta">{f.meta}</p>
       <div class="fcard-foot">
@@ -34,3 +34,20 @@ const items = [
     </li>
   ))}
 </ul>
+
+<script>
+  // Главная: крупная карточка — формат под выбранное настроение (ползунок первого экрана)
+  import { fmtOf, type Zone } from '../scripts/mood';
+  const rail = document.querySelector<HTMLElement>('.fmt-rail[data-pick]');
+  if (rail) {
+    const pickFor = (z: Zone) => {
+      const key = fmtOf(z);
+      const li = rail.querySelector<HTMLElement>(`[data-k="${key}"]`);
+      if (!li || li.classList.contains('main')) return;
+      const go = () => { rail.querySelectorAll('.fcard.main').forEach((x) => x.classList.remove('main')); li.classList.add('main'); rail.prepend(li); rail.scrollLeft = 0; };
+      (document as any).startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches && rail.getBoundingClientRect().top < innerHeight ? (document as any).startViewTransition(go) : go();
+    };
+    pickFor((document.documentElement.dataset.mood as Zone) || 'rhythm');
+    addEventListener('cdj:mood', (e) => pickFor((e as CustomEvent).detail));
+  }
+</script>

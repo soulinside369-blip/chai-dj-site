@@ -1,0 +1,33 @@
+---
+// «Кто приедет»: показываем только людей с реальным фото и именем; галерея — только реальные кадры мероприятий.
+// Пока ничего не заполнено в админке — блока на сайте нет.
+import Photo from './Photo.astro';
+import { site } from '../lib/data';
+const t = (site as any).team || {};
+const people = (t.people || []).filter((p: any) => p.photo && p.name);
+const gallery = (t.gallery || []).filter((g: any) => g.image);
+---
+{(people.length > 0 || gallery.length > 0) && (
+  <section class="sec tone-rice2 team" data-htone="rice" aria-labelledby="team-h">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">{t.eyebrow}</p><h2 id="team-h">{t.title}</h2>{t.lead && <p class="lead">{t.lead}</p>}</div>
+      {people.length > 0 && (
+        <ul class="team-grid">
+          {people.map((p: any) => (
+            <li class="person rv">
+              <Photo src={p.photo} alt={`${p.role}: ${p.name}`} class="person-img" sizes="(max-width: 760px) 90vw, 360px" />
+              <p class="eyebrow">{p.role}</p>
+              <h3>{p.name}</h3>
+              {p.text && <p class="muted">{p.text}</p>}
+            </li>
+          ))}
+        </ul>
+      )}
+      {gallery.length > 0 && (
+        <ul class="team-gallery">
+          {gallery.map((g: any) => <li><Photo src={g.image} alt={g.alt || 'Фото с мероприятия'} sizes="(max-width: 760px) 70vw, 300px" /></li>)}
+        </ul>
+      )}
+    </div>
+  </section>
+)}

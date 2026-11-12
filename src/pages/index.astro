@@ -5,50 +5,79 @@ import FormatCards from '../components/FormatCards.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
 import FaqList from '../components/FaqList.astro';
+import QuickForm from '../components/QuickForm.astro';
+import Team from '../components/Team.astro';
 import { site, url, cases, isRealCase, reviews, occasions, extras, faq } from '../lib/data';
 const topFaq = faq.groups.flatMap((g) => g.items).filter((i) => (i as any).top).slice(0, 3);
 
 // Показываем только реальные материалы: пустые рамки и заглушки посетителю не нужны
 const realCases = cases.filter(isRealCase).length > 0;
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
+const ev = (site as any).evening;
+const trust = (site as any).trust;
+const fin = (site as any).finalCta;
 ---
-<Base tone="rice" faqItems={topFaq}>
+<Base tone="rice" faqItems={topFaq} footCta={false}>
   {(site.hero as any).scene?.quiet && /-1280\.webp$/.test((site.hero as any).scene.quiet) && <link slot="head" rel="preload" as="image" type="image/webp" imagesrcset={`${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-640.webp'))} 640w, ${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-900.webp'))} 900w, ${url((site.hero as any).scene.quiet)} 1280w`} imagesizes="(max-width: 600px) calc(100vw - 40px), 520px" fetchpriority="high" />}
   <HeroConfigurator />
 
+  <!-- 2. Ваш формат: крупно — под выбранное настроение, рядом — остальные -->
   <section class="sec tone-rice2" data-htone="rice" id="formats">
     <div class="wrap">
       <div class="head-row">
-        <div class="head"><p class="eyebrow">Форматы</p><h2>Пять форматов — от мастер-класса для команды до вечера с танцполом</h2></div>
+        <div class="head"><p class="eyebrow">Ваш формат</p><h2>Подобрали под настроение — и ещё четыре варианта</h2></div>
         <a class="link" href={url('uslugi/')}>Сравнить форматы →</a>
       </div>
-      <FormatCards closed />
+      <FormatCards closed pick />
       <nav class="occ-strip" aria-label="Для бизнеса">
-        <span class="k">Для бизнеса</span>
+        <span class="k">Поводы</span>
         {occasions.slice(0, 4).map((o) => <a class="chip" href={url(o.slug + '/')}>{o.name}</a>)}
         <a class="chip chip-bar" href={url(extras.bar.slug + '/')}>+ Бармен</a>
       </nav>
     </div>
   </section>
 
-  <section class="sec tone-coal" data-htone="coal">
-    <div class="wrap how">
-      <div>
-        <div class="head"><p class="eyebrow">Как это работает</p><h2>Четыре шага до вечера</h2></div>
-        <ol class="steps steps-compact" data-progress>
-          {site.steps.map((s) => <li><b>{s.title}</b><span>{s.text}</span></li>)}
+  <!-- 3. Вечер на скролле: зал темнеет от первых гостей к танцполу -->
+  {ev && (
+    <section class="sec eve-sec tone-coal" data-htone="coal" aria-labelledby="ev-h">
+      <div class="wrap">
+        <div class="head"><p class="eyebrow">{ev.eyebrow}</p><h2 id="ev-h">{ev.title}</h2><p class="lead">{ev.lead}</p></div>
+        <ol class="ev-track">
+          {ev.items.map((it: any) => (
+            <li class="ev" style={`--e:${(it.energy || 0) / 100}`}>
+              <time>{it.time}</time>
+              <div><h3>{it.title}</h3><p>{it.text}</p><span class="ev-meter" aria-hidden="true"></span></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <!-- 4. Кто приедет — только с реальными фото -->
+  <Team />
+
+  <!-- 5. Для бизнеса / для себя: снимаем страхи -->
+  {trust && (
+    <section class="sec tone-rice" data-htone="rice">
+      <div class="wrap">
+        {Object.entries(trust).map(([k, t]: [string, any]) => (
+          <div data-only={k}>
+            <div class="head"><p class="eyebrow">{t.eyebrow}</p><h2>{t.title}</h2></div>
+            <ul class="bento">
+              {t.items.map((it: any) => <li class="bento-i rv"><b>{it.title}</b><span>{it.text}</span></li>)}
+            </ul>
+          </div>
+        ))}
+        <ol class="steps-line" aria-label="Как это работает">
+          {site.steps.map((st) => <li><b>{st.title}</b></li>)}
         </ol>
         {Object.entries(site.segmentNotes).map(([k, n]) => (
           <p class="seg-line" data-only={k}><b>{n.title}.</b> <span class="muted">{n.text}</span> <a class="link" href={url(n.link)}>{n.linkLabel} →</a></p>
         ))}
       </div>
-      <div>
-        <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2></div>
-        <FaqList top limit={3} />
-        <a class="link" style="display:inline-block;margin-top:16px" href={url('faq/')}>Все вопросы →</a>
-      </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   {realCases && (
     <section class="sec tone-coal2" data-htone="coal">
@@ -71,4 +100,38 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
     </section>
   )}
 
+  <!-- 6. Вопросы -->
+  <section class="sec tone-rice2" data-htone="rice">
+    <div class="wrap faq-home">
+      <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2><a class="link" href={url('faq/')}>Все вопросы →</a></div>
+      <FaqList top limit={3} />
+    </div>
+  </section>
+
+  <!-- 7. Заявка: выбор с первого экрана уже подставлен -->
+  <section class="sec final tone-coal" data-htone="coal" id="zayavka" aria-labelledby="fin-h">
+    <div class="wrap final-grid">
+      <div class="head">
+        <p class="eyebrow">{fin.eyebrow}</p><h2 id="fin-h">{fin.title}</h2><p class="lead">{fin.text}</p>
+        <ul class="final-pick" aria-live="polite"><li data-pick-mood>Чай и ритм</li><li data-pick-fmt>Чай + DJ</li><li data-pick-guests>30 гостей</li></ul>
+      </div>
+      <div class="final-form"><QuickForm /></div>
+    </div>
+  </section>
 </Base>
+<script>
+  // Финальная заявка показывает выбор с первого экрана
+  const MOOD: Record<string, string> = { quiet: 'Тишина', rhythm: 'Чай и ритм', dance: 'Танцпол' };
+  const $ = (s: string) => document.querySelector<HTMLElement>(s);
+  const sync = () => {
+    const z = document.documentElement.dataset.mood || 'rhythm';
+    const m = $('[data-pick-mood]'), f = $('[data-pick-fmt]'), g = $('[data-pick-guests]');
+    if (m) m.textContent = MOOD[z];
+    const name = $('[data-fmt-name]')?.textContent; if (f && name) f.textContent = name;
+    const gi = document.querySelector<HTMLInputElement>('#cfg-guests'); if (g && gi) g.textContent = `${gi.value} гостей`;
+  };
+  sync();
+  addEventListener('cdj:mood', sync);
+  document.querySelector('#cfg-guests')?.addEventListener('input', sync);
+  document.querySelector('#cfg-mood')?.addEventListener('input', sync);
+</script>

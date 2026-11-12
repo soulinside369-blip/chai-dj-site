@@ -133,6 +133,62 @@ collections:
                   - { label: Фото, name: photo, widget: image, required: false }
                   - { label: Подпись (alt), name: alt }
                   - { label: Какой кадр нужен (видно, пока фото нет), name: need, required: false }
+          - label: Главная — «Как идёт вечер» (скролл-история)
+            name: evening
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow }
+              - { label: Заголовок, name: title }
+              - { label: Подзаголовок, name: lead, widget: text }
+              - label: Этапы
+                name: items
+                widget: list
+                fields:
+                  - { label: 'Время (ЧЧ:ММ)', name: time }
+                  - { label: Название, name: title }
+                  - { label: Описание, name: text, widget: text }
+                  - { label: 'Энергия зала, 0–100', name: energy, widget: number, value_type: int, min: 0, max: 100 }
+          - label: Главная — «Кто приедет» (блок виден, только когда есть фото и имя)
+            name: team
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow }
+              - { label: Заголовок, name: title }
+              - { label: Подзаголовок, name: lead, widget: text, required: false }
+              - label: Люди
+                name: people
+                widget: list
+                fields:
+                  - { label: Имя, name: name, required: false }
+                  - { label: Роль, name: role }
+                  - { label: Фото (реальное), name: photo, widget: image, required: false }
+                  - { label: Пару слов, name: text, widget: text, required: false }
+              - label: Фото с мероприятий (только реальные, с согласия)
+                name: gallery
+                widget: list
+                required: false
+                fields:
+                  - { label: Фото, name: image, widget: image }
+                  - { label: Подпись (alt), name: alt }
+          - label: Главная — «Для бизнеса / Для себя» (плитки)
+            name: trust
+            widget: object
+            fields:
+              - label: Для компании
+                name: corp
+                widget: object
+                fields: [{ label: Надзаголовок, name: eyebrow }, { label: Заголовок, name: title }, { label: Плитки, name: items, widget: list, fields: [{ label: Заголовок, name: title }, { label: Текст, name: text, widget: text }] }]
+              - label: Для себя
+                name: private
+                widget: object
+                fields: [{ label: Надзаголовок, name: eyebrow }, { label: Заголовок, name: title }, { label: Плитки, name: items, widget: list, fields: [{ label: Заголовок, name: title }, { label: Текст, name: text, widget: text }] }]
+          - label: Главная — финальная заявка
+            name: finalCta
+            widget: object
+            fields:
+              - { label: Надзаголовок, name: eyebrow }
+              - { label: Заголовок, name: title }
+              - { label: Текст, name: text, widget: text }
           - label: Заметки под аудиторию (после «Как это работает»)
             name: segmentNotes
             widget: object
