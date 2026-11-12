@@ -2,7 +2,7 @@
 // Опция «Услуга бармена»: добавляется к любому формату, расчёт индивидуально
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { extras, occasions, formats, url } from '../lib/data';
+import { extras, occasions, formats, url, showPrices } from '../lib/data';
 import { rub } from '../lib/price.js';
 const b = extras.bar;
 const corp = occasions.slice(0, 4);
@@ -39,7 +39,7 @@ const corp = occasions.slice(0, 4);
       <div>
         <div class="head"><p class="eyebrow">Чаще всего заказывают</p><h2>На какие события</h2></div>
         <div class="others" style="display:grid;gap:10px">
-          {corp.map((o) => { const m = formats.find((f) => f.key === o.formats[0]); return <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{m ? `${m.name} · от ${rub(m.base)}` : ''}</span></a>; })}
+          {corp.map((o) => { const m = formats.find((f) => f.key === o.formats[0]); return <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{m ? (showPrices ? `${m.name} · от ${rub(m.base)}` : `${m.name} · ${m.duration}`) : ''}</span></a>; })}
         </div>
       </div>
       <div>

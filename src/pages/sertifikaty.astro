@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { site, isStub, url } from '../lib/data';
+import { site, isStub, url, showPrices } from '../lib/data';
 import Photo from '../components/Photo.astro';
 import { rub } from '../lib/price.js';
 const c = site.certificates;
@@ -14,7 +14,7 @@ const c = site.certificates;
         <li><a class="nominal" href={url('kontakty/')} data-calc-link data-fmt="cert" data-cert={n.value} data-goal="click_cert">
           <span class="k">{/₽/.test(n.label) ? 'На сумму' : 'Формат'}</span>
           <b>{n.label}</b>
-          <span class="muted">{/₽/.test(n.label) ? n.note : `${rub(n.value)} · ${n.note}`}</span>
+          <span class="muted">{/₽/.test(n.label) || !showPrices ? n.note : `${rub(n.value)} · ${n.note}`}</span>
         </a></li>
       ))}
     </ul>

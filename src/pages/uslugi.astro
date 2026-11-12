@@ -2,11 +2,11 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FormatCards from '../components/FormatCards.astro';
-import { formats, occasions, calc, url, extras } from '../lib/data';
+import { formats, occasions, calc, url, extras, showPrices, priceNote } from '../lib/data';
 import { rub, num } from '../lib/price.js';
 ---
-<Base title="Цены на чайную церемонию и DJ — форматы и что входит" description="Сколько стоит выездная чайная церемония, DJ-сет и «Чай + DJ» в Екатеринбурге: базовые пакеты от 15 000 ₽, надбавки за гостей, часы и выезд. Онлайн-калькулятор.">
-  <PageHero title="Форматы и цены" eyebrow="Услуги" crumbs={[{ label: 'Услуги' }]} lead="Пять форматов: от камерного мастер-класса до вечера на 150 гостей. Цены для Екатеринбурга; выезд в область считается по километрам." />
+<Base title={showPrices ? 'Цены на чайную церемонию и DJ — форматы и что входит' : 'Форматы: чайная церемония, DJ-сет, «Чай + DJ», мастер-класс — что входит'} description={showPrices ? 'Сколько стоит выездная чайная церемония, DJ-сет и «Чай + DJ» в Екатеринбурге: базовые пакеты от 15 000 ₽, надбавки за гостей, часы и выезд. Онлайн-калькулятор.' : 'Выездная чайная церемония, DJ-сет, «Чай + DJ» и мастер-класс в Екатеринбурге и области: что входит в каждый формат, длительность и число гостей. Смету и программу собираем под вашу задачу.'}>
+  <PageHero title={showPrices ? 'Форматы и цены' : 'Форматы'} eyebrow="Услуги" crumbs={[{ label: 'Услуги' }]} lead={showPrices ? 'Пять форматов: от камерного мастер-класса до вечера на 150 гостей. Цены для Екатеринбурга; выезд в область считается по километрам.' : 'Пять форматов: от камерного мастер-класса до вечера с танцполом. Состав, тайминг и смету собираем под ваших гостей и площадку.'} />
   <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(40px,6vw,72px)"><div class="wrap"><h2 class="sr-only">Пять форматов</h2><FormatCards /></div></section>
 
   <section class="sec tone-coal" data-htone="coal">
@@ -15,12 +15,11 @@ import { rub, num } from '../lib/price.js';
       <div class="cmp-cards" role="list">
         {formats.map((f) => (
           <article class="cmp-card" role="listitem">
-            <header><b>{f.name}</b><span class="cmp-price">от {rub(f.base)}</span></header>
+            <header><b>{f.name}</b>{showPrices && <span class="cmp-price">от {rub(f.base)}</span>}</header>
             <dl>
               <div><dt>Длительность</dt><dd>{f.duration}</dd></div>
               <div><dt>Гостей в базе</dt><dd>{f.guestsLabel}</dd></div>
-              <div><dt>Гость сверх</dt><dd>{rub(f.a)}</dd></div>
-              <div><dt>Час сверх</dt><dd>{f.b ? rub(f.b) : `фикс. ${num(f.H)} ч`}</dd></div>
+              {showPrices ? <><div><dt>Гость сверх</dt><dd>{rub(f.a)}</dd></div><div><dt>Час сверх</dt><dd>{f.b ? rub(f.b) : `фикс. ${num(f.H)} ч`}</dd></div></> : <div><dt>Продление</dt><dd>{f.b ? `до ${num(f.maxH)} ч` : `фикс. ${num(f.H)} ч`}</dd></div>}
             </dl>
             <ul class="cmp-incl">{f.what.map((w) => <li>{w}</li>)}</ul>
             <a class="link" href={url(f.slug + '/')}>Подробнее о формате →</a>
@@ -33,20 +32,18 @@ import { rub, num } from '../lib/price.js';
           <tr><th scope="row">Длительность</th>{formats.map((f) => <td class="nowrap">{f.duration}</td>)}</tr>
           <tr><th scope="row">Гостей в базе</th>{formats.map((f) => <td class="nowrap">{f.guestsLabel}</td>)}</tr>
           <tr><th scope="row">Что входит</th>{formats.map((f) => <td>{f.what.join(', ')}</td>)}</tr>
-          <tr><th scope="row">Гость сверх</th>{formats.map((f) => <td class="nowrap">{rub(f.a)}</td>)}</tr>
-          <tr><th scope="row">Час сверх</th>{formats.map((f) => <td class="nowrap">{f.b ? rub(f.b) : `фикс. ${num(f.H)} ч`}</td>)}</tr>
-          <tr><th scope="row">Цена</th>{formats.map((f) => <td class="nowrap"><b>от {rub(f.base)}</b></td>)}</tr>
+          {showPrices ? <><tr><th scope="row">Гость сверх</th>{formats.map((f) => <td class="nowrap">{rub(f.a)}</td>)}</tr><tr><th scope="row">Час сверх</th>{formats.map((f) => <td class="nowrap">{f.b ? rub(f.b) : `фикс. ${num(f.H)} ч`}</td>)}</tr><tr><th scope="row">Цена</th>{formats.map((f) => <td class="nowrap"><b>от {rub(f.base)}</b></td>)}</tr></> : <tr><th scope="row">Продление</th>{formats.map((f) => <td class="nowrap">{f.b ? `до ${num(f.maxH)} ч` : `фикс. ${num(f.H)} ч`}</td>)}</tr>}
         </tbody>
       </table></div>
-      <p class="muted" style="margin-top:16px">Для всех форматов: выезд за пределы Екатеринбурга — {calc.perKm} ₽/км в обе стороны, генератор при отсутствии 220 В — {rub(calc.generator)}, больше {calc.individualOver} гостей — индивидуальный расчёт.</p>
-      <a class="btn brass" style="margin-top:24px" href={url('kontakty/')} data-calc-link data-goal="click_calc">Посчитать свой вечер <span class="arr">→</span></a>
+      <p class="muted" style="margin-top:16px">{showPrices ? `Для всех форматов: выезд за пределы Екатеринбурга — ${calc.perKm} ₽/км в обе стороны, генератор при отсутствии 220 В — ${rub(calc.generator)}, больше ${calc.individualOver} гостей — индивидуальный расчёт.` : `Работаем по Екатеринбургу и области. Нет розетки 220 В — привезём генератор. ${priceNote}`}</p>
+      <a class="btn brass" style="margin-top:24px" href={url('kontakty/')} data-calc-link data-goal="click_calc">{showPrices ? 'Посчитать свой вечер' : 'Получить предложение'} <span class="arr">→</span></a>
     </div>
   </section>
 
   <section class="sec tight tone-coal2" data-htone="coal">
     <div class="wrap">
       <a class="opt-card" href={url(extras.bar.slug + '/')}>
-        <span class="k">Опция · 18+</span><b>{extras.bar.name}</b><span class="muted">{extras.bar.short}. Цена — по запросу.</span><span class="arr" aria-hidden="true">→</span>
+        <span class="k">Опция · 18+</span><b>{extras.bar.name}</b><span class="muted">{extras.bar.short}. Под ваш запрос.</span><span class="arr" aria-hidden="true">→</span>
       </a>
       <p class="eyebrow" style="margin:32px 0 16px">Под повод</p>
       <div class="others">{occasions.map((o) => <a class="other" href={url(o.slug + '/')}><b>{o.name}</b><span class="muted">{o.h1}</span></a>)}</div>

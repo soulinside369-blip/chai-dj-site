@@ -2,7 +2,7 @@
 // Страница под повод: зачем этот формат на таком празднике → подходящие форматы с ценой → вопросы
 import PageHero from './PageHero.astro';
 import Photo from './Photo.astro';
-import { formats, occasions, url, extras } from '../lib/data';
+import { formats, occasions, url, extras, showPrices, priceNote } from '../lib/data';
 import { rub } from '../lib/price.js';
 interface Props { o: (typeof occasions)[number] }
 const { o } = Astro.props;
@@ -14,8 +14,8 @@ const others = occasions.filter((x) => x.slug !== o.slug);
   {o.image && <Photo src={o.image} alt={o.imageAlt} class="hero-media" eager sizes="(max-width: 860px) 100vw, 45vw" />}
   {main && (
     <div class="price-bar">
-      <p class="price"><span class="muted">{main.name}, {main.duration}</span><b>от {rub(main.base)}</b></p>
-      <a class="btn brass" href={url('kontakty/')} data-calc-link data-fmt={main.key} data-goal="click_calc">Рассчитать стоимость <span class="arr">→</span></a>
+      {showPrices ? <p class="price"><span class="muted">{main.name}, {main.duration}</span><b>от {rub(main.base)}</b></p> : <p class="muted price-note">{priceNote}</p>}
+      <a class="btn brass" href={url('kontakty/')} data-calc-link data-fmt={main.key} data-goal="click_calc">{showPrices ? 'Рассчитать стоимость' : 'Получить предложение'} <span class="arr">→</span></a>
     </div>
   )}
 </PageHero>
@@ -33,10 +33,10 @@ const others = occasions.filter((x) => x.slug !== o.slug);
       <div class="head"><p class="eyebrow">Форматы</p><h2>Что выбрать</h2></div>
       <div class="others" style="display:grid;gap:10px">
         {fmts.map((f) => (
-          <a class="other" href={url(f.slug + '/')}><b>{f.name}</b><span class="muted">{f.duration} · {f.guestsLabel} · от {rub(f.base)}</span></a>
+          <a class="other" href={url(f.slug + '/')}><b>{f.name}</b><span class="muted">{f.duration} · {f.guestsLabel}{showPrices && ` · от ${rub(f.base)}`}</span></a>
         ))}
       </div>
-      <a class="btn brass sm" style="margin-top:16px" href={url('kontakty/')} data-calc-link data-fmt={main?.key} data-goal="click_calc">Посчитать свой вечер</a>
+      <a class="btn brass sm" style="margin-top:16px" href={url('kontakty/')} data-calc-link data-fmt={main?.key} data-goal="click_calc">{showPrices ? 'Посчитать свой вечер' : 'Собрать свой вечер'}</a>
     </div>
     <div>
       <div class="head"><p class="eyebrow">Вопросы</p><h2>Коротко о главном</h2></div>
@@ -50,7 +50,7 @@ const others = occasions.filter((x) => x.slug !== o.slug);
   <div class="wrap">
     <p class="eyebrow" style="margin-bottom:16px">Другие поводы</p>
     <div class="others">
-      {others.map((x) => { const m = formats.find((f) => f.key === x.formats[0]); return <a class="other" href={url(x.slug + '/')}><b>{x.name}</b><span class="muted">{m ? `${m.name} · от ${rub(m.base)}` : x.menu}</span></a>; })}
+      {others.map((x) => { const m = formats.find((f) => f.key === x.formats[0]); return <a class="other" href={url(x.slug + '/')}><b>{x.name}</b><span class="muted">{m ? (showPrices ? `${m.name} · от ${rub(m.base)}` : `${m.name} · ${m.duration}`) : x.menu}</span></a>; })}
       <a class="other" href={url(extras.bar.slug + '/')}><b>Услуга бармена</b><span class="muted">опция к любому формату</span></a>
       <a class="other" href={url('sertifikaty/')}><b>Подарочный сертификат</b><span class="muted">если праздник не ваш</span></a>
     </div>

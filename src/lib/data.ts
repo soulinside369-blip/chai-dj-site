@@ -24,6 +24,10 @@ export const logos = casesData.logos as { name: string; image: string }[];
 export const B = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 export const url = (p = '') => B + p.replace(/^\//, '');
 
+/** Закрытый формат: цены на сайте не показываем (переключатель в админке → Настройки → Цены) */
+export const showPrices = (site as any).pricing?.show === true;
+export const priceNote: string = (site as any).pricing?.note || 'Смету и программу пришлём лично.';
+
 export const isStub = (s?: string) => !s || /^\[.*\]$/.test(s.trim());
 
 export const fmtByKey = (k: string) => formats.find((f) => f.key === k)!;
@@ -38,6 +42,10 @@ export const links = {
   whatsapp: site.contacts.whatsapp ? `https://wa.me/${site.contacts.whatsapp.replace(/\D/g, '')}` : '',
   phone: site.contacts.phone ? `tel:${site.contacts.phone.replace(/[^\d+]/g, '')}` : '',
 };
+
+/** Мессенджеры заданы в админке — показываем кнопки; пусто — кнопок нет (не ведём «Telegram» на страницу контактов) */
+export const hasTg = !!site.contacts.telegram;
+export const hasMax = !!site.contacts.max;
 
 export const nav = [
   { href: 'uslugi/', label: 'Услуги' },

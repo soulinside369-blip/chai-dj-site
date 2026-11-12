@@ -1129,3 +1129,43 @@ html { hyphens: manual; }
 .cookie-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 @media (min-width: 981px) { .cookie { left: auto; right: 20px; bottom: 20px; max-width: 420px; } }
 .f-req { font-size: 12px; line-height: 1.5; }
+
+/* v0.14 — телефон: результат конструктора и кнопка заявки на первом экране, над нижней панелью */
+@media (max-width: 600px) {
+  .stage { aspect-ratio: 2.15 / 1; }
+  .stage-time { font-size: 34px; }
+  .stage-label b { font-size: 19px; }
+  .cfg-controls { gap: 10px; padding: 12px 16px 16px; }
+  .cfg-result { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; row-gap: 2px; padding-top: 10px; }
+  .cfg-fmt { display: none; }
+  .cfg-offer { font-size: 26px !important; grid-column: 1; }
+  .cfg-per { grid-column: 1; font-size: 13px; }
+  .cfg-share { position: static; grid-column: 2; grid-row: 1 / span 2; width: 44px; padding: 0; justify-content: center; }
+  .cfg-share [data-share-label] { display: none; }
+  .cfg-cta { min-height: 50px; }
+  .hero.cfg .cfg-more { display: none; }
+}
+@media (max-width: 600px) {
+  .hero.cfg { padding-top: calc(var(--head-h) + env(safe-area-inset-top, 0px) + 4px); }
+  .cfg-grid { gap: 12px; }
+  .cfg-copy h1 { font-size: clamp(29px, 7.9vw, 36px); line-height: 1.04; }
+  .lead-short { font-size: 15px; line-height: 1.45; }
+  .range-ticks { font-size: 11.5px; }
+}
+/* Главная карточка формата: на широком экране — что входит, без пустой середины */
+.fcard-what { display: none; }
+@media (min-width: 761px) {
+  .fcard.main { grid-template-rows: auto auto 1fr auto auto auto; }
+  .fcard-what { display: grid; gap: 8px; list-style: none; padding: 4px 0 0; margin: 0; align-content: start; font-size: 14.5px; line-height: 1.4; }
+  .fcard-what li { position: relative; padding-left: 22px; color: var(--fg); }
+  .fcard-what li::before { content: ''; position: absolute; left: 2px; top: .5em; width: 10px; height: 6px; border-left: 1.6px solid var(--brass); border-bottom: 1.6px solid var(--brass); transform: rotate(-45deg) translateY(-2px); }
+}
+/* Подвал на телефоне: ссылки — полноценные зоны касания */
+@media (max-width: 760px) {
+  .f-grid ul { gap: 0; }
+  .f-grid ul a { display: inline-flex; align-items: center; min-height: 40px; }
+}
+/* Навигация в шапке — контрастнее */
+.nav a { opacity: .86; }
+@media (min-width: 761px) { .fcard.main:has(.fcard-what) .fcard-line { display: none; } .fcard.main { grid-template-rows: auto auto 1fr auto auto; } }
+.price-note { font-size: 14.5px; max-width: 36ch; }

@@ -2,11 +2,11 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import FaqList from '../components/FaqList.astro';
-import { site, links, faq } from '../lib/data';
+import { site, links, faq, hasTg, url } from '../lib/data';
 ---
 <Base title="Вопросы и ответы" description="Цены, выезд, требования к площадке, оплата и отмена — ответы на частые вопросы о чайных церемониях и DJ-сетах." faqLd>
   <PageHero title="Вопросы и ответы" eyebrow="FAQ" lead={`Не нашли ответ — напишите в Telegram, ответим за ${site.work.replyMinutes} минут в рабочее время.`} crumbs={[{ label: 'Вопросы' }]}>
-    <div class="row rv" style="--d:.4s"><a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a></div>
+    <div class="row rv" style="--d:.4s">{hasTg ? <a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a> : <a class="btn" href={url('kontakty/#zayavka')}>Задать вопрос</a>}</div>
   </PageHero>
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap" style="max-width:960px">
@@ -14,7 +14,7 @@ import { site, links, faq } from '../lib/data';
         <label class="faq-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
           <span class="sr-only">Поиск по вопросам</span><input type="search" placeholder="Найти: цена, выезд, отмена…" data-faq-q autocomplete="off" /></label>
         <nav class="chips faq-chips" aria-label="Разделы вопросов">{faq.groups.map((g, gi) => <a class="chip" href={`#faq-${gi + 1}`}>{g.title}</a>)}</nav>
-        <p class="muted faq-none" data-faq-none hidden>Ничего не нашли — <a class="link" href={links.telegram}>спросите в Telegram</a>, ответим за {site.work.replyMinutes} минут.</p>
+        <p class="muted faq-none" data-faq-none hidden>Ничего не нашли — <a class="link" href={hasTg ? links.telegram : url('kontakty/#zayavka')}>{hasTg ? 'спросите в Telegram' : 'задайте вопрос'}</a>, ответим за {site.work.replyMinutes} минут.</p>
       </div>
       <FaqList />
     </div>

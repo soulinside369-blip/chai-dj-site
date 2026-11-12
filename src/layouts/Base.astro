@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { site, nav, url, links, formats, occasions, faq, isStub, isPreview, extras } from '../lib/data';
+import { site, nav, url, links, formats, occasions, faq, isStub, isPreview, extras, hasTg, hasMax } from '../lib/data';
 import Calculator from '../components/Calculator.astro';
 import Icon from '../components/Icon.astro';
 import Channels from '../components/Channels.astro';
@@ -13,7 +13,7 @@ interface Props {
   description?: string;
   tone?: 'rice' | 'coal';      // тон первого экрана — шапка начинает в нём
   faqLd?: boolean;
-  service?: { name: string; description: string; price: number };
+  service?: { name: string; description: string; price?: number };
   noindex?: boolean;
   faqItems?: { q: string; a: string }[];
 }
@@ -57,7 +57,7 @@ const serviceSchema = service && {
   description: service.description,
   provider: { '@type': 'LocalBusiness', name: site.brand.name },
   areaServed: site.brand.region,
-  offers: { '@type': 'Offer', price: service.price, priceCurrency: 'RUB' },
+  ...(service.price ? { offers: { '@type': 'Offer', price: service.price, priceCurrency: 'RUB' } } : {}),
 };
 const metrika = site.analytics.metrikaId;
 ---
@@ -143,8 +143,8 @@ const metrika = site.analytics.metrikaId;
         {nav.map((n) => <a href={url(n.href)} aria-current={current(n.href) ? 'page' : undefined}>{n.label}<span aria-hidden="true">→</span></a>)}
       </nav>
       <div class="sheet-contacts">
-        <a class="btn ghost sm" href={links.telegram} data-goal="click_telegram">Telegram</a>
-        <a class="btn ghost sm" href={links.max} data-goal="click_max">MAX</a>
+        {hasTg && <a class="btn ghost sm" href={links.telegram} data-goal="click_telegram">Telegram</a>}
+        {hasMax && <a class="btn ghost sm" href={links.max} data-goal="click_max">MAX</a>}
         {links.phone && <a class="btn ghost sm" href={links.phone} data-goal="click_phone">Позвонить</a>}
       </div>
       <Channels />
@@ -160,8 +160,9 @@ const metrika = site.analytics.metrikaId;
         <p class="f-title display">Соберём ваш вечер — от первой чашки до последнего трека</p>
         <div class="row">
           <a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Получить предложение <span class="arr">→</span></a>
-          <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Telegram</a>
-          <a class="btn ghost" href={links.max} data-goal="click_max">MAX</a>
+          {hasTg && <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Telegram</a>}
+          {hasMax && <a class="btn ghost" href={links.max} data-goal="click_max">MAX</a>}
+          {links.phone && <a class="btn ghost" href={links.phone} data-goal="click_phone">{site.contacts.phoneDisplay}</a>}
         </div>
       </div>
       <div class="f-grid">
@@ -209,7 +210,7 @@ const metrika = site.analytics.metrikaId;
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
       <span>Форматы</span>
     </a>
-    <a class="tb" href={links.telegram} data-goal="click_telegram">
+    <a class="tb" href={hasTg ? links.telegram : links.phone || url('kontakty/')} data-goal={hasTg ? 'click_telegram' : links.phone ? 'click_phone' : 'click_contacts'}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/></svg>
       <span>Связь</span>
     </a>

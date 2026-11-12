@@ -1,7 +1,7 @@
 ---
 // Калькулятор: 4 шага, вилка до контактов (разделы 6–7 ТЗ). Коэффициенты — из calc.json и formats.json (админка).
 import ContactFields from './ContactFields.astro';
-import { formats, calc, site } from '../lib/data';
+import { formats, calc, site, showPrices, priceNote } from '../lib/data';
 import { rub } from '../lib/price.js';
 interface Props { preset?: string }
 const { preset = '' } = Astro.props;
@@ -11,6 +11,8 @@ const data = {
   cert: site.certificates.nominals,
   work: site.work,
   preset,
+  showPrices,
+  priceNote,
 };
 ---
 <form class="calc" id="calc" novalidate data-calc>
@@ -24,7 +26,7 @@ const data = {
       <legend>Какой вечер планируете?</legend>
       <div class="opts">
         {formats.map((f) => (
-          <label class="opt"><input type="radio" name="fmt" value={f.key} checked={preset === f.key} /><span>{f.name}<small>{f.duration}, {f.guestsLabel} · от {rub(f.base)}</small></span></label>
+          <label class="opt"><input type="radio" name="fmt" value={f.key} checked={preset === f.key} /><span>{f.name}<small>{f.duration}, {f.guestsLabel}{showPrices && ` · от ${rub(f.base)}`}</small></span></label>
         ))}
         <label class="opt"><input type="radio" name="fmt" value="cert" checked={preset === 'cert'} /><span>Сертификат<small>в подарок, {site.certificates.validity}</small></span></label>
       </div>
@@ -83,7 +85,7 @@ const data = {
       <div class="field" data-f="cert" hidden>
         <label for="c-cert">Номинал сертификата</label>
         <select class="input" id="c-cert" name="cert">
-          {site.certificates.nominals.map((n, i) => <option value={n.value} selected={i === site.certificates.nominals.length - 1}>{n.label}{/₽/.test(n.label) ? '' : ` — ${rub(n.value)}`}</option>)}
+          {site.certificates.nominals.map((n, i) => <option value={n.value} selected={i === site.certificates.nominals.length - 1}>{n.label}{showPrices && !/₽/.test(n.label) ? ` — ${rub(n.value)}` : ''}</option>)}
         </select>
       </div>
       <ContactFields kind="calc" />
@@ -96,9 +98,9 @@ const data = {
   </div>
 
   <aside class="calc-side" aria-live="polite">
-    <p class="eyebrow" data-sum-label>Примерная стоимость</p>
+    <p class="eyebrow" data-sum-label>{showPrices ? 'Примерная стоимость' : 'Ваш вечер'}</p>
     <p class="total" data-total>—</p>
-    <p class="muted" style="font-size:14px" data-note>Выберите формат — покажем вилку</p>
+    <p class="muted" style="font-size:14px" data-note>{showPrices ? 'Выберите формат — покажем вилку' : 'Выберите формат — соберём вечер под вашу задачу'}</p>
     <ul class="lines" data-lines></ul>
     <p class="warn" data-warn hidden></p>
   </aside>

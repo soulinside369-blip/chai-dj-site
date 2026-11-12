@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, links, url, formats } from '../lib/data';
+import { site, links, url, formats, hasTg, hasMax } from '../lib/data';
 import Channels from '../components/Channels.astro';
 const names = Object.fromEntries(formats.map((f) => [f.key, f.name]));
 ---
@@ -17,8 +17,8 @@ const names = Object.fromEntries(formats.map((f) => [f.key, f.name]));
         <li><b>Бронь даты</b><span>Предоплата {site.terms.prepay}.</span></li>
       </ol>
       <div class="row" style="margin-top:16px">
-        <a class="btn brass" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>
-        <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>
+        {hasTg && <a class="btn brass" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>}
+        {hasMax && <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>}
         <a class="btn ghost" href={url('keysy/')}>Посмотреть кейсы</a>
       </div>
       <div class="thx-cal" data-thx-cal hidden>

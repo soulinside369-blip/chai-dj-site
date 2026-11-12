@@ -53,6 +53,13 @@ collections:
               - { label: Срок ответа в рабочее время (мин), name: replyMinutes, widget: number, value_type: int }
               - { label: Ночные заявки — ответ до (час), name: nightReplyBy, widget: number, value_type: int }
               - { label: Текст для сайта, name: text }
+          - label: Цены
+            name: pricing
+            widget: object
+            hint: Выключено — закрытый формат, цены нигде не показываются, расчёт уходит только в заявку.
+            fields:
+              - { label: Показывать цены на сайте, name: show, widget: boolean, default: false }
+              - { label: Подпись вместо цены, name: note }
           - label: Первый экран — конструктор вечера
             name: hero
             widget: object

@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import QuickForm from '../components/QuickForm.astro';
 import Zone from '../components/Zone.astro';
-import { site, links, calc, isStub } from '../lib/data';
+import { site, links, calc, isStub, showPrices, hasTg, hasMax } from '../lib/data';
 import { rub } from '../lib/price.js';
 const c = site.contacts;
 const rows = [
@@ -19,13 +19,20 @@ const hasSide = rows.length > 0 || !isStub(site.brand.requisites) || !!(links.tg
 <Base title="Контакты" description={`Телефон, Telegram и MAX. ${site.work.text}. Екатеринбург без доплаты за выезд.`}>
   <PageHero title="Обсудим ваш вечер" eyebrow="Контакты" lead={`${site.work.text}. Отвечаем за ${site.work.replyMinutes} минут; ночные заявки — до ${site.work.nightReplyBy}:00.`} crumbs={[{ label: 'Контакты' }]}>
     <div class="row rv" style="--d:.4s">
-      <a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>
-      <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>
+      {hasTg && <a class="btn" href={links.telegram} data-goal="click_telegram">Написать в Telegram</a>}
+      {hasMax && <a class="btn ghost" href={links.max} data-goal="click_max">Написать в MAX</a>}
+      {links.phone && <a class="btn ghost" href={links.phone} data-goal="click_phone">{site.contacts.phoneDisplay}</a>}
+      {!hasTg && !hasMax && <a class="btn brass" href="#zayavka">Оставить заявку <span class="arr">↓</span></a>}
     </div>
   </PageHero>
 
   <section class="sec tone-coal" data-htone="coal">
     <div class={hasSide ? 'wrap split' : 'wrap solo'}>
+      <div class="calc" id="zayavka" style="grid-template-columns:1fr;scroll-margin-top:90px"><div class="calc-main">
+        <h2 style="font-size:clamp(32px,3vw,44px)">Быстрая заявка</h2>
+        <p class="muted" style="margin-top:-16px">Имя и контакт — остальное уточним сами.</p>
+        <QuickForm />
+      </div></div>
       {hasSide && <div style="display:grid;gap:28px;align-content:start">
         {rows.length > 0 && <ul class="lines" style="font-size:17px">
           {rows.map((r) => <li><span>{r[0]}</span><a class="link" href={r[2]} data-goal={r[3]}>{r[1]}</a></li>)}
@@ -33,17 +40,12 @@ const hasSide = rows.length > 0 || !isStub(site.brand.requisites) || !!(links.tg
         {!isStub(site.brand.requisites) && <div style="display:grid;gap:8px"><p class="eyebrow">Реквизиты</p><p class="muted">{site.brand.requisites}</p></div>}
         <Channels variant="card" />
       </div>}
-      <div class="calc" style="grid-template-columns:1fr"><div class="calc-main">
-        <h2 style="font-size:clamp(32px,3vw,44px)">Быстрая заявка</h2>
-        <p class="muted" style="margin-top:-16px">Имя и контакт — остальное уточним сами.</p>
-        <QuickForm />
-      </div></div>
     </div>
   </section>
 
   <section class="sec tone-coal2" data-htone="coal">
     <div class="wrap split" style="align-items:center">
-      <div class="head" style="margin:0"><p class="eyebrow">Зона выезда</p><h2 data-split>Екатеринбург — без доплаты</h2><p class="lead">{`За городом — ${calc.perKm} ₽ за километр в обе стороны. Арамиль, 25 км: +${rub(25 * 2 * calc.perKm)}.`}</p></div>
+      <div class="head" style="margin:0"><p class="eyebrow">Зона выезда</p><h2 data-split>{showPrices ? 'Екатеринбург — без доплаты' : 'Екатеринбург и область'}</h2><p class="lead">{showPrices ? `За городом — ${calc.perKm} ₽ за километр в обе стороны. Арамиль, 25 км: +${rub(25 * 2 * calc.perKm)}.` : 'Приезжаем в любой город области в радиусе 150 км; дорогу учитываем в смете.'}</p></div>
       <Zone />
     </div>
   </section>

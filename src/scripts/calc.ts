@@ -21,6 +21,7 @@ if (form) {
   const contact = $('[data-contact]');
   const totalEl = $('[data-total]');
   const S = { fmt: '', place: 'in', power: 'yes', step: 1, shown: 0, bar: false };
+  const P = !!D.showPrices; // открытые цены или закрытый формат
 
   maskPhone(contact.querySelector('[name="contact"]')!);
 
@@ -42,7 +43,7 @@ if (form) {
     if (f) {
       hoursIn.innerHTML = '';
       const max = f.b ? f.maxH : f.H;
-      for (let h = f.H; h <= max; h += 1) hoursIn.insertAdjacentHTML('beforeend', `<option value="${h}">${num(h)} ч${h === f.H ? ' — в пакете' : ` (+${rub((h - f.H) * f.b)})`}</option>`);
+      for (let h = f.H; h <= max; h += 1) hoursIn.insertAdjacentHTML('beforeend', `<option value="${h}">${num(h)} ч${h === f.H ? ' — в пакете' : P ? ` (+${rub((h - f.H) * f.b)})` : ''}</option>`);
       hoursIn.disabled = !f.b;
       guestsIn.max = String(f.maxGuests || 500);
       guestsIn.value = String(f.G);
@@ -72,15 +73,31 @@ if (form) {
     const note = $('[data-note]'), lines = $('[data-lines]'), warn = $('[data-warn]');
     warn.hidden = true; totalEl.classList.remove('ind');
     if (S.fmt === 'cert') {
-      const v = +certIn.value; countTo(v, v);
+      const v = +certIn.value; const opt = certIn.selectedOptions[0];
+      if (P || /₽/.test(opt?.text || '')) countTo(v, v); else { cancelAnimationFrame(anim); totalEl.textContent = opt?.text || 'Сертификат'; }
       note.textContent = 'Подарочный сертификат на 6 месяцев. Пришлём ссылку на оплату.';
       lines.innerHTML = '<li><span>Формат</span><span>PDF или печатный</span></li>';
       last = { cert: v }; return;
     }
-    if (!f) { totalEl.textContent = '—'; note.textContent = 'Выберите формат — покажем вилку'; lines.innerHTML = ''; return; }
+    if (!f) { totalEl.textContent = '—'; note.textContent = P ? 'Выберите формат — покажем вилку' : 'Выберите формат — соберём вечер под вашу задачу'; lines.innerHTML = ''; return; }
     const guests = Math.max(0, +guestsIn.value || 0);
     const r = price(f, D.calc, { guests, hours: +hoursIn.value || f.H, km: km(), generator: S.power === 'no' });
     last = r;
+    if (!P) {
+      cancelAnimationFrame(anim); totalEl.classList.add('ind'); totalEl.textContent = f.name;
+      note.textContent = D.priceNote;
+      const k = km(), hrs = +hoursIn.value || f.H;
+      lines.innerHTML = `<li><span>Длительность</span><span>${num(hrs)} ч</span></li>`
+        + `<li><span>Гости</span><span>${guests || '—'}</span></li>`
+        + `<li><span>Выезд</span><span>${k ? `${k} км от Екатеринбурга` : 'Екатеринбург'}</span></li>`
+        + `<li><span>Входит</span><span>${f.what.length} пункта</span></li>`
+        + (S.power === 'no' ? '<li><span>Генератор</span><span>привезём</span></li>' : '')
+        + (S.bar ? '<li><span>Бармен</span><span>по запросу</span></li>' : '');
+      if (f.maxGuests && guests > f.maxGuests) { warn.hidden = false; warn.textContent = `Мастер-класс — максимум для ${f.maxGuests} человек. Для большой группы подойдёт «Чайная церемония» или «Чай + DJ».`; }
+      else if (S.power === 'unknown') { warn.hidden = false; warn.textContent = 'Уточним у площадки. Если розетки нет — привезём генератор.'; }
+      else if (S.place === 'out') { warn.hidden = false; warn.textContent = 'На улице нужен шатёр или навес над техникой и ровная поверхность.'; }
+      return;
+    }
     if (r.individual) {
       cancelAnimationFrame(anim); totalEl.textContent = 'Индивидуальный расчёт'; totalEl.classList.add('ind');
       note.textContent = `Больше ${D.calc.individualOver} гостей — нужен второй мастер и больше звука. Посчитаем вручную.`;
@@ -105,7 +122,7 @@ if (form) {
     next.hidden = n === 4;
     $('[data-f="cert"]').hidden = S.fmt !== 'cert';
     $('[data-l4]').textContent = S.fmt === 'cert' ? 'Кому прислать ссылку на оплату?' : 'Куда прислать точный расчёт?';
-    $('[data-sum-label]').textContent = n === 4 && S.fmt !== 'cert' ? 'Итог до звонка' : 'Примерная стоимость';
+    $('[data-sum-label]').textContent = !P ? 'Ваш вечер' : n === 4 && S.fmt !== 'cert' ? 'Итог до звонка' : 'Примерная стоимость';
     if (!silent) goal('calc_step_' + n);
     render();
   }

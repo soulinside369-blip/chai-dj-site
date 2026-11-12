@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
-import { cases, isRealCase, reviews, scenarios, url, links } from '../lib/data';
+import { cases, isRealCase, reviews, scenarios, url, links, hasTg } from '../lib/data';
 const realCases = cases.filter(isRealCase);
 const realReviews = reviews.filter((r) => !r.draft).length > 0;
 const guestsLabel = (g: string) => { const n = parseInt(g); if (!n) return g; const m10 = n % 10, m100 = n % 100; return `${n} ${m10 === 1 && m100 !== 11 ? 'гость' : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? 'гостя' : 'гостей'}`; };
@@ -25,7 +25,7 @@ const labels: Record<string, string> = { corp: 'Корпоративы', private
         <div class="empty-state">
           <p class="h3 display">Первые истории готовим к публикации</p>
           <p class="muted">Кейсы выходят только с согласия клиентов. Ниже — сценарии вечеров, а о похожих мероприятиях расскажем лично.</p>
-          <div class="row"><a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Посчитать вечер</a><a class="btn ghost" href={links.telegram} data-goal="click_telegram">Спросить в Telegram</a></div>
+          <div class="row"><a class="btn brass" href={url('kontakty/')} data-calc-link data-goal="click_calc">Получить предложение</a>{hasTg && <a class="btn ghost" href={links.telegram} data-goal="click_telegram">Спросить в Telegram</a>}</div>
         </div>
       )}
     </div>
