@@ -83,6 +83,7 @@ if ($kind === 'calc') {
     $params['Номинал'] = $money($in['cert'] ?? 0);
     $estimateTotal = (int)($in['cert'] ?? 0);
   } else {
+    if (!empty($in['mood'])) $params['Настроение'] = $s('mood', 30);
     $params['Дата'] = $s('date', 10);
     $params['Место'] = $s('town', 60) . (!empty($in['km']) ? ' (' . (int)$in['km'] . ' км)' : '');
     $params['Гостей'] = (string)(int)($in['guests'] ?? 0);

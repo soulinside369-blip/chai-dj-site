@@ -1167,3 +1167,29 @@ html { hyphens: manual; }
     @keyframes rv-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
   }
 }
+
+/* v0.15 шаг 2 — атмосфера по ползунку: первый экран меняет зал, весь сайт помнит настроение */
+:root { --mood: .5; --beat: .67s; }
+.hero.cfg { position: relative; isolation: isolate; transition: background-color .8s var(--ease), color .5s var(--ease); }
+.hero.cfg > .wrap { position: relative; z-index: 1; }
+.hero-atmo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.hero.cfg.tone-coal { --bg: #2E231A; }
+html[data-mood="dance"] .hero.cfg.tone-coal { --bg: #141210; }
+.hero.cfg { background: var(--bg); }
+.hero.cfg::after { content: ''; position: absolute; inset: auto 0 0; height: 70%; z-index: 0; pointer-events: none;
+  background: radial-gradient(60% 80% at 50% 110%, rgb(232 116 59 / calc(.06 + var(--mood) * .22)), transparent 70%); transition: opacity .6s; }
+html[data-mood="quiet"] .hero.cfg::after { opacity: .5; }
+.cfg-copy h1 { font-weight: calc(540 + var(--mood) * 230); transition: font-weight .5s var(--ease); }
+@media (prefers-reduced-motion: no-preference) {
+  html[data-mood="dance"] .cfg-cta { animation: beat-glow calc(var(--beat) * 2) ease-out infinite; }
+  @keyframes beat-glow { 0% { box-shadow: 0 0 0 0 rgb(232 116 59 / .45); } 70%, 100% { box-shadow: 0 0 0 14px rgb(232 116 59 / 0); } }
+}
+/* внутренние страницы: тот же вечер — тёплый свет в шапке страницы */
+.page-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(50% 70% at 85% 0%, rgb(232 116 59 / calc(var(--mood) * .14)), transparent 70%); }
+.page-hero > * { position: relative; z-index: 1; }
+html:not([data-mood]) .page-hero::after { display: none; }
+html[data-mood="rhythm"] .hero.cfg, html[data-mood="dance"] .hero.cfg { --bg: #2E231A; --fg: var(--rice); --muted: var(--on-coal-muted); --line: var(--line-coal); --accent: var(--brass); --card: var(--coal-2); --err: var(--bad-on-coal); color: var(--fg); }
+html[data-mood="dance"] .hero.cfg { --bg: #141210; }
+html[data-mood="rhythm"] .hero.cfg .cfg-panel, html[data-mood="dance"] .hero.cfg .cfg-panel { box-shadow: 0 0 0 1px rgb(200 161 101 / .22), 0 30px 80px -30px rgb(0 0 0 / .7); }
+html[data-mood="rhythm"] .hero.cfg .seg-btn[aria-pressed="true"], html[data-mood="dance"] .hero.cfg .seg-btn[aria-pressed="true"] { background: var(--rice); color: var(--coal); }

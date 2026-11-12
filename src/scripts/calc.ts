@@ -163,7 +163,8 @@ if (form) {
     if (!validateContact(contact)) return;
     const f = fmt();
     const townName = town.value === 'other' ? 'Другой пункт' : D.calc.towns[+town.value].name;
-    const payload: Record<string, unknown> = { kind: 'calc', fmt: S.fmt, ...contactData(contact) };
+    const mz = document.documentElement.dataset.mood;
+    const payload: Record<string, unknown> = { kind: 'calc', fmt: S.fmt, ...(mz ? { mood: ({ quiet: 'Тишина', rhythm: 'Чай и ритм', dance: 'Танцпол' } as any)[mz] } : {}), ...contactData(contact) };
     if (S.fmt === 'cert') payload.cert = +certIn.value;
     else Object.assign(payload, {
       date: dateIn.value, town: townName, km: km(), guests: +guestsIn.value, hours: +hoursIn.value || f.H,

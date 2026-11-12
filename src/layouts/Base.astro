@@ -82,7 +82,7 @@ const metrika = site.analytics.metrikaId;
   <link rel="preload" href={geoCyr} as="font" type="font/woff2" crossorigin />
   <slot name="head" />
   <script type="speculationrules" is:inline set:html={JSON.stringify({ prerender: [{ where: { and: [{ href_matches: url('*') }, { not: { href_matches: [url('admin/*'), url('api/*'), url('docs/*')] } }] }, eagerness: 'moderate' }] })} />
-  <script is:inline>document.documentElement.classList.add('js')</script>
+  <script is:inline>(function(d){d.classList.add('js');try{var m=localStorage.getItem('cdj_mood');if(m!==null){m=+m;d.style.setProperty('--mood',m);d.dataset.mood=m<.34?'quiet':m<.67?'rhythm':'dance'}}catch(e){}})(document.documentElement)</script>
   <script type="application/ld+json" set:html={JSON.stringify(business)} />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
   {serviceSchema && <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />}

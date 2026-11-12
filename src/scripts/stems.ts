@@ -46,7 +46,11 @@ export class StemSound {
       // все три петли стартуют в одну и ту же миллисекунду — так они всегда в такт
       this.t0 = ctx.currentTime + 0.08;
       this.src = (['tea', 'teadj', 'dj'] as const).map((k, i) => {
-        const s = ctx.createBufferSource(); s.buffer = this.buf[k]; s.loop = true; s.connect(this.g[i]); s.start(this.t0); return s;
+        const s = ctx.createBufferSource(); s.buffer = this.buf[k]; s.loop = true;
+        // петля ровно по тактам — отсекаем хвост кодека, если он есть
+        const bar = (60 / (this.u.bpm || 120)) * 4, bars = Math.round(s.buffer.duration / bar);
+        if (bars > 0 && Math.abs(bars * bar - s.buffer.duration) < 0.25) { s.loopStart = 0; s.loopEnd = bars * bar; }
+        s.connect(this.g[i]); s.start(this.t0); return s;
       });
     }
     this.zone = this.zoneOf(this.mix);

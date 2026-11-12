@@ -6,6 +6,7 @@ const menu = document.getElementById('menu')!;
 const scrim = document.querySelector<HTMLElement>('.sheet-scrim')!;
 const toggles = document.querySelectorAll<HTMLButtonElement>('[data-menu-toggle]');
 import { feel } from './feel';
+import { fmtOf, type Zone } from './mood';
 
 /* ---- Цели Метрики ---- */
 export function goal(name: string) {
@@ -25,6 +26,9 @@ let lastFocus: HTMLElement | null = null;
 export function openCalc(detail?: { fmt?: string; guests?: number; cert?: string; bar?: boolean }) {
   if (!drawer || !calcForm) return;
   lastFocus = document.activeElement as HTMLElement;
+  // без явного формата — берём тот, что подходит под выбранное настроение
+  const mz = document.documentElement.dataset.mood as Zone | undefined;
+  if (!detail?.fmt && !detail?.cert && mz) detail = { ...detail, fmt: fmtOf(mz) };
   if (detail?.guests) calcForm.dispatchEvent(new CustomEvent('calc:prefill', { detail }));
   else if (detail?.fmt) calcForm.dispatchEvent(new CustomEvent('calc:format', { detail: detail.fmt }));
   if (detail?.bar) calcForm.dispatchEvent(new CustomEvent('calc:bar'));

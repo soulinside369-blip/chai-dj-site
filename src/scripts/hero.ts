@@ -5,6 +5,8 @@ import { maskPhone, validateContact, contactData, send } from './forms';
 import { EveningSound } from './sound';
 import { StemSound } from './stems';
 import { feel } from './feel';
+import { applyMood, storedMood, bpmOf } from './mood';
+import { startAtmo } from './atmo';
 
 const root = document.querySelector<HTMLElement>('[data-cfg]');
 if (root) {
@@ -19,7 +21,7 @@ if (root) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtBy = (k: string) => D.formats.find((f: any) => f.key === k);
   const smooth = (a: number, b: number, x: number) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
-  const S = { p: 0.5, shown: 0.5, fmt: 'teadj', seg: D.defaultSegment as string, last: null as any, touched: false, pStr: '', lastStop: '' as string, lastG: undefined as number | undefined };
+  const S = { p: 0.5, shown: 0.5, fmt: 'teadj', seg: D.defaultSegment as string, last: null as any, touched: false, pStr: '', lastStop: '' as string, lastG: undefined as number | undefined, zone: '' as string };
   // свои аудиофайлы из админки (три петли) — если заданы все три; иначе синтезатор
   const A = (D as any).audio || {};
   const sound: { start(): any; stop(): any; setMix(p: number): any } = A.tea && A.teadj && A.dj ? new StemSound(A) : new EveningSound();
@@ -76,6 +78,9 @@ if (root) {
       ? `${f.duration} · ${g} гостей · большое событие — соберём команду и комплект под вас`
       : `${f.duration} · ${g} гостей · предложение под вашу задачу`;
     sound.setMix(S.p);
+    // атмосфера всей страницы идёт за ползунком
+    const z = applyMood(S.p, S.touched);
+    if (z !== S.zone) { S.zone = z; root!.classList.toggle('tone-rice', z === 'quiet'); root!.classList.toggle('tone-coal', z !== 'quiet'); root!.dataset.htone = z === 'quiet' ? 'rice' : 'coal'; dispatchEvent(new Event('scroll')); }
     if (reduce) draw(0);
   }
   mood.addEventListener('input', () => { update(); if (!S.touched) { S.touched = true; goal('hero_slider'); } });
@@ -182,7 +187,7 @@ if (root) {
     if (!okDate || !okC) return;
     const f = fmtBy(S.fmt), r = S.last;
     send({
-      kind: 'calc', source: 'hero', segment: S.seg, fmt: S.fmt, date: dateIn.value, town: 'Екатеринбург', km: 0,
+      kind: 'calc', source: 'hero', segment: S.seg, fmt: S.fmt, mood: nearest(+mood.value).label, date: dateIn.value, town: 'Екатеринбург', km: 0,
       guests: +guests.value, hours: f.H, place: 'in', power: 'yes',
       estimate: r && !r.individual ? { low: r.low, high: r.high, total: r.total } : 'индивидуальный расчёт',
       ...contactData(book),
@@ -202,6 +207,7 @@ if (root) {
 
   /* ---------- Ссылка на расчёт: ?p=0…100&g=гостей — открывается с тем же вечером ---------- */
   {
+    const sm = storedMood(); if (sm !== null) mood.value = String(Math.round(sm * 100));
     const q = new URLSearchParams(location.search);
     const qp = q.get('p'), qg = q.get('g');
     if (qp !== null && !isNaN(+qp)) mood.value = String(Math.min(100, Math.max(0, +qp)));
@@ -221,4 +227,7 @@ if (root) {
   });
 
   update();
+  // атмосфера за контентом первого экрана — после загрузки, чтобы не мешать первой отрисовке
+  const atmo = () => startAtmo(root, () => S.p, bpmOf);
+  if (document.readyState === 'complete') setTimeout(atmo, 200); else addEventListener('load', () => setTimeout(atmo, 200), { once: true });
 }
