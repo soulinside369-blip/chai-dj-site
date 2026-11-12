@@ -1,5 +1,6 @@
 name: Выкладка на хостинг (FTP)
-# Включается, когда в Settings → Secrets заданы FTP_SERVER, FTP_USERNAME, FTP_PASSWORD и переменная SITE_URL (https://ваш-домен.ru).
+# Включается, когда в Settings → Secrets заданы FTP_USERNAME, FTP_PASSWORD и переменная SITE_URL.
+# Хостинг reg.ru: server109.hosting.reg.ru, папка сайта www/xn--80adjrs4a9a5b.xn--p1ai/ (эвентчай.рф).
 on:
   push:
     branches: [main]
@@ -26,11 +27,11 @@ jobs:
           BASE_PATH: /
       - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
+          server: ${{ secrets.FTP_SERVER || 'server109.hosting.reg.ru' }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ${{ vars.FTP_DIR || './' }}
+          server-dir: ${{ vars.FTP_DIR || 'www/xn--80adjrs4a9a5b.xn--p1ai/' }}
           exclude: |
             **/api/config.php
             **/api/private/**
