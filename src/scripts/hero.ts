@@ -1,7 +1,6 @@
 // Конструктор вечера: ползунок → формат, время, сцена, звук; гости → вилка; заявка с первого экрана.
 import { price, rub } from '../lib/price.js';
 import { goal } from './fx';
-import { maskPhone, validateContact, contactData, send } from './forms';
 import { EveningSound } from './sound';
 import { StemSound } from './stems';
 import { feel } from './feel';
@@ -72,7 +71,7 @@ if (root) {
     const g = +guests.value;
     $('[data-guests-out]').textContent = String(g);
     const r = price(f, D.calc, { guests: g, hours: f.H, km: 0, generator: false });
-    S.last = r; // смета считается для заявки (видит только команда), на экране цен нет — закрытый формат
+    S.last = r; (window as any).__cdjEst = r && !r.individual ? { low: r.low, high: r.high, total: r.total } : null; // смета считается для заявки (видит только команда), на экране цен нет — закрытый формат
     $('[data-fmt-name]').textContent = f.name;
     $('[data-per]').textContent = r.individual
       ? `${f.duration} · ${g} гостей · большое событие — соберём команду и комплект под вас`
@@ -102,8 +101,11 @@ if (root) {
     if (!hasPhoto) { const gr = gaiwan.getBoundingClientRect(); geo.ox = gr.left - r.left + gr.width * 0.5; geo.oy = gr.top - r.top + gr.height * 0.3; geo.sc = gr.width / 400; }
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
-  function draw(_ts: number) {
-    t++;
+  const step = matchMedia('(pointer: coarse)').matches ? 33 : 0; let lastF = 0;
+  function draw(ts: number) {
+    if (!reduce && step && ts - lastF < step) { raf = requestAnimationFrame(draw); return; }
+    lastF = ts;
+    t += step ? 2 : 1;
     S.shown += (S.p - S.shown) * (reduce ? 1 : 0.08);
     const p = S.shown;
     // Стили трогаем, только когда значение заметно изменилось (иначе браузер пересчитывает раскладку каждый кадр)
@@ -113,7 +115,7 @@ if (root) {
     // пар над гайванью — только в варианте без фото; геометрия кешируется в size()
     const steam = hasPhoto ? 0 : 1 - smooth(0.3, 0.7, p);
     const { ox, oy, sc } = geo;
-    if (steam > 0.02 && ps.length < 90 && t % 2) ps.push({ x: ox + (Math.random() - 0.5) * 60 * sc, y: oy, vx: (Math.random() - 0.5) * 0.2, vy: -(0.5 + Math.random() * 0.6), r: (4 + Math.random() * 6) * sc + 2, life: 0, max: 160 + Math.random() * 120, seed: Math.random() * 999 });
+    if (steam > 0.02 && ps.length < 90 && (step || t % 2)) ps.push({ x: ox + (Math.random() - 0.5) * 60 * sc, y: oy, vx: (Math.random() - 0.5) * 0.2, vy: -(0.5 + Math.random() * 0.6), r: (4 + Math.random() * 6) * sc + 2, life: 0, max: 160 + Math.random() * 120, seed: Math.random() * 999 });
     for (let i = ps.length - 1; i >= 0; i--) {
       const q = ps[i]; q.life++; const k = q.life / q.max;
       q.vx += Math.sin((q.life + q.seed) * 0.03) * 0.015; q.vx *= 0.985; q.x += q.vx; q.y += q.vy; q.r += 0.12 + k * 0.12;
@@ -168,30 +170,16 @@ if (root) {
     if (on) goal('hero_sound');
   });
 
-  /* ---------- Заявка с первого экрана ---------- */
-  const book = $<HTMLFormElement>('[data-book]');
+  /* ---------- Заявка: одна форма на сайт — ведём к ней с уже подставленным выбором ---------- */
   const openBtn = $<HTMLButtonElement>('[data-book-open]');
-  const dateIn = $<HTMLInputElement>('#cfg-date');
-  const min = new Date(); min.setDate(min.getDate() + D.calc.minDaysAhead);
-  dateIn.min = `${min.getFullYear()}-${String(min.getMonth() + 1).padStart(2, '0')}-${String(min.getDate()).padStart(2, '0')}`;
-  maskPhone($<HTMLInputElement>('#cfg-contact'));
   openBtn.addEventListener('click', () => {
-    book.hidden = false; openBtn.hidden = true;
-    if (!matchMedia('(pointer: coarse)').matches) dateIn.focus();
-  });
-  book.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const okDate = !!dateIn.value && dateIn.value >= dateIn.min;
-    book.querySelector('[data-f="date"]')!.classList.toggle('err', !okDate);
-    const okC = validateContact(book);
-    if (!okDate || !okC) return;
-    const f = fmtBy(S.fmt), r = S.last;
-    send({
-      kind: 'calc', source: 'hero', segment: S.seg, fmt: S.fmt, mood: nearest(+mood.value).label, date: dateIn.value, town: 'Екатеринбург', km: 0,
-      guests: +guests.value, hours: f.H, place: 'in', power: 'yes',
-      estimate: r && !r.individual ? { low: r.low, high: r.high, total: r.total } : 'индивидуальный расчёт',
-      ...contactData(book),
-    }, book.querySelector('.form-status'), D.work, book.querySelector('button[type="submit"]'));
+    goal('hero_cta');
+    const fin = document.getElementById('zayavka');
+    if (fin) {
+      fin.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      const name = fin.querySelector<HTMLInputElement>('[name="name"]');
+      if (name && !matchMedia('(pointer: coarse)').matches) setTimeout(() => name.focus({ preventScroll: true }), reduce ? 0 : 700);
+    } else (window as any).__openCalc?.({ fmt: S.fmt, guests: +guests.value });
   });
 
   /* ---------- Подробный расчёт — передаём выбор в большой калькулятор ---------- */

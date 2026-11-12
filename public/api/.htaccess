@@ -1,5 +1,5 @@
-# Закрываем настройки и служебные файлы
-<FilesMatch "^(config(\.example)?\.php|.*\.csv|.*\.txt)$">
+# Закрываем настройки, общий код и служебные файлы
+<FilesMatch "^(config(\.example)?\.php|lib\.php|.*\.(csv|txt|sqlite|sqlite-wal|sqlite-shm|json))$">
   Require all denied
 </FilesMatch>
 Options -Indexes

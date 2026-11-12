@@ -47,6 +47,12 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   closeMenu();
   const fmt = a.dataset.fmt;
+  const fin = document.getElementById('zayavka');
+  // на главной «Заявка» без формата ведёт к единой форме внизу — выбор с первого экрана уже подставлен
+  if (fin && !fmt && !a.dataset.bar && !a.dataset.cert) {
+    fin.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    return;
+  }
   const cfg = document.querySelector<HTMLElement>('[data-cfg]');
   if (cfg && !a.dataset.bar && (!fmt || ['tea', 'teadj', 'dj'].includes(fmt))) {
     if (fmt) cfg.dispatchEvent(new CustomEvent('cfg:set', { detail: fmt }));

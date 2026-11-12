@@ -60,7 +60,7 @@ const serviceSchema = service && {
   areaServed: site.brand.region,
   ...(service.price ? { offers: { '@type': 'Offer', price: service.price, priceCurrency: 'RUB' } } : {}),
 };
-const metrika = site.analytics.metrikaId;
+const metrika = (import.meta.env.METRIKA_ID as string | undefined) || site.analytics.metrikaId;
 ---
 <!doctype html>
 <html lang="ru">

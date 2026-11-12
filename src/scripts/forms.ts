@@ -111,12 +111,16 @@ document.querySelectorAll<HTMLFormElement>('form[data-quick]').forEach((form) =>
   const auto = (z?: string) => { if (sel && !manual && z) sel.value = fmtOf(z as Zone); };
   auto(document.documentElement.dataset.mood);
   addEventListener('cdj:mood', (e) => auto((e as CustomEvent).detail));
+  const dateIn = form.querySelector<HTMLInputElement>('[name="date"]');
+  if (dateIn) { const d = new Date(); d.setDate(d.getDate() + 1); dateIn.min = d.toISOString().slice(0, 10); }
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!validateContact(node)) return;
+    const badDate = !!dateIn?.value && dateIn.value < dateIn.min;
+    dateIn?.closest('.field')?.classList.toggle('err', badDate);
+    if (!validateContact(node) || badDate) return;
     const fmt = sel?.value || '';
     const mz = document.documentElement.dataset.mood;
     const g = document.querySelector<HTMLInputElement>('#cfg-guests');
-    send({ kind: 'quick', fmt, ...(mz ? { mood: MOOD_LABEL[mz] } : {}), ...(g ? { guests: +g.value } : {}), ...contactData(node) }, node.querySelector('.form-status'), work, form.querySelector('button[type="submit"]'));
+    send({ kind: 'quick', fmt, ...(mz ? { mood: MOOD_LABEL[mz] } : {}), ...(g ? { guests: +g.value } : {}), ...(dateIn?.value ? { date: dateIn.value } : {}), ...((window as any).__cdjEst ? { estimate: (window as any).__cdjEst } : {}), ...contactData(node) }, node.querySelector('.form-status'), work, form.querySelector('button[type="submit"]'));
   });
 });

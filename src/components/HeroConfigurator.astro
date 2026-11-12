@@ -81,19 +81,6 @@ const data = {
 
         <button type="button" class="btn brass cfg-cta" data-book-open data-goal="hero_cta"><span data-seg-text="cta">{seg.cta}</span> <span class="arr">→</span></button>
 
-        <form class="cfg-book" data-book hidden novalidate>
-          <div class="field" data-f="date">
-            <label for="cfg-date">Дата события</label>
-            <input class="input" type="date" id="cfg-date" name="date" />
-            <span class="errmsg">Выберите дату не раньше чем через {calc.minDaysAhead} дня</span>
-          </div>
-          <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off" /></div>
-          <div class="field" data-f="name"><label for="cfg-name">Имя</label><input class="input" id="cfg-name" name="name" autocomplete="name" /><span class="errmsg">Как к вам обращаться?</span></div>
-          <div class="field" data-f="contact"><label for="cfg-contact">Телефон или @telegram</label><input class="input" id="cfg-contact" name="contact" type="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" /><span class="errmsg">Нужен номер из 11 цифр или ник вида @name</span></div>
-          <div class="check" data-f="consent"><input type="checkbox" id="cfg-consent" name="consent" /><label for="cfg-consent">Согласен на обработку данных по <a class="link" href={url('consent/')}>условиям согласия</a></label><span class="errmsg">Без согласия мы не можем принять заявку</span></div>
-          <button class="btn brass" type="submit">Отправить <span class="arr">→</span></button>
-          <p class="form-status" role="status" aria-live="polite"></p>
-        </form>
         <p class="cfg-more muted">Смету и программу пришлём лично — в течение {site.work.replyMinutes} минут в рабочее время.</p>
       </div>
     </div>

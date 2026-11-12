@@ -10,8 +10,8 @@ const guestsLabel = (g: string) => { const n = parseInt(g); if (!n) return g; co
 const types = [...new Set(realCases.map((c) => c.type))];
 const labels: Record<string, string> = { corp: 'Корпоративы', private: 'Частные события', agency: 'С агентствами' };
 ---
-<Base title="Кейсы и сценарии вечеров" description="Как мы планируем вечера: юбилей в загородной резиденции, день рождения в пентхаусе, приём для партнёров, семейный праздник. Чайная церемония и DJ под ваш повод.">
-  <PageHero title="Кейсы" eyebrow="Где мы уже были" lead="Корпоративы, частные вечера и проекты с ивент-агентствами — и сценарии того, как мы собираем вечер под повод." crumbs={[{ label: 'Кейсы' }]}>
+<Base title={realCases.length ? 'Кейсы и сценарии вечеров' : 'Сценарии вечеров'} description="Как мы планируем вечера: юбилей в загородной резиденции, день рождения в пентхаусе, приём для партнёров, семейный праздник. Чайная церемония и DJ под ваш повод.">
+  <PageHero title={realCases.length ? 'Кейсы' : 'Сценарии вечеров'} eyebrow={realCases.length ? 'Где мы уже были' : 'Как может пройти ваш вечер'} lead={realCases.length ? 'Корпоративы, частные вечера и проекты с ивент-агентствами — и сценарии того, как мы собираем вечер под повод.' : 'Так мы планируем вечера под разные поводы. Реальные кейсы публикуем только с согласия клиентов — о похожих мероприятиях расскажем лично.'} crumbs={[{ label: realCases.length ? 'Кейсы' : 'Сценарии' }]}>
     {types.length > 1 && (
       <div class="chips" role="group" aria-label="Фильтр по типу события" data-filter="#caseGrid">
         <button class="chip" aria-pressed="true" data-f="all">Все</button>

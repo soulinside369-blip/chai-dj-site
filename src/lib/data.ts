@@ -47,9 +47,12 @@ export const links = {
 export const hasTg = !!site.contacts.telegram;
 export const hasMax = !!site.contacts.max;
 
+/** Пока реальных кейсов нет — раздел называется «Сценарии», чтобы не обещать прошедших мероприятий */
+export const hasRealCases = cases.filter(isRealCase).length > 0;
+
 export const nav = [
   { href: 'uslugi/', label: 'Услуги' },
-  { href: 'keysy/', label: 'Кейсы' },
+  { href: 'keysy/', label: hasRealCases ? 'Кейсы' : 'Сценарии' },
   { href: 'oborudovanie/', label: 'Оборудование' },
   { href: 'o-nas/', label: 'О нас' },
   { href: 'faq/', label: 'Вопросы' },

@@ -4,8 +4,8 @@ import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import { formats, site, url, showPrices } from '../lib/data';
 import { rub } from '../lib/price.js';
-interface Props { closed?: boolean; pick?: boolean }
-const { closed: closedProp = false, pick = false } = Astro.props;
+interface Props { closed?: boolean; pick?: boolean; eagerMain?: boolean }
+const { closed: closedProp = false, pick = false, eagerMain = false } = Astro.props;
 const closed = closedProp || !showPrices;
 const certFrom = Math.min(...site.certificates.nominals.map((n) => n.value));
 const items = [
@@ -16,7 +16,7 @@ const items = [
 <ul class="fmt-rail" data-pick={pick ? '' : undefined}>
   {items.map((f) => (
     <li class={`fcard${f.main ? ' main' : ''}${f.image ? ' has-img' : ''}`} data-k={f.key}>
-      {f.image && <Photo src={f.image} alt={f.imageAlt} class="fcard-img" sizes="(max-width: 760px) 76vw, 480px" style={f.vt ? `view-transition-name: fmt-${f.key}` : undefined} />}
+      {f.image && <Photo src={f.image} alt={f.imageAlt} class="fcard-img" eager={eagerMain && f.main} sizes={f.main || pick ? '(max-width: 760px) 76vw, 520px' : '(max-width: 760px) 76vw, 260px'} style={f.vt ? `view-transition-name: fmt-${f.key}` : undefined} />}
       <div class="fcard-top">
         <Icon name={f.key} class="ico" />
         {f.vt && <span class="badge">{pick ? 'Под ваш вечер' : 'Главный'}</span>}

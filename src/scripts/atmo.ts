@@ -22,8 +22,11 @@ export function startAtmo(host: HTMLElement, getP: () => number, bpm: (p: number
     qs = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, s: Math.random(), ph: Math.random() * 6.28 }));
   };
   const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
+  // на телефонах — 30 кадров в секунду: глазу не заметно, процессору и батарее легче
+  const step = matchMedia('(pointer: coarse)').matches ? 33 : 0; let last = 0;
   function frame(now: number) {
     raf = requestAnimationFrame(frame);
+    if (step && now - last < step) return; last = now;
     shown += (getP() - shown) * 0.07;
     const m = shown, t = (now - t0) / 1000;
     const beat = Math.pow(Math.max(0, Math.sin(t * Math.PI * bpm(m) / 60)), 10) * Math.max(0, (m - 0.6) / 0.4);

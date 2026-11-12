@@ -7,14 +7,14 @@ import { rub, num } from '../lib/price.js';
 ---
 <Base title={showPrices ? 'Цены на чайную церемонию и DJ — форматы и что входит' : 'Форматы: чайная церемония, DJ-сет, «Чай + DJ», мастер-класс — что входит'} description={showPrices ? 'Сколько стоит выездная чайная церемония, DJ-сет и «Чай + DJ» в Екатеринбурге: базовые пакеты от 15 000 ₽, надбавки за гостей, часы и выезд. Онлайн-калькулятор.' : 'Выездная чайная церемония, DJ-сет, «Чай + DJ» и мастер-класс в Екатеринбурге и области: что входит в каждый формат, длительность и число гостей. Смету и программу собираем под вашу задачу.'}>
   <PageHero title={showPrices ? 'Форматы и цены' : 'Форматы'} eyebrow="Услуги" crumbs={[{ label: 'Услуги' }]} lead={showPrices ? 'Пять форматов: от камерного мастер-класса до вечера на 150 гостей. Цены для Екатеринбурга; выезд в область считается по километрам.' : 'Пять форматов: от камерного мастер-класса до вечера с танцполом. Состав, тайминг и смету собираем под ваших гостей и площадку.'} />
-  <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(40px,6vw,72px)"><div class="wrap"><h2 class="sr-only">Пять форматов</h2><FormatCards /></div></section>
+  <section class="tone-rice" data-htone="rice" style="padding-bottom:clamp(40px,6vw,72px)"><div class="wrap"><h2 class="sr-only">Пять форматов</h2><FormatCards eagerMain /></div></section>
 
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
       <div class="head"><p class="eyebrow">Сравнение</p><h2>Что входит и что добавляется</h2></div>
-      <div class="cmp-cards" role="list">
+      <ul class="cmp-cards" role="list">
         {formats.map((f) => (
-          <article class="cmp-card" role="listitem">
+          <li class="cmp-card">
             <header><b>{f.name}</b>{showPrices && <span class="cmp-price">от {rub(f.base)}</span>}</header>
             <dl>
               <div><dt>Длительность</dt><dd>{f.duration}</dd></div>
@@ -23,9 +23,9 @@ import { rub, num } from '../lib/price.js';
             </dl>
             <ul class="cmp-incl">{f.what.map((w) => <li>{w}</li>)}</ul>
             <a class="link" href={url(f.slug + '/')}>Подробнее о формате →</a>
-          </article>
+          </li>
         ))}
-      </div>
+      </ul>
       <div class="tw cmp-table"><table>
         <thead><tr><th></th>{formats.map((f) => <th scope="col">{f.name}</th>)}</tr></thead>
         <tbody>

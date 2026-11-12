@@ -739,7 +739,7 @@ html.drawer-open { overflow: hidden; }
 /* Шапка страницы с кадром справа */
 .page-hero .wrap:has(.hero-media) { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); column-gap: clamp(28px, 5vw, 72px); align-items: start; }
 .page-hero .wrap:has(.hero-media) > * { grid-column: 1; }
-.page-hero .wrap:has(.hero-media) > .hero-media { grid-column: 2; grid-row: 1 / span 6; align-self: center; }
+.page-hero .wrap:has(.hero-media) > .hero-media { grid-column: 2; grid-row: 1 / span 6; align-self: start; }
 .hero-media { min-height: 0; aspect-ratio: 4 / 3; border-radius: 22px; max-width: 100%; box-shadow: 0 30px 60px -30px rgb(28 27 24 / .5); }
 @media (max-width: 860px) {
   .page-hero .wrap:has(.hero-media) { grid-template-columns: 1fr; }
@@ -1210,7 +1210,7 @@ html[data-mood="rhythm"] .hero.cfg .seg-btn[aria-pressed="true"], html[data-mood
   @media (prefers-reduced-motion: no-preference) {
     .eve-sec .ev { animation: ev-in linear both; animation-timeline: view(); animation-range: entry 0% cover 35%; }
     .eve-sec .ev-meter { animation: ev-meter linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
-    @keyframes ev-in { from { opacity: .2; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+    @keyframes ev-in { from { transform: translateY(26px); } to { transform: none; } }
     @keyframes ev-meter { from { transform: scaleX(0); } to { transform: scaleX(var(--e)); } }
     /* зал «темнеет» по ходу вечера: фон секции от сумерек к ночи */
     .eve-sec { animation: ev-dusk linear both; animation-timeline: view(); animation-range: entry 0% exit 20%; }
@@ -1256,3 +1256,4 @@ html[data-mood="dance"] .final { background: #141210; }
 
 /* Карточка формата → страница формата: фото перелетает (View Transitions) */
 ::view-transition-group(*) { animation-duration: .45s; animation-timing-function: var(--ease); }
+.cmp-cards { list-style: none; margin: 0; padding: 0; }

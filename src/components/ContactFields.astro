@@ -20,16 +20,23 @@ const id = (n: string) => `${kind}-${n}`;
     </div>
   </div>
   {kind === 'quick' && (
-    <div class="field">
-      <label for={id('fmt')}>Формат <span class="opt-l">— необязательно</span></label>
-      <select class="input" id={id('fmt')} name="fmt">
-        <option value="">Ещё не решили</option>
-        {formats.map((f) => <option value={f.key}>{f.name}</option>)}
-        <option value="cert">Сертификат</option>
-      </select>
+    <div class="two">
+      <div class="field">
+        <label for={id('fmt')}>Формат <span class="opt-l">— подобран по настроению</span></label>
+        <select class="input" id={id('fmt')} name="fmt">
+          <option value="">Ещё не решили</option>
+          {formats.map((f) => <option value={f.key}>{f.name}</option>)}
+          <option value="cert">Сертификат</option>
+        </select>
+      </div>
+      <div class="field" data-f="date">
+        <label for={id('date')}>Дата <span class="opt-l">— если уже знаете</span></label>
+        <input class="input" id={id('date')} name="date" type="date" />
+        <span class="errmsg">Дата должна быть в будущем</span>
+      </div>
     </div>
   )}
-  {kind === 'calc' && (
+  {(
     <div class="field" data-f="email">
       <label for={id('email')}>Почта <span class="opt-l">— необязательно, пришлём смету</span></label>
       <input class="input" id={id('email')} name="email" type="email" autocomplete="email" />
