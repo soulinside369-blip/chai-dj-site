@@ -5,6 +5,7 @@ import Calculator from '../components/Calculator.astro';
 import Icon from '../components/Icon.astro';
 import Channels from '../components/Channels.astro';
 import { rub } from '../lib/price.js';
+import legal from '../data/legal.json';
 import geoCyr from '@fontsource-variable/geologica/files/geologica-cyrillic-wght-normal.woff2?url';
 
 interface Props {
@@ -28,6 +29,8 @@ const business = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: site.brand.name,
+  legalName: (legal as any).operator?.short,
+  taxID: (legal as any).operator?.inn,
   description: site.seo.description,
   url: new URL(url(''), Astro.site).href,
   image: og,
@@ -85,9 +88,14 @@ const metrika = site.analytics.metrikaId;
   {serviceSchema && <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />}
   {metrika && (
     <script is:inline define:vars={{ metrika }}>
-      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');
-      ym(metrika,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
-      window.__ym = metrika;
+      // Яндекс Метрика загружается только после согласия на аналитические cookie (152-ФЗ)
+      window.__loadYm = function () {
+        if (window.__ym) return;
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');
+        ym(metrika,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+        window.__ym = metrika;
+      };
+      try { if (localStorage.getItem('cdj_cookie') === 'all') window.__loadYm(); } catch (e) {}
     </script>
   )}
 </head>
@@ -180,6 +188,7 @@ const metrika = site.analytics.metrikaId;
           <li><a href={url('consent/')}>Согласие на обработку</a></li>
           <li><a href={url('oferta/')}>Оферта</a></li>
           <li class="muted">© {new Date().getFullYear()} {isStub(site.brand.legal) ? site.brand.name : site.brand.legal}</li>
+          {(legal as any).operator && <li class="muted f-req">ИНН {(legal as any).operator.inn}<br />ОГРНИП {(legal as any).operator.ogrnip}</li>}
         </ul></div>
       </div>
     </div>
@@ -217,5 +226,24 @@ const metrika = site.analytics.metrikaId;
   <script>
     import '../scripts/fx';
   </script>
+  {metrika && (
+    <div class="cookie" id="cookieBar" role="region" aria-label="Cookie" hidden>
+      <p>Мы используем cookie: необходимые — для работы сайта, аналитические (Яндекс Метрика) — только с вашего согласия. <a class="link" href={url('privacy/')}>Подробнее</a></p>
+      <div class="cookie-btns"><button class="btn sm brass" type="button" data-cookie="all">Принять</button><button class="btn sm ghost" type="button" data-cookie="need">Только необходимые</button></div>
+    </div>
+    <script is:inline>
+      (function () {
+        var bar = document.getElementById('cookieBar'), v = null;
+        try { v = localStorage.getItem('cdj_cookie'); } catch (e) {}
+        if (!v) bar.hidden = false;
+        bar.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-cookie]'); if (!b) return;
+          try { localStorage.setItem('cdj_cookie', b.dataset.cookie); } catch (e) {}
+          if (b.dataset.cookie === 'all' && window.__loadYm) window.__loadYm();
+          bar.hidden = true;
+        });
+      })();
+    </script>
+  )}
 </body>
 </html>

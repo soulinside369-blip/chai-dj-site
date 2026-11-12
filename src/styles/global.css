@@ -1119,3 +1119,13 @@ html { hyphens: manual; }
 .fcard-closed { font: 600 15px/1.2 var(--body); letter-spacing: 0; opacity: .8; }
 
 @media (min-width: 561px) and (max-width: 1100px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+
+/* Уведомление о cookie: над нижней панелью на телефоне, в углу на компьютере */
+.cookie { position: fixed; z-index: 80; left: 12px; right: 12px; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 10px;
+  padding: 14px 16px; border-radius: 18px; background: rgb(24 23 20 / .94); color: var(--rice); font-size: 13.5px; line-height: 1.45;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 16px 40px rgb(0 0 0 / .35); backdrop-filter: blur(12px); }
+.cookie[hidden] { display: none !important; }
+.cookie p { margin: 0; }
+.cookie-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (min-width: 981px) { .cookie { left: auto; right: 20px; bottom: 20px; max-width: 420px; } }
+.f-req { font-size: 12px; line-height: 1.5; }
