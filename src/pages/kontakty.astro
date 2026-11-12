@@ -45,7 +45,7 @@ const hasSide = rows.length > 0 || !isStub(site.brand.requisites) || !!(links.tg
 
   <section class="sec tone-coal2" data-htone="coal">
     <div class="wrap split" style="align-items:center">
-      <div class="head" style="margin:0"><p class="eyebrow">Зона выезда</p><h2 data-split>{showPrices ? 'Екатеринбург — без доплаты' : 'Екатеринбург и область'}</h2><p class="lead">{showPrices ? `За городом — ${calc.perKm} ₽ за километр в обе стороны. Арамиль, 25 км: +${rub(25 * 2 * calc.perKm)}.` : 'Приезжаем в любой город области в радиусе 150 км; дорогу учитываем в смете.'}</p></div>
+      <div class="head" style="margin:0"><p class="eyebrow">Зона выезда</p><h2>{showPrices ? 'Екатеринбург — без доплаты' : 'Екатеринбург и область'}</h2><p class="lead">{showPrices ? `За городом — ${calc.perKm} ₽ за километр в обе стороны. Арамиль, 25 км: +${rub(25 * 2 * calc.perKm)}.` : 'Приезжаем в любой город области в радиусе 150 км; дорогу учитываем в смете.'}</p></div>
       <Zone />
     </div>
   </section>

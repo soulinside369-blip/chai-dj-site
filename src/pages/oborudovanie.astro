@@ -13,7 +13,7 @@ import { equipment, url } from '../lib/data';
 
   <section class="sec tone-coal" data-htone="coal">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Комплектация</p><h2 data-split>Собираем под ваш вечер</h2></div>
+      <div class="head"><p class="eyebrow">Комплектация</p><h2>Собираем под ваш вечер</h2></div>
       {(equipment as any).kitNote && <p class="lead rv" style="margin:-8px 0 24px;max-width:60ch">{(equipment as any).kitNote}</p>}
       <div class="tw rv stack-table"><table>
         <thead><tr><th>Что</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
@@ -24,7 +24,7 @@ import { equipment, url } from '../lib/data';
 
   <section class="sec tone-rice" data-htone="rice">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Чайная карта</p><h2 data-split>Чай под каждое состояние вечера</h2></div>
+      <div class="head"><p class="eyebrow">Чайная карта</p><h2>Чай под каждое состояние вечера</h2></div>
       <ul class="teas" aria-label="Чайная карта">
         {equipment.teas.map((t: any, i) => (
           <li class="tea rv" style={`--d:${i * .06}s;--liq:${t.color || '#C8A165'}`}>
@@ -45,7 +45,7 @@ import { equipment, url } from '../lib/data';
 
   <section class="sec tone-coal2" data-htone="coal" id="venue">
     <div class="wrap">
-      <div class="head"><p class="eyebrow">Техтребования</p><h2 data-split>Что нужно от площадки</h2><p class="lead">Точные требования под ваш вечер мы сами отправляем администратору площадки после брони.</p></div>
+      <div class="head"><p class="eyebrow">Техтребования</p><h2>Что нужно от площадки</h2><p class="lead">Точные требования под ваш вечер мы сами отправляем администратору площадки после брони.</p></div>
       <div class="tw rv stack-table"><table>
         <thead><tr><th>Требование</th><th>Камерное событие</th><th>Большое событие</th></tr></thead>
         <tbody>{equipment.venue.map((r) => <tr><td>{r.what}</td><td data-l="Камерное событие">{r.small}</td><td data-l="Большое событие">{r.large}</td></tr>)}</tbody>

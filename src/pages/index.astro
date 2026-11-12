@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import HeroConfigurator from '../components/HeroConfigurator.astro';
-import Trailer from '../components/Trailer.astro';
 import FormatCards from '../components/FormatCards.astro';
 import Cases from '../components/Cases.astro';
 import Reviews from '../components/Reviews.astro';
@@ -15,7 +14,6 @@ const realReviews = reviews.filter((r) => !r.draft).length > 0;
 ---
 <Base tone="rice" faqItems={topFaq}>
   {(site.hero as any).scene?.quiet && /-1280\.webp$/.test((site.hero as any).scene.quiet) && <link slot="head" rel="preload" as="image" type="image/webp" imagesrcset={`${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-640.webp'))} 640w, ${url((site.hero as any).scene.quiet.replace(/-1280\.webp$/, '-900.webp'))} 900w, ${url((site.hero as any).scene.quiet)} 1280w`} imagesizes="(max-width: 600px) calc(100vw - 40px), 520px" fetchpriority="high" />}
-  <Trailer slot="top" />
   <HeroConfigurator />
 
   <section class="sec tone-rice2" data-htone="rice" id="formats">

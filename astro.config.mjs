@@ -12,6 +12,6 @@ export default defineConfig({
   base,
   trailingSlash: 'always',
   integrations: [typograf(), sitemap({ filter: (p) => !/\/(spasibo|admin|trebovaniya-ploshchadki)\//.test(p) })],
-  build: { inlineStylesheets: 'always', format: 'directory' },
+  build: { inlineStylesheets: 'never', format: 'directory' },
   compressHTML: true,
 });

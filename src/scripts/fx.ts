@@ -1,4 +1,4 @@
-// Общие эффекты: шапка, меню, появление, магнитные кнопки, наклон карточек, панель на телефоне, цели Метрики.
+// Общие эффекты: шапка, меню, появление (CSS на скролле + запасной наблюдатель), магнитная главная кнопка, наклон карточек, панель на телефоне, цели Метрики.
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(pointer: fine)').matches;
 const header = document.getElementById('siteHeader')!;
@@ -126,15 +126,19 @@ document.querySelectorAll<HTMLElement>('[data-split]').forEach((el) => {
 const io = new IntersectionObserver((entries) => {
   for (const en of entries) if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
 }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-document.querySelectorAll('.rv, .split-words').forEach((el) => io.observe(el));
+// Блоки .rv появляются нативной анимацией на скролле (CSS animation-timeline), наблюдатель — только для старых браузеров
+const nativeRv = CSS.supports('animation-timeline: view()');
+if (nativeRv) document.documentElement.classList.add('sda');
+const watched = nativeRv ? '.split-words, .hero .rv, .page-hero .rv' : '.rv, .split-words';
+document.querySelectorAll(watched).forEach((el) => io.observe(el));
 // Страховка: что видно сразу — показываем без ожидания
-requestAnimationFrame(() => document.querySelectorAll('.rv, .split-words').forEach((el) => {
+requestAnimationFrame(() => document.querySelectorAll(watched).forEach((el) => {
   if (el.getBoundingClientRect().top < innerHeight) el.classList.add('in');
 }));
 
 /* ---- Магнитные кнопки и наклон карточек (только мышь) ---- */
 if (fine && !reduce) {
-  document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
+  document.querySelectorAll<HTMLElement>('.btn.brass, .cfg-cta').forEach((b) => {
     b.addEventListener('pointermove', (e) => {
       const r = b.getBoundingClientRect();
       b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
@@ -149,29 +153,6 @@ if (fine && !reduce) {
     });
     c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
   });
-}
-
-/* ---- Курсор-кольцо (только мышь, без «уменьшить движение»): без задержки, только transform — не нагружает страницу ---- */
-if (fine && !reduce) {
-  const c = document.createElement('div'); c.className = 'cur'; c.setAttribute('aria-hidden', 'true'); document.body.appendChild(c);
-  let x = 0, y = 0, s = 1, queued = false;
-  const paint = () => { queued = false; c.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${s})`; };
-  addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    x = e.clientX; y = e.clientY;
-    if (!queued) { queued = true; requestAnimationFrame(paint); }
-  }, { passive: true });
-  const HOT = 'a, button, summary, [role="button"], input[type="range"], .chip, label.check';
-  const FIELD = 'input:not([type="range"]), textarea, select';
-  document.addEventListener('pointerover', (e) => {
-    const t = e.target as HTMLElement;
-    c.classList.add('on');
-    const field = !!t.closest(FIELD);
-    c.classList.toggle('text', field);
-    const big = !field && !!t.closest(HOT);
-    if ((s === 1.8) !== big) { s = big ? 1.8 : 1; c.classList.toggle('big', big); if (!queued) { queued = true; requestAnimationFrame(paint); } }
-  }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => c.classList.remove('on'));
 }
 
 /* ---- Линия прогресса у шагов ---- */
